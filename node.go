@@ -93,6 +93,10 @@ func (n *Node) GetPS(path, separator string) *Node {
 	return n.Get(vec.bufSS...)
 }
 
+func (n *Node) Dot(path string) *Node {
+	return n.GetPS(path, ".")
+}
+
 func (n *Node) Exists(key string) bool {
 	if n.typ != TypeObj {
 		return false
