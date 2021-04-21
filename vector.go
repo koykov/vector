@@ -2,8 +2,6 @@ package vector
 
 import (
 	"unsafe"
-
-	"github.com/koykov/bytealg"
 )
 
 type Vector struct {
@@ -27,40 +25,6 @@ func (vec *Vector) ErrorOffset() int {
 
 func (vec *Vector) Root() *Node {
 	return vec.Get()
-}
-
-func (vec *Vector) Get(keys ...string) *Node {
-	if len(keys) == 0 {
-		if vec.Len() > 0 {
-			return &vec.nodes[0]
-		}
-		return nullNode
-	}
-
-	r := &vec.nodes[0]
-	if r.typ != TypeObj && r.typ != TypeArr {
-		if len(keys) > 1 {
-			return nullNode
-		}
-		return r
-	}
-
-	if r.typ == TypeArr {
-		return vec.getArr(r, keys...)
-	}
-	if r.typ == TypeObj {
-		return vec.getObj(r, keys...)
-	}
-	return r
-}
-
-func (vec *Vector) GetPS(path, separator string) *Node {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
-	return vec.Get(vec.bufSS...)
-}
-
-func (vec *Vector) Dot(path string) *Node {
-	return vec.GetPS(path, ".")
 }
 
 func (vec *Vector) Exists(key string) bool {

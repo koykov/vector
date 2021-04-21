@@ -1,6 +1,50 @@
 package vector
 
-import "github.com/koykov/bytealg"
+import (
+	"strconv"
+
+	"github.com/koykov/bytealg"
+)
+
+func (n *Node) Get(keys ...string) *Node {
+	if len(keys) == 0 {
+		return n
+	}
+	if n.typ != TypeObj && n.typ != TypeArr {
+		return nullNode
+	}
+	var vec *Vector
+	if vec = n.indirectVector(); vec == nil {
+		return n
+	}
+	if n.typ == TypeObj {
+		for i := n.offset; i < n.length; i++ {
+			idx := vec.index.val(n.depth+1, i)
+			child := &vec.nodes[idx]
+			if child.key.String() == keys[0] {
+				if len(keys[1:]) == 0 {
+					return child
+				} else {
+					return child.Get(keys[1:]...)
+				}
+			}
+		}
+	}
+	if n.typ == TypeArr {
+		i, err := strconv.Atoi(keys[0])
+		if err != nil || i >= n.Len() {
+			return nullNode
+		}
+		idx := vec.index.val(n.depth+1, n.offset+i)
+		child := &vec.nodes[idx]
+		if len(keys[1:]) == 0 {
+			return child
+		} else {
+			return n.Get(keys[1:]...)
+		}
+	}
+	return nullNode
+}
 
 func (n *Node) GetObject(keys ...string) *Node {
 	c := n.Get(keys...)
@@ -73,6 +117,15 @@ func (n *Node) GetUint(keys ...string) (uint64, error) {
 		return 0, ErrIncompatType
 	}
 	return c.Uint()
+}
+
+func (n *Node) GetPS(path, separator string) *Node {
+	vec := n.indirectVector()
+	if vec == nil {
+		return nullNode
+	}
+	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS, path, separator, -1)
+	return n.Get(vec.bufSS...)
 }
 
 func (n *Node) GetObjectPS(path, sep string) *Node {

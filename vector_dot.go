@@ -1,5 +1,9 @@
 package vector
 
+func (vec *Vector) Dot(path string) *Node {
+	return vec.GetPS(path, ".")
+}
+
 func (vec *Vector) DotObject(path string) *Node {
 	return vec.GetObjectPS(path, ".")
 }
