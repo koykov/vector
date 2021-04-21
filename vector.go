@@ -40,7 +40,7 @@ func (vec *Vector) Get(keys ...string) *Node {
 	r := &vec.nodes[0]
 	if r.typ != TypeObj && r.typ != TypeArr {
 		if len(keys) > 1 {
-			return nil
+			return nullNode
 		}
 		return r
 	}
@@ -91,6 +91,7 @@ func (vec *Vector) Reset() {
 		vec.nodes[i].vecPtr = 0
 	}
 	vec.buf, vec.src = vec.buf[:0], nil
+	vec.bufSS = vec.bufSS[:0]
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.index.reset()
 }
