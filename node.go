@@ -219,6 +219,46 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+func (n *Node) Look(key string) *Node {
+	if n.typ != TypeObj {
+		return nullNode
+	}
+	vec := n.indirectVector()
+	if vec == nil {
+		return nullNode
+	}
+	ci := n.childs()
+	for _, i := range ci {
+		c := vec.nodes[i]
+		if key == c.key.String() {
+			return &c
+		}
+	}
+	return nullNode
+}
+
+func (n *Node) At(idx int) *Node {
+	if n.typ != TypeArr {
+		return nullNode
+	}
+	vec := n.indirectVector()
+	if vec == nil {
+		return nullNode
+	}
+	ci := n.childs()
+	h := -1
+	for _, i := range ci {
+		if i == idx {
+			h = i
+			break
+		}
+	}
+	if h >= 0 {
+		return &vec.nodes[h]
+	}
+	return nil
+}
+
 func (n *Node) Reset() {
 	n.typ = TypeUnk
 	n.key.Set(0, 0)
