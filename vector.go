@@ -15,19 +15,19 @@ type Vector struct {
 	index    index
 }
 
-func (vec *Vector) Parse(s []byte) error {
+func (vec *Vector) Parse(_ []byte) error {
 	return ErrNotImplement
 }
 
-func (vec *Vector) ParseStr(s string) error {
+func (vec *Vector) ParseStr(_ string) error {
 	return ErrNotImplement
 }
 
-func (vec *Vector) ParseCopy(s []byte) error {
+func (vec *Vector) ParseCopy(_ []byte) error {
 	return ErrNotImplement
 }
 
-func (vec *Vector) ParseCopyStr(s string) error {
+func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }
 
@@ -60,6 +60,12 @@ func (vec *Vector) AcquireNode(depth int) (r *Node) {
 	}
 	r.vecPtr, r.depth = vec.ptr(), depth
 	return
+}
+
+func (vec *Vector) AcquireNodeWT(depth int, typ Type) *Node {
+	n := vec.AcquireNode(depth)
+	n.typ = typ
+	return n
 }
 
 func (vec *Vector) Reset() {
