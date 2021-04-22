@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"io"
 	"unsafe"
 )
 
@@ -28,6 +29,10 @@ func (vec *Vector) ParseCopy(_ []byte) error {
 }
 
 func (vec *Vector) ParseCopyStr(_ string) error {
+	return ErrNotImplement
+}
+
+func (vec *Vector) Beautify(_ io.Writer) error {
 	return ErrNotImplement
 }
 
