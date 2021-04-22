@@ -44,6 +44,10 @@ func (n *Node) Len() int {
 	return 1
 }
 
+func (n *Node) Depth() int {
+	return n.depth
+}
+
 func (n *Node) Exists(key string) bool {
 	if n.typ != TypeObj {
 		return false
@@ -53,7 +57,7 @@ func (n *Node) Exists(key string) bool {
 		return false
 	}
 	for i := n.offset; i < n.length; i++ {
-		k := vec.index.val(n.depth+1, i)
+		k := vec.Index.val(n.depth+1, i)
 		c := &vec.nodes[k]
 		if c.key.String() == key {
 			return true
@@ -98,6 +102,10 @@ func (n *Node) Bytes() []byte {
 }
 
 func (n *Node) ForceBytes() []byte {
+	return n.val.Bytes()
+}
+
+func (n *Node) RawBytes() []byte {
 	return n.val.Bytes()
 }
 
@@ -219,7 +227,7 @@ func (n *Node) childs() []int {
 		if e == 0 {
 			e = n.offset + 1
 		}
-		return vec.index.get(n.depth+1, n.offset, e)
+		return vec.Index.get(n.depth+1, n.offset, e)
 	}
 	return nil
 }
