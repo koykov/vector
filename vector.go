@@ -15,6 +15,22 @@ type Vector struct {
 	index    index
 }
 
+func (vec *Vector) Parse(s []byte) error {
+	return ErrNotImplement
+}
+
+func (vec *Vector) ParseStr(s string) error {
+	return ErrNotImplement
+}
+
+func (vec *Vector) ParseCopy(s []byte) error {
+	return ErrNotImplement
+}
+
+func (vec *Vector) ParseCopyStr(s string) error {
+	return ErrNotImplement
+}
+
 func (vec *Vector) Len() int {
 	return vec.nodeL
 }
