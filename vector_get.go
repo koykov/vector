@@ -198,7 +198,7 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 	if err != nil || k >= root.Len() {
 		return nullNode
 	}
-	i := vec.index.val(root.depth+1, root.offset+k)
+	i := vec.Index.val(root.depth+1, root.offset+k)
 	v := &vec.nodes[i]
 	tail := keys[1:]
 	if v.typ != TypeArr && v.typ != TypeObj {
@@ -222,7 +222,7 @@ func (vec *Vector) getObj(root *Node, keys ...string) *Node {
 	}
 	var v *Node
 	for i := root.offset; i < root.length; i++ {
-		k := vec.index.val(root.depth+1, i)
+		k := vec.Index.val(root.depth+1, i)
 		v = &vec.nodes[k]
 		if v.key.String() == keys[0] {
 			break
