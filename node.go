@@ -22,7 +22,7 @@ const (
 
 type Node struct {
 	typ      Type
-	key, val bytealg.Byteptr
+	key, val Byteptr
 
 	depth, offset, length int
 
@@ -37,11 +37,27 @@ func (n *Node) Type() Type {
 	return n.typ
 }
 
+func (n *Node) SetType(typ Type) {
+	n.typ = typ
+}
+
+func (n *Node) SetLen(len int) {
+	n.length = len
+}
+
 func (n *Node) Len() int {
 	if n.length != n.offset && n.length >= n.offset {
 		return n.length - n.offset
 	}
 	return 1
+}
+
+func (n *Node) SetOffset(offset int) {
+	n.offset = offset
+}
+
+func (n *Node) Offset() int {
+	return n.offset
 }
 
 func (n *Node) Depth() int {
@@ -80,6 +96,10 @@ func (n *Node) Array() *Node {
 	return n
 }
 
+func (n *Node) KeyPtr() *Byteptr {
+	return &n.key
+}
+
 func (n *Node) Key() []byte {
 	if n.key.Offset() != 0 && n.key.Len() > 0 {
 		return n.key.Bytes()
@@ -92,6 +112,10 @@ func (n *Node) KeyString() string {
 		return n.key.String()
 	}
 	return ""
+}
+
+func (n *Node) ValPtr() *Byteptr {
+	return &n.val
 }
 
 func (n *Node) Bytes() []byte {
@@ -216,8 +240,8 @@ func (n *Node) At(idx int) *Node {
 
 func (n *Node) Reset() {
 	n.typ = TypeUnk
-	n.key.Set(0, 0)
-	n.val.Set(0, 0)
+	n.key.Reset()
+	n.val.Reset()
 	n.depth, n.offset, n.length, n.vecPtr = 0, 0, 0, 0
 }
 

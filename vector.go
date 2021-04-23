@@ -60,6 +60,18 @@ func (vec *Vector) SrcLen() int {
 	return len(vec.src)
 }
 
+func (vec *Vector) Src() []byte {
+	return vec.src
+}
+
+func (vec *Vector) SrcAt(i int) byte {
+	return vec.src[i]
+}
+
+func (vec *Vector) SrcAddr() uint64 {
+	return vec.addr
+}
+
 func (vec *Vector) Root() *Node {
 	return vec.Get()
 }
