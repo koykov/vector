@@ -9,12 +9,12 @@ import (
 func (vec *Vector) Get(keys ...string) *Node {
 	if len(keys) == 0 {
 		if vec.Len() > 0 {
-			return &vec.nodes[0]
+			return vec.nodes[0]
 		}
 		return nullNode
 	}
 
-	r := &vec.nodes[0]
+	r := vec.nodes[0]
 	if r.typ != TypeObj && r.typ != TypeArr {
 		if len(keys) > 1 {
 			return nullNode
@@ -195,11 +195,11 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 		return root
 	}
 	k, err := strconv.Atoi(keys[0])
-	if err != nil || k >= root.Len() {
+	if err != nil || k >= root.limit {
 		return nullNode
 	}
 	i := vec.Index.val(root.depth+1, root.offset+k)
-	v := &vec.nodes[i]
+	v := vec.nodes[i]
 	tail := keys[1:]
 	if v.typ != TypeArr && v.typ != TypeObj {
 		if len(tail) > 0 {
@@ -221,9 +221,9 @@ func (vec *Vector) getObj(root *Node, keys ...string) *Node {
 		return root
 	}
 	var v *Node
-	for i := root.offset; i < root.length; i++ {
+	for i := root.offset; i < root.limit; i++ {
 		k := vec.Index.val(root.depth+1, i)
-		v = &vec.nodes[k]
+		v = vec.nodes[k]
 		if v.key.String() == keys[0] {
 			break
 		}

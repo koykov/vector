@@ -7,14 +7,15 @@ import (
 )
 
 type Vector struct {
-	buf, src []byte
-	bufSS    []string
-	addr     uint64
-	selfPtr  uintptr
-	nodes    []Node
-	nodeL    int
-	errOff   int
-	Index    Index
+	buf, src       []byte
+	bufSS          []string
+	addr           uint64
+	selfPtr        uintptr
+	nodes          []*Node
+	nodeL          int
+	errOff         int
+	Index          Index
+	PrepareBytesFn func(*Byteptr) []byte
 }
 
 func (vec *Vector) Parse(_ []byte) error {
@@ -81,24 +82,25 @@ func (vec *Vector) Exists(key string) bool {
 	return n.Exists(key)
 }
 
-func (vec *Vector) AcquireNode(depth int) (r *Node) {
+func (vec *Vector) AcquireNode(depth int) (node *Node) {
 	if vec.nodeL < len(vec.nodes) {
-		r = &vec.nodes[vec.nodeL]
-		r.Reset()
+		node = vec.nodes[vec.nodeL]
+		node.Reset()
 		vec.nodeL++
 	} else {
-		r = &Node{typ: TypeUnk}
-		vec.nodes = append(vec.nodes, *r)
+		node = &Node{typ: TypeUnk}
+		vec.nodes = append(vec.nodes, node)
 		vec.nodeL++
 	}
-	r.vecPtr, r.depth = vec.ptr(), depth
+	node.vecPtr, node.depth = vec.ptr(), depth
+	node.key.vecPtr, node.val.vecPtr = node.vecPtr, node.vecPtr
 	return
 }
 
 func (vec *Vector) AcquireNodeWT(depth int, typ Type) *Node {
-	n := vec.AcquireNode(depth)
-	n.typ = typ
-	return n
+	node := vec.AcquireNode(depth)
+	node.typ = typ
+	return node
 }
 
 func (vec *Vector) SetErrOffset(offset int) {

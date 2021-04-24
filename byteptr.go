@@ -1,6 +1,11 @@
 package vector
 
-import "github.com/koykov/bytealg"
+import (
+	"unsafe"
+
+	"github.com/koykov/bytealg"
+	"github.com/koykov/fastconv"
+)
 
 type Flag int
 
@@ -11,28 +16,49 @@ const (
 type Byteptr struct {
 	bytealg.Byteptr
 	flagEsc bool
+
+	vecPtr uintptr
 }
 
-func (m *Byteptr) RawBytes() []byte {
-	return m.Bytes()
+func (p *Byteptr) Bytes() []byte {
+	if vec := p.indirectVector(); vec != nil && vec.PrepareBytesFn != nil {
+		return vec.PrepareBytesFn(p)
+	}
+	return p.RawBytes()
 }
 
-func (m *Byteptr) SetFlag(flag Flag, value bool) {
+func (p *Byteptr) String() string {
+	return fastconv.B2S(p.Bytes())
+}
+
+func (p *Byteptr) RawBytes() []byte {
+	return p.Byteptr.Bytes()
+}
+
+func (p *Byteptr) SetFlag(flag Flag, value bool) {
 	switch flag {
 	case FlagEscape:
-		m.flagEsc = value
+		p.flagEsc = value
 	}
 }
 
-func (m *Byteptr) GetFlag(flag Flag) bool {
+func (p *Byteptr) GetFlag(flag Flag) bool {
 	switch flag {
 	case FlagEscape:
-		return m.flagEsc
+		return p.flagEsc
 	}
 	return false
 }
 
-func (m *Byteptr) Reset() {
-	m.Byteptr.Reset()
-	m.flagEsc = false
+func (p *Byteptr) Reset() {
+	p.Byteptr.Reset()
+	p.flagEsc = false
+	p.vecPtr = 0
+}
+
+func (p *Byteptr) indirectVector() *Vector {
+	if p.vecPtr == 0 {
+		return nil
+	}
+	return (*Vector)(unsafe.Pointer(p.vecPtr))
 }
