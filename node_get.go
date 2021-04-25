@@ -47,76 +47,76 @@ func (n *Node) Get(keys ...string) *Node {
 }
 
 func (n *Node) GetObject(keys ...string) *Node {
-	c := n.Get(keys...)
-	if c.Type() != TypeObj {
+	node := n.Get(keys...)
+	if node.Type() != TypeObj {
 		return nullNode
 	}
-	return c.Object()
+	return node.Object()
 }
 
 func (n *Node) GetArray(keys ...string) *Node {
-	c := n.Get(keys...)
-	if c.Type() != TypeArr {
+	node := n.Get(keys...)
+	if node.Type() != TypeArr {
 		return nullNode
 	}
-	return c.Array()
+	return node.Array()
 }
 
 func (n *Node) GetBytes(keys ...string) []byte {
-	c := n.Get(keys...)
-	if c.Type() != TypeStr {
+	node := n.Get(keys...)
+	if node.Type() != TypeStr {
 		return nil
 	}
-	return c.Bytes()
+	return node.Bytes()
 }
 
 func (n *Node) GetString(keys ...string) string {
-	c := n.Get(keys...)
-	if c.Type() != TypeStr {
+	node := n.Get(keys...)
+	if node.Type() != TypeStr {
 		return ""
 	}
-	return c.String()
+	return node.String()
 }
 
 func (n *Node) GetBool(keys ...string) bool {
-	c := n.Get(keys...)
-	if c.Type() != TypeBool {
+	node := n.Get(keys...)
+	if node.Type() != TypeBool {
 		return false
 	}
-	return c.Bool()
+	return node.Bool()
 }
 
 func (n *Node) GetFloat(keys ...string) (float64, error) {
-	c := n.Get(keys...)
-	if c.typ == TypeNull {
+	node := n.Get(keys...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Float()
+	return node.Float()
 }
 
 func (n *Node) GetInt(keys ...string) (int64, error) {
-	c := n.Get(keys...)
-	if c.typ == TypeNull {
+	node := n.Get(keys...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Int()
+	return node.Int()
 }
 
 func (n *Node) GetUint(keys ...string) (uint64, error) {
-	c := n.Get(keys...)
-	if c.typ == TypeNull {
+	node := n.Get(keys...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Uint()
+	return node.Uint()
 }
 
 func (n *Node) GetPS(path, separator string) *Node {
@@ -134,11 +134,11 @@ func (n *Node) GetObjectPS(path, sep string) *Node {
 		return nullNode
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.Type() != TypeObj {
+	node := n.Get(vec.bufSS...)
+	if node.Type() != TypeObj {
 		return nullNode
 	}
-	return c.Object()
+	return node.Object()
 }
 
 func (n *Node) GetArrayPS(path, sep string) *Node {
@@ -147,11 +147,11 @@ func (n *Node) GetArrayPS(path, sep string) *Node {
 		return nullNode
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.Type() != TypeArr {
+	node := n.Get(vec.bufSS...)
+	if node.Type() != TypeArr {
 		return nullNode
 	}
-	return c.Array()
+	return node.Array()
 }
 
 func (n *Node) GetBytesPS(path, sep string) []byte {
@@ -160,11 +160,11 @@ func (n *Node) GetBytesPS(path, sep string) []byte {
 		return nil
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.Type() != TypeStr {
+	node := n.Get(vec.bufSS...)
+	if node.Type() != TypeStr {
 		return nil
 	}
-	return c.Bytes()
+	return node.Bytes()
 }
 
 func (n *Node) GetStringPS(path, sep string) string {
@@ -173,11 +173,11 @@ func (n *Node) GetStringPS(path, sep string) string {
 		return ""
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.Type() != TypeStr {
+	node := n.Get(vec.bufSS...)
+	if node.Type() != TypeStr {
 		return ""
 	}
-	return c.String()
+	return node.String()
 }
 
 func (n *Node) GetBoolPS(path, sep string) bool {
@@ -186,11 +186,11 @@ func (n *Node) GetBoolPS(path, sep string) bool {
 		return false
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.Type() != TypeBool {
+	node := n.Get(vec.bufSS...)
+	if node.Type() != TypeBool {
 		return false
 	}
-	return c.Bool()
+	return node.Bool()
 }
 
 func (n *Node) GetFloatPS(path, sep string) (float64, error) {
@@ -199,14 +199,14 @@ func (n *Node) GetFloatPS(path, sep string) (float64, error) {
 		return 0, ErrInternal
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.typ == TypeNull {
+	node := n.Get(vec.bufSS...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Float()
+	return node.Float()
 }
 
 func (n *Node) GetIntPS(path, sep string) (int64, error) {
@@ -215,14 +215,14 @@ func (n *Node) GetIntPS(path, sep string) (int64, error) {
 		return 0, ErrInternal
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.typ == TypeNull {
+	node := n.Get(vec.bufSS...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Int()
+	return node.Int()
 }
 
 func (n *Node) GetUintPS(path, sep string) (uint64, error) {
@@ -231,12 +231,12 @@ func (n *Node) GetUintPS(path, sep string) (uint64, error) {
 		return 0, ErrInternal
 	}
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
-	c := n.Get(vec.bufSS...)
-	if c.typ == TypeNull {
+	node := n.Get(vec.bufSS...)
+	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if c.Type() != TypeNum {
+	if node.Type() != TypeNum {
 		return 0, ErrIncompatType
 	}
-	return c.Uint()
+	return node.Uint()
 }
