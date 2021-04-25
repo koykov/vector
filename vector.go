@@ -11,7 +11,7 @@ type Vector struct {
 	bufSS          []string
 	addr           uint64
 	selfPtr        uintptr
-	nodes          []*Node
+	nodes          []Node
 	nodeL          int
 	errOff         int
 	Index          Index
@@ -84,12 +84,12 @@ func (vec *Vector) Exists(key string) bool {
 
 func (vec *Vector) AcquireNode(depth int) (node *Node) {
 	if vec.nodeL < len(vec.nodes) {
-		node = vec.nodes[vec.nodeL]
+		node = &vec.nodes[vec.nodeL]
 		node.Reset()
 		vec.nodeL++
 	} else {
 		node = &Node{typ: TypeUnk}
-		vec.nodes = append(vec.nodes, node)
+		vec.nodes = append(vec.nodes, *node)
 		vec.nodeL++
 	}
 	node.vecPtr, node.depth = vec.ptr(), depth
@@ -101,6 +101,10 @@ func (vec *Vector) AcquireNodeWT(depth int, typ Type) *Node {
 	node := vec.AcquireNode(depth)
 	node.typ = typ
 	return node
+}
+
+func (vec *Vector) ReleaseNode(idx int, node *Node) {
+	vec.nodes[idx] = *node
 }
 
 func (vec *Vector) SetErrOffset(offset int) {

@@ -194,7 +194,7 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 	c := 0
 	for _, i := range idx {
-		cn := vec.nodes[i]
+		cn := &vec.nodes[i]
 		fn(c, cn)
 		c++
 	}
@@ -210,7 +210,7 @@ func (n *Node) Look(key string) *Node {
 	}
 	ci := n.childs()
 	for _, i := range ci {
-		c := vec.nodes[i]
+		c := &vec.nodes[i]
 		if key == c.key.String() {
 			return c
 		}
@@ -235,7 +235,7 @@ func (n *Node) At(idx int) *Node {
 		}
 	}
 	if h >= 0 {
-		return vec.nodes[h]
+		return &vec.nodes[h]
 	}
 	return nil
 }

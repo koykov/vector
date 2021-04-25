@@ -20,7 +20,7 @@ func (n *Node) Get(keys ...string) *Node {
 	if n.typ == TypeObj {
 		for i := n.offset; i < n.limit; i++ {
 			idx := vec.Index.val(n.depth+1, i)
-			child := vec.nodes[idx]
+			child := &vec.nodes[idx]
 			if child.key.String() == keys[0] {
 				if len(keys[1:]) == 0 {
 					return child
@@ -36,7 +36,7 @@ func (n *Node) Get(keys ...string) *Node {
 			return nullNode
 		}
 		idx := vec.Index.val(n.depth+1, n.offset+i)
-		child := vec.nodes[idx]
+		child := &vec.nodes[idx]
 		if len(keys[1:]) == 0 {
 			return child
 		} else {
