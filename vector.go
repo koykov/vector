@@ -82,7 +82,7 @@ func (vec *Vector) Exists(key string) bool {
 	return n.Exists(key)
 }
 
-func (vec *Vector) AcquireNode(depth int) (node *Node) {
+func (vec *Vector) GetNode(depth int) (node *Node) {
 	if vec.nodeL < len(vec.nodes) {
 		node = &vec.nodes[vec.nodeL]
 		node.Reset()
@@ -97,13 +97,13 @@ func (vec *Vector) AcquireNode(depth int) (node *Node) {
 	return
 }
 
-func (vec *Vector) AcquireNodeWT(depth int, typ Type) *Node {
-	node := vec.AcquireNode(depth)
+func (vec *Vector) GetNodeWT(depth int, typ Type) *Node {
+	node := vec.GetNode(depth)
 	node.typ = typ
 	return node
 }
 
-func (vec *Vector) ReleaseNode(idx int, node *Node) {
+func (vec *Vector) PutNode(idx int, node *Node) {
 	vec.nodes[idx] = *node
 }
 
