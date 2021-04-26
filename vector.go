@@ -7,15 +7,19 @@ import (
 )
 
 type Vector struct {
-	buf, src       []byte
-	bufSS          []string
-	addr           uint64
-	selfPtr        uintptr
-	nodes          []Node
-	nodeL          int
-	errOff         int
-	Index          Index
-	PrepareBytesFn func(*Byteptr) []byte
+	buf, src []byte
+	bufSS    []string
+	addr     uint64
+	selfPtr  uintptr
+	nodes    []Node
+	nodeL    int
+	errOff   int
+	Index    Index
+	Helper   Helper
+}
+
+type Helper interface {
+	ConvertByteptr(*Byteptr) []byte
 }
 
 func (vec *Vector) Parse(_ []byte) error {

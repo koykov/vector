@@ -21,8 +21,8 @@ type Byteptr struct {
 }
 
 func (p *Byteptr) Bytes() []byte {
-	if vec := p.indirectVector(); vec != nil && vec.PrepareBytesFn != nil {
-		return vec.PrepareBytesFn(p)
+	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
+		return vec.Helper.ConvertByteptr(p)
 	}
 	return p.RawBytes()
 }
