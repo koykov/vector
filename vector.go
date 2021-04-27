@@ -6,42 +6,60 @@ import (
 	"unsafe"
 )
 
+// Vector parser object.
 type Vector struct {
-	buf, src []byte
-	bufSS    []string
-	addr     uint64
-	selfPtr  uintptr
-	nodes    []Node
-	nodeL    int
-	errOff   int
-	Index    Index
-	Helper   Helper
+	// Source data to parse.
+	src []byte
+	// Source data pointer.
+	addr uint64
+	// Buffers.
+	buf   []byte
+	bufSS []string
+	// Self pointer.
+	selfPtr uintptr
+	// List of nodes and length of it.
+	nodes []Node
+	nodeL int
+	// Error offset.
+	errOff int
+	// Nodes index.
+	Index Index
+	// External helper object.
+	Helper Helper
 }
 
+// Helper object interface.
 type Helper interface {
+	// Convert byteptr to byte slice and apply custom logic.
 	ConvertByteptr(*Byteptr) []byte
 }
 
+// Parse source bytes.
 func (vec *Vector) Parse(_ []byte) error {
 	return ErrNotImplement
 }
 
+// Parse source string.
 func (vec *Vector) ParseStr(_ string) error {
 	return ErrNotImplement
 }
 
+// Copy source bytes and parse it.
 func (vec *Vector) ParseCopy(_ []byte) error {
 	return ErrNotImplement
 }
 
+// Copy source string and parse it.
 func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }
 
+// Format vector in human readable representation.
 func (vec *Vector) Beautify(_ io.Writer) error {
 	return ErrNotImplement
 }
 
+// Set source bytes to parse.
 func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	if len(s) == 0 {
 		return ErrEmptySrc
@@ -52,40 +70,49 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	} else {
 		vec.src = s
 	}
+	// Get source data address.
 	h := (*reflect.SliceHeader)(unsafe.Pointer(&vec.src))
 	vec.addr = uint64(h.Data)
 	return nil
 }
 
+// Get length of nodes array.
 func (vec *Vector) Len() int {
 	return vec.nodeL
 }
 
+// Get length of source bytes.
 func (vec *Vector) SrcLen() int {
 	return len(vec.src)
 }
 
+// Get raw source bytes.
 func (vec *Vector) Src() []byte {
 	return vec.src
 }
 
+// Get byte at position i.
 func (vec *Vector) SrcAt(i int) byte {
 	return vec.src[i]
 }
 
+// Get source address in virtual memory.
 func (vec *Vector) SrcAddr() uint64 {
 	return vec.addr
 }
 
+// Get root node.
 func (vec *Vector) Root() *Node {
 	return vec.Get()
 }
 
+// Check if node exists by given key.
 func (vec *Vector) Exists(key string) bool {
 	n := vec.Root()
 	return n.Exists(key)
 }
 
+// Get node from the nodes array.
 func (vec *Vector) GetNode(depth int) (node *Node) {
 	if vec.nodeL < len(vec.nodes) {
 		node = &vec.nodes[vec.nodeL]
@@ -101,24 +128,29 @@ func (vec *Vector) GetNode(depth int) (node *Node) {
 	return
 }
 
+// Get node and set type at once.
 func (vec *Vector) GetNodeWT(depth int, typ Type) *Node {
 	node := vec.GetNode(depth)
 	node.typ = typ
 	return node
 }
 
+// Return node back to the array.
 func (vec *Vector) PutNode(idx int, node *Node) {
 	vec.nodes[idx] = *node
 }
 
+// Set error offset.
 func (vec *Vector) SetErrOffset(offset int) {
 	vec.errOff = offset
 }
 
+// Get last error offset.
 func (vec *Vector) ErrorOffset() int {
 	return vec.errOff
 }
 
+// Reset vector data.
 func (vec *Vector) Reset() {
 	if vec.nodeL == 0 {
 		return
@@ -133,6 +165,7 @@ func (vec *Vector) Reset() {
 	vec.Index.reset()
 }
 
+// Return self pointer of the vector.
 func (vec *Vector) ptr() uintptr {
 	if vec.selfPtr == 0 {
 		vec.selfPtr = uintptr(unsafe.Pointer(vec))
