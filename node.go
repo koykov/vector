@@ -7,6 +7,7 @@ import (
 	"github.com/koykov/bytealg"
 )
 
+// Node type.
 type Type int
 
 const (
@@ -20,43 +21,56 @@ const (
 	TypeAttr
 )
 
+// Node object.
 type Node struct {
-	typ      Type
+	// Node type.
+	typ Type
+	// Key/value byteptr objects.
 	key, val Byteptr
-
+	// Node depth in a index tree, offset in index row and limit of childs in index row.
 	depth, offset, limit int
-
+	// Raw pointer to vector.
+	// It's safe to using uintptr here because vector guaranteed to exist while the node is alive and isn't a garbage
+	// collected.
 	vecPtr uintptr
 }
 
 var (
+	// Null node instance. Will return for empty results.
 	nullNode = &Node{typ: TypeNull}
 )
 
+// Set type of the node.
 func (n *Node) SetType(typ Type) {
 	n.typ = typ
 }
 
+// Get node type.
 func (n *Node) Type() Type {
 	return n.typ
 }
 
+// Get node depth in index tree.
 func (n *Node) Depth() int {
 	return n.depth
 }
 
+// Set offset in the index row.
 func (n *Node) SetOffset(offset int) {
 	n.offset = offset
 }
 
+// Get offset of childs in the index row.
 func (n *Node) Offset() int {
 	return n.offset
 }
 
+// Set limit of childs in index row.
 func (n *Node) SetLimit(limit int) {
 	n.limit = limit
 }
 
+// Get limit of childs in index row.
 func (n *Node) Limit() int {
 	if n.limit != n.offset && n.limit >= n.offset {
 		return n.limit - n.offset
@@ -66,6 +80,7 @@ func (n *Node) Limit() int {
 	return 1
 }
 
+// Check if given key exists in the node.
 func (n *Node) Exists(key string) bool {
 	if n.typ != TypeObj {
 		return false
@@ -84,6 +99,7 @@ func (n *Node) Exists(key string) bool {
 	return false
 }
 
+// Check node is object and return it.
 func (n *Node) Object() *Node {
 	if n.typ != TypeObj {
 		return nullNode
@@ -91,6 +107,7 @@ func (n *Node) Object() *Node {
 	return n
 }
 
+// Check node is array and return it.
 func (n *Node) Array() *Node {
 	if n.typ != TypeArr {
 		return nullNode
@@ -98,10 +115,12 @@ func (n *Node) Array() *Node {
 	return n
 }
 
+// Get key as byteptr object.
 func (n *Node) Key() *Byteptr {
 	return &n.key
 }
 
+// Get key as bytes.
 func (n *Node) KeyBytes() []byte {
 	if n.key.Offset() != 0 && n.key.Limit() > 0 {
 		return n.key.RawBytes()
@@ -109,6 +128,7 @@ func (n *Node) KeyBytes() []byte {
 	return nil
 }
 
+// Get key as string.
 func (n *Node) KeyString() string {
 	if n.key.Offset() != 0 && n.key.Limit() > 0 {
 		return n.key.String()
@@ -116,10 +136,14 @@ func (n *Node) KeyString() string {
 	return ""
 }
 
+// Get value as byteptr object.
 func (n *Node) Value() *Byteptr {
 	return &n.val
 }
 
+// Get value as bytes.
+//
+// Allow only for [string, number, bool, attribute] types.
 func (n *Node) Bytes() []byte {
 	if n.typ != TypeStr && n.typ != TypeNum && n.typ != TypeBool && n.typ != TypeAttr {
 		return nil
@@ -127,14 +151,19 @@ func (n *Node) Bytes() []byte {
 	return n.val.Bytes()
 }
 
+// Get value as bytes independent of the type.
 func (n *Node) ForceBytes() []byte {
 	return n.val.Bytes()
 }
 
+// Get value as bytes without implement any conversion logic.
 func (n *Node) RawBytes() []byte {
-	return n.val.Bytes()
+	return n.val.RawBytes()
 }
 
+// Get value as string.
+//
+// Allow only for [string, number, bool, attribute] types.
 func (n *Node) String() string {
 	if n.typ != TypeStr && n.typ != TypeNum && n.typ != TypeBool && n.typ != TypeAttr {
 		return ""
@@ -142,10 +171,12 @@ func (n *Node) String() string {
 	return n.val.String()
 }
 
+// Get value as string independent of the type.
 func (n *Node) ForceString() string {
 	return n.val.String()
 }
 
+// Get value as boolean.
 func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
@@ -153,6 +184,7 @@ func (n *Node) Bool() bool {
 	return bytealg.ToLowerStr(n.val.String()) == "true"
 }
 
+// Get value as float number.
 func (n *Node) Float() (float64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -164,6 +196,7 @@ func (n *Node) Float() (float64, error) {
 	return f, nil
 }
 
+// Get value as integer.
 func (n *Node) Int() (int64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -175,6 +208,7 @@ func (n *Node) Int() (int64, error) {
 	return i, nil
 }
 
+// Get value as unsigned integer.
 func (n *Node) Uint() (uint64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -186,6 +220,7 @@ func (n *Node) Uint() (uint64, error) {
 	return u, nil
 }
 
+// Apply custom function to each child of the node.
 func (n *Node) Each(fn func(idx int, node *Node)) {
 	idx := n.childs()
 	vec := n.indirectVector()
@@ -193,6 +228,7 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 		return
 	}
 	c := 0
+	_ = idx[len(idx)-1]
 	for _, i := range idx {
 		cn := &vec.nodes[i]
 		fn(c, cn)
@@ -200,15 +236,19 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+// Look for the child node by given key.
+//
+// May be used only for object nodes.
 func (n *Node) Look(key string) *Node {
 	if n.typ != TypeObj {
 		return nullNode
 	}
+	ci := n.childs()
 	vec := n.indirectVector()
-	if vec == nil {
+	if len(ci) == 0 || vec == nil {
 		return nullNode
 	}
-	ci := n.childs()
+	_ = ci[len(ci)-1]
 	for _, i := range ci {
 		c := &vec.nodes[i]
 		if key == c.key.String() {
@@ -218,15 +258,18 @@ func (n *Node) Look(key string) *Node {
 	return nullNode
 }
 
+// Get node from array at position idx.
+//
+// May be used only for array nodes.
 func (n *Node) At(idx int) *Node {
 	if n.typ != TypeArr {
 		return nullNode
 	}
+	ci := n.childs()
 	vec := n.indirectVector()
-	if vec == nil {
+	if len(ci) == 0 || vec == nil {
 		return nullNode
 	}
-	ci := n.childs()
 	h := -1
 	for _, i := range ci {
 		if i == idx {
@@ -240,6 +283,7 @@ func (n *Node) At(idx int) *Node {
 	return nil
 }
 
+// Reset the node.
 func (n *Node) Reset() {
 	n.typ = TypeUnk
 	n.key.Reset()
@@ -247,6 +291,7 @@ func (n *Node) Reset() {
 	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, 0
 }
 
+// Get list of childs.
 func (n *Node) childs() []int {
 	if vec := n.indirectVector(); vec != nil {
 		var e = n.limit
@@ -258,6 +303,9 @@ func (n *Node) childs() []int {
 	return nil
 }
 
+// Restore the entire object from the unsafe pointer.
+//
+// This needs to reduce pointers count and avoids redundant GC checks.
 func (n *Node) indirectVector() *Vector {
 	if n.vecPtr == 0 {
 		return nil
