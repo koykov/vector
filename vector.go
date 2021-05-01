@@ -113,7 +113,30 @@ func (vec *Vector) Exists(key string) bool {
 }
 
 // Get node from the nodes array.
-func (vec *Vector) GetNode(depth int) (node *Node) {
+func (vec *Vector) GetNode(depth int) (node *Node, idx int) {
+	node, idx = vec.getNode(depth)
+	vec.Index.Register(depth, idx)
+	return
+}
+
+// Get node and set type at once.
+func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
+	node, idx := vec.GetNode(depth)
+	node.typ = typ
+	return node, idx
+}
+
+// Get node and register it as a child of root node.
+func (vec *Vector) GetChildOf(root *Node, depth int) (*Node, int) {
+	node, idx := vec.getNode(depth)
+	root.SetLimit(vec.Index.Register(depth, idx))
+	return node, idx
+}
+
+// Generic node getter.
+//
+// Returns new node and its index in the nodes array.
+func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	if vec.nodeL < len(vec.nodes) {
 		node = &vec.nodes[vec.nodeL]
 		node.Reset()
@@ -125,14 +148,8 @@ func (vec *Vector) GetNode(depth int) (node *Node) {
 	}
 	node.vecPtr, node.depth = vec.ptr(), depth
 	node.key.vecPtr, node.val.vecPtr = node.vecPtr, node.vecPtr
+	idx = vec.Len() - 1
 	return
-}
-
-// Get node and set type at once.
-func (vec *Vector) GetNodeWT(depth int, typ Type) *Node {
-	node := vec.GetNode(depth)
-	node.typ = typ
-	return node
 }
 
 // Return node back to the array.
