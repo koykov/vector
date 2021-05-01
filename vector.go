@@ -127,8 +127,16 @@ func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
 }
 
 // Get node and register it as a child of root node.
-func (vec *Vector) GetChildOf(root *Node, depth int) (*Node, int) {
+func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
 	node, idx := vec.getNode(depth)
+	root.SetLimit(vec.Index.Register(depth, idx))
+	return node, idx
+}
+
+// Get node,  register it as a child of root node and set type at once.
+func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
+	node, idx := vec.getNode(depth)
+	node.typ = typ
 	root.SetLimit(vec.Index.Register(depth, idx))
 	return node, idx
 }
