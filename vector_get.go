@@ -32,6 +32,14 @@ func (vec *Vector) Get(keys ...string) *Node {
 	return node
 }
 
+// Get node by known index in nodes array.
+func (vec *Vector) GetByIdx(idx int) *Node {
+	if idx < vec.Len() {
+		return &vec.nodes[idx]
+	}
+	return nullNode
+}
+
 // Look and get object by given keys.
 func (vec *Vector) GetObject(keys ...string) *Node {
 	node := vec.Get(keys...)
