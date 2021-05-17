@@ -148,15 +148,15 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	if vec.nodeL < len(vec.nodes) {
 		node = &vec.nodes[vec.nodeL]
 		node.Reset()
-		vec.nodeL++
 	} else {
 		node = &Node{typ: TypeUnk}
 		vec.nodes = append(vec.nodes, *node)
-		vec.nodeL++
 	}
+	vec.nodeL++
 	node.vecPtr, node.depth = vec.ptr(), depth
 	node.key.vecPtr, node.val.vecPtr = node.vecPtr, node.vecPtr
 	idx = vec.Len() - 1
+	node.idx = idx
 	return
 }
 

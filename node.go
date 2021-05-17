@@ -27,8 +27,8 @@ type Node struct {
 	typ Type
 	// Key/value byteptr objects.
 	key, val Byteptr
-	// Node depth in a index tree, offset in index row and limit of childs in index row.
-	depth, offset, limit int
+	// Node index in array, depth in a index tree, offset in index row and limit of childs in index row.
+	idx, depth, offset, limit int
 	// Raw pointer to vector.
 	// It's safe to using uintptr here because vector guaranteed to exist while the node is alive and isn't a garbage
 	// collected.
@@ -48,6 +48,11 @@ func (n *Node) SetType(typ Type) {
 // Get node type.
 func (n *Node) Type() Type {
 	return n.typ
+}
+
+// Get node index in the array of nodes.
+func (n *Node) Index() int {
+	return n.idx
 }
 
 // Get node depth in index tree.
