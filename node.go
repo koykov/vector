@@ -96,7 +96,7 @@ func (n *Node) Exists(key string) bool {
 	}
 	for i := n.offset; i < n.limit; i++ {
 		k := vec.Index.val(n.depth+1, i)
-		c := vec.nodes[k]
+		c := &vec.nodes[k]
 		if c.key.String() == key {
 			return true
 		}
