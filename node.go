@@ -272,20 +272,10 @@ func (n *Node) At(idx int) *Node {
 	}
 	ci := n.childs()
 	vec := n.indirectVector()
-	if len(ci) == 0 || vec == nil {
+	if len(ci) == 0 || len(ci) <= idx || ci[idx] == 0 || vec == nil {
 		return nullNode
 	}
-	h := -1
-	for _, i := range ci {
-		if i == idx {
-			h = i
-			break
-		}
-	}
-	if h >= 0 {
-		return &vec.nodes[h]
-	}
-	return nil
+	return &vec.nodes[ci[idx]]
 }
 
 // Reset the node.
