@@ -283,7 +283,7 @@ func (n *Node) Reset() {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
-	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, unsafe.Pointer(uintptr(0))
+	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, nilPtr
 }
 
 // Get list of childs.
