@@ -16,7 +16,7 @@ type Vector struct {
 	buf   []byte
 	bufSS []string
 	// Self pointer.
-	selfPtr uintptr
+	selfPtr unsafe.Pointer
 	// List of nodes and length of it.
 	nodes []Node
 	nodeL int
@@ -182,7 +182,7 @@ func (vec *Vector) Reset() {
 	}
 	_ = vec.nodes[vec.nodeL-1]
 	for i := 0; i < vec.nodeL; i++ {
-		vec.nodes[i].vecPtr = 0
+		vec.nodes[i].vecPtr = nilPtr
 	}
 	vec.buf, vec.src = vec.buf[:0], nil
 	vec.bufSS = vec.bufSS[:0]
@@ -191,9 +191,9 @@ func (vec *Vector) Reset() {
 }
 
 // Return self pointer of the vector.
-func (vec *Vector) ptr() uintptr {
-	if vec.selfPtr == 0 {
-		vec.selfPtr = uintptr(unsafe.Pointer(vec))
+func (vec *Vector) ptr() unsafe.Pointer {
+	if uintptr(vec.selfPtr) == 0 {
+		vec.selfPtr = unsafe.Pointer(vec)
 	}
 	return vec.selfPtr
 }

@@ -32,7 +32,7 @@ type Node struct {
 	// Raw pointer to vector.
 	// It's safe to using uintptr here because vector guaranteed to exist while the node is alive and isn't a garbage
 	// collected.
-	vecPtr uintptr
+	vecPtr unsafe.Pointer
 }
 
 var (
@@ -283,7 +283,7 @@ func (n *Node) Reset() {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
-	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, 0
+	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, unsafe.Pointer(uintptr(0))
 }
 
 // Get list of childs.
@@ -302,8 +302,8 @@ func (n *Node) childs() []int {
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
 func (n *Node) indirectVector() *Vector {
-	if n.vecPtr == 0 {
+	if uintptr(n.vecPtr) == 0 {
 		return nil
 	}
-	return (*Vector)(unsafe.Pointer(n.vecPtr))
+	return (*Vector)(n.vecPtr)
 }

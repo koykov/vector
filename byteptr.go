@@ -19,8 +19,12 @@ type Byteptr struct {
 	// Escape flag.
 	flagEsc bool
 	// Vector raw pointer.
-	vecPtr uintptr
+	vecPtr unsafe.Pointer
 }
+
+var (
+	nilPtr unsafe.Pointer
+)
 
 // Convert byteptr object to bytes slice and implements vector's helper logic over it.
 func (p *Byteptr) Bytes() []byte {
@@ -61,15 +65,15 @@ func (p *Byteptr) GetFlag(flag Flag) bool {
 func (p *Byteptr) Reset() {
 	p.Byteptr.Reset()
 	p.flagEsc = false
-	p.vecPtr = 0
+	p.vecPtr = nilPtr
 }
 
 // Restore the entire object from the unsafe pointer.
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
 func (p *Byteptr) indirectVector() *Vector {
-	if p.vecPtr == 0 {
+	if uintptr(p.vecPtr) == 0 {
 		return nil
 	}
-	return (*Vector)(unsafe.Pointer(p.vecPtr))
+	return (*Vector)(p.vecPtr)
 }
