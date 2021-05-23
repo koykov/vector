@@ -3,7 +3,7 @@ package vector
 import (
 	"unsafe"
 
-	"github.com/koykov/bytealg"
+	"github.com/koykov/byteptr"
 	"github.com/koykov/fastconv"
 )
 
@@ -13,9 +13,9 @@ const (
 	FlagEscape Flag = iota
 )
 
-// Vector implementation of bytealg.Byteptr object.
+// Vector implementation of byteptr.Byteptr object.
 type Byteptr struct {
-	bytealg.Byteptr
+	byteptr.Byteptr
 	// Escape flag.
 	flagEsc bool
 	// Vector raw pointer.
