@@ -127,18 +127,12 @@ func (n *Node) Key() *Byteptr {
 
 // Get key as bytes.
 func (n *Node) KeyBytes() []byte {
-	if n.key.Offset() != 0 && n.key.Limit() > 0 {
-		return n.key.RawBytes()
-	}
-	return nil
+	return n.key.RawBytes()
 }
 
 // Get key as string.
 func (n *Node) KeyString() string {
-	if n.key.Offset() != 0 && n.key.Limit() > 0 {
-		return n.key.String()
-	}
-	return ""
+	return n.key.String()
 }
 
 // Get value as byteptr object.
