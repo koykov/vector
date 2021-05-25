@@ -7,17 +7,10 @@ import (
 	"github.com/koykov/fastconv"
 )
 
-type Flag int
-
-const (
-	FlagEscape Flag = iota
-)
-
 // Vector implementation of byteptr.Byteptr object.
 type Byteptr struct {
 	byteptr.Byteptr
-	// Escape flag.
-	flagEsc bool
+	Flags
 	// Vector raw pointer.
 	vecPtr unsafe.Pointer
 }
@@ -44,27 +37,10 @@ func (p *Byteptr) RawBytes() []byte {
 	return p.Byteptr.Bytes()
 }
 
-// Set flag.
-func (p *Byteptr) SetFlag(flag Flag, value bool) {
-	switch flag {
-	case FlagEscape:
-		p.flagEsc = value
-	}
-}
-
-// Get flag.
-func (p *Byteptr) GetFlag(flag Flag) bool {
-	switch flag {
-	case FlagEscape:
-		return p.flagEsc
-	}
-	return false
-}
-
 // Reset byteptr object.
 func (p *Byteptr) Reset() {
 	p.Byteptr.Reset()
-	p.flagEsc = false
+	p.Flags.Reset()
 	p.vecPtr = nilPtr
 }
 

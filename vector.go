@@ -8,6 +8,7 @@ import (
 
 // Vector parser object.
 type Vector struct {
+	Flags
 	// Source data to parse.
 	src []byte
 	// Source data pointer.
@@ -188,6 +189,7 @@ func (vec *Vector) Reset() {
 	vec.bufSS = vec.bufSS[:0]
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.Index.reset()
+	vec.Flags.Reset()
 }
 
 // Return self pointer of the vector.
