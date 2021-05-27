@@ -3,6 +3,7 @@ package vector
 import (
 	"unsafe"
 
+	"github.com/koykov/bitset"
 	"github.com/koykov/byteptr"
 	"github.com/koykov/fastconv"
 )
@@ -10,7 +11,7 @@ import (
 // Vector implementation of byteptr.Byteptr object.
 type Byteptr struct {
 	byteptr.Byteptr
-	Flags
+	bitset.Bitset
 	// Vector raw pointer.
 	vecPtr unsafe.Pointer
 }
@@ -40,7 +41,7 @@ func (p *Byteptr) RawBytes() []byte {
 // Reset byteptr object.
 func (p *Byteptr) Reset() {
 	p.Byteptr.Reset()
-	p.Flags.Reset()
+	p.Bitset.Reset()
 	p.vecPtr = nilPtr
 }
 
