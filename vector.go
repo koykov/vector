@@ -200,7 +200,7 @@ func (vec *Vector) Reset() {
 	}
 	_ = vec.nodes[vec.nodeL-1]
 	for i := 0; i < vec.nodeL; i++ {
-		vec.nodes[i].vecPtr = nilPtr
+		vec.nodes[i].Reset()
 	}
 	vec.buf, vec.src = vec.buf[:0], nil
 	vec.bufSS = vec.bufSS[:0]
