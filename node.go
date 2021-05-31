@@ -61,8 +61,9 @@ func (n *Node) Depth() int {
 }
 
 // Set offset in the index row.
-func (n *Node) SetOffset(offset int) {
+func (n *Node) SetOffset(offset int) *Node {
 	n.offset = offset
+	return n
 }
 
 // Get offset of childs in the index row.
@@ -71,8 +72,9 @@ func (n *Node) Offset() int {
 }
 
 // Set limit of childs in index row.
-func (n *Node) SetLimit(limit int) {
+func (n *Node) SetLimit(limit int) *Node {
 	n.limit = limit
+	return n
 }
 
 // Get limit of childs in index row.
@@ -273,11 +275,12 @@ func (n *Node) At(idx int) *Node {
 }
 
 // Reset the node.
-func (n *Node) Reset() {
+func (n *Node) Reset() *Node {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
 	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, nilPtr
+	return n
 }
 
 // Get list of childs.
