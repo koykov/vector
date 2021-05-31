@@ -209,6 +209,17 @@ func (vec *Vector) Reset() {
 	vec.Bitset.Reset()
 }
 
+// Forget nodes from given position to the end of the array.
+func (vec *Vector) ForgetFrom(idx int) {
+	if idx >= vec.nodeL {
+		return
+	}
+	for i := idx; i < vec.nodeL; i++ {
+		vec.nodes[i].Reset()
+	}
+	vec.nodeL = idx
+}
+
 // Return self pointer of the vector.
 func (vec *Vector) ptr() unsafe.Pointer {
 	if uintptr(vec.selfPtr) == 0 {
