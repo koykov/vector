@@ -283,6 +283,12 @@ func (n *Node) Reset() *Node {
 	return n
 }
 
+func (n *Node) ResetIndex() {
+	vec := n.indirectVector()
+	vec.Index.forget(n.depth, n.offset, n.limit)
+	n.limit = 0
+}
+
 // Get list of childs.
 func (n *Node) childs() []int {
 	if vec := n.indirectVector(); vec != nil {

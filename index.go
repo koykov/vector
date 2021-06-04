@@ -52,3 +52,17 @@ func (idx *Index) reset() {
 	}
 	idx.depth = 0
 }
+
+func (idx *Index) forget(depth, offset, limit int) {
+	if depth >= len(idx.tree) || limit == 0 {
+		return
+	}
+	if len(idx.tree[depth]) > offset {
+		idx.tree[depth] = idx.tree[depth][:offset]
+	}
+	if depth+1 < len(idx.tree) {
+		for i := depth + 1; i < len(idx.tree); i++ {
+			idx.tree[i] = idx.tree[i][:0]
+		}
+	}
+}
