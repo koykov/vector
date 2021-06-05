@@ -31,6 +31,21 @@ func (idx *Index) Len(depth int) int {
 	return len(idx.tree[depth])
 }
 
+// Reset rest of the index starting of given depth and offset in the tree.
+func (idx *Index) Reset(depth, offset int) {
+	if depth >= len(idx.tree) {
+		return
+	}
+	if len(idx.tree[depth]) > offset {
+		idx.tree[depth] = idx.tree[depth][:offset]
+	}
+	if depth+1 < len(idx.tree) {
+		for i := depth + 1; i < len(idx.tree); i++ {
+			idx.tree[i] = idx.tree[i][:0]
+		}
+	}
+}
+
 // Get subset [s:e] of index row registered on depth.
 func (idx *Index) get(depth, s, e int) []int {
 	l := idx.Len(depth)
@@ -51,18 +66,4 @@ func (idx *Index) reset() {
 		idx.tree[i] = idx.tree[i][:0]
 	}
 	idx.depth = 0
-}
-
-func (idx *Index) forget(depth, offset, limit int) {
-	if depth >= len(idx.tree) || limit == 0 {
-		return
-	}
-	if len(idx.tree[depth]) > offset {
-		idx.tree[depth] = idx.tree[depth][:offset]
-	}
-	if depth+1 < len(idx.tree) {
-		for i := depth + 1; i < len(idx.tree); i++ {
-			idx.tree[i] = idx.tree[i][:0]
-		}
-	}
 }
