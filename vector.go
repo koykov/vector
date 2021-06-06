@@ -104,21 +104,6 @@ func (vec *Vector) SrcAddr() uint64 {
 	return vec.addr
 }
 
-// Get length of buffer.
-func (vec *Vector) BufLen() int {
-	return len(vec.buf)
-}
-
-// Get raw buffer bytes.
-func (vec *Vector) Buf() []byte {
-	return vec.buf
-}
-
-// Append bytes to the buffer.
-func (vec *Vector) BufAppend(s []byte) {
-	vec.buf = append(vec.buf, s...)
-}
-
 // Get root node.
 func (vec *Vector) Root() *Node {
 	return vec.Get()
