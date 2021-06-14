@@ -31,12 +31,6 @@ type Vector struct {
 	Helper Helper
 }
 
-// Helper object interface.
-type Helper interface {
-	// Convert byteptr to byte slice and apply custom logic.
-	ConvertByteptr(*Byteptr) []byte
-}
-
 // Parse source bytes.
 func (vec *Vector) Parse(_ []byte) error {
 	return ErrNotImplement
