@@ -162,14 +162,6 @@ func (vec *Vector) PutNode(idx int, node *Node) {
 	vec.nodes[idx] = *node
 }
 
-// Get nodes from array between given offset and limit.
-func (vec *Vector) Range(offset, limit int) []Node {
-	if limit < offset || vec.nodeL < limit {
-		return nil
-	}
-	return vec.nodes[offset:limit]
-}
-
 // Set error offset.
 func (vec *Vector) SetErrOffset(offset int) {
 	vec.errOff = offset

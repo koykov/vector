@@ -223,7 +223,7 @@ func (n *Node) Uint() (uint64, error) {
 
 // Apply custom function to each child of the node.
 func (n *Node) Each(fn func(idx int, node *Node)) {
-	idx := n.childs()
+	idx := n.childrenIdx()
 	vec := n.indirectVector()
 	if len(idx) == 0 || vec == nil {
 		return
@@ -244,7 +244,7 @@ func (n *Node) Look(key string) *Node {
 	if n.typ != TypeObj {
 		return nullNode
 	}
-	ci := n.childs()
+	ci := n.childrenIdx()
 	vec := n.indirectVector()
 	if len(ci) == 0 || vec == nil {
 		return nullNode
@@ -266,7 +266,7 @@ func (n *Node) At(idx int) *Node {
 	if n.typ != TypeArr {
 		return nullNode
 	}
-	ci := n.childs()
+	ci := n.childrenIdx()
 	vec := n.indirectVector()
 	if len(ci) == 0 || len(ci) <= idx || ci[idx] == 0 || vec == nil {
 		return nullNode
@@ -283,14 +283,24 @@ func (n *Node) Reset() *Node {
 	return n
 }
 
-// Get list of childs.
-func (n *Node) childs() []int {
+// Get list of children indexes.
+func (n *Node) childrenIdx() []int {
 	if vec := n.indirectVector(); vec != nil {
-		var e = n.limit
-		if e == 0 {
-			e = n.offset + 1
+		var limit = n.limit
+		if limit == 0 {
+			limit = n.offset + 1
 		}
-		return vec.Index.get(n.depth+1, n.offset, e)
+		return vec.Index.get(n.depth+1, n.offset, limit)
+	}
+	return nil
+}
+
+// Get list of children nodes.
+func (n *Node) Children() []Node {
+	if ci := n.childrenIdx(); len(ci) > 0 {
+		if vec := n.indirectVector(); vec != nil {
+			return vec.nodes[ci[0]:ci[len(ci)-1]]
+		}
 	}
 	return nil
 }
