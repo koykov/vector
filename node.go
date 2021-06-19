@@ -308,6 +308,17 @@ func (n *Node) Children() []Node {
 	return nil
 }
 
+// Swap node with another given node in the nodes array.
+func (n *Node) SwapWith(node *Node) {
+	if vec := n.indirectVector(); vec != nil {
+		i, j := n.idx, node.idx
+		if i < vec.nodeL && j < vec.nodeL {
+			vec.nodes[i].idx, vec.nodes[j].idx = j, i
+			vec.nodes[i], vec.nodes[j] = vec.nodes[j], vec.nodes[i]
+		}
+	}
+}
+
 // Restore the entire object from the unsafe pointer.
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
