@@ -299,7 +299,10 @@ func (n *Node) childrenIdx() []int {
 func (n *Node) Children() []Node {
 	if ci := n.childrenIdx(); len(ci) > 0 {
 		if vec := n.indirectVector(); vec != nil {
-			return vec.nodes[ci[0]:ci[len(ci)-1]]
+			offset, limit := ci[0], ci[len(ci)-1]+1
+			if limit >= offset && limit < vec.nodeL {
+				return vec.nodes[offset:limit]
+			}
 		}
 	}
 	return nil
