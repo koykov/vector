@@ -23,7 +23,7 @@ var (
 // Convert byteptr object to bytes slice and implements vector's helper logic over it.
 func (p *Byteptr) Bytes() []byte {
 	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
-		return vec.Helper.ConvertByteptr(p)
+		return vec.Helper.Indirect(p)
 	}
 	return p.RawBytes()
 }
