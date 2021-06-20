@@ -22,6 +22,11 @@ func (vec *Vector) BufAppendStr(s string) {
 	vec.buf = append(vec.buf, s...)
 }
 
+// Append single byte to the buffer.
+func (vec *Vector) BufAppendByte(b byte) {
+	vec.buf = append(vec.buf, b)
+}
+
 // Append int to the buffer.
 func (vec *Vector) BufAppendInt(i int64) {
 	vec.buf = strconv.AppendInt(vec.buf, i, 10)
