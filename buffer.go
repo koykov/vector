@@ -12,6 +12,11 @@ func (vec *Vector) Buf() []byte {
 	return vec.buf
 }
 
+// Replace buffer with b.
+func (vec *Vector) BufUpdateWith(b []byte) {
+	vec.buf = b
+}
+
 // Append bytes to the buffer.
 func (vec *Vector) BufAppend(s []byte) {
 	vec.buf = append(vec.buf, s...)
