@@ -249,8 +249,8 @@ func (vec *Vector) getObj(root *Node, keys ...string) *Node {
 	var node *Node
 	for i := root.offset; i < root.limit; i++ {
 		k := vec.Index.val(root.depth+1, i)
-		node = &vec.nodes[k]
-		if node.key.String() == keys[0] {
+		if vec.nodes[k].key.String() == keys[0] {
+			node = &vec.nodes[k]
 			break
 		}
 	}
