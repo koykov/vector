@@ -19,7 +19,7 @@ type Vector struct {
 	buf   []byte
 	bufSS []string
 	// Self pointer.
-	selfPtr unsafe.Pointer
+	selfPtr uintptr
 	// List of nodes and length of it.
 	nodes []Node
 	nodeL int
@@ -199,10 +199,22 @@ func (vec *Vector) ForgetFrom(idx int) {
 	vec.nodeL = idx
 }
 
+// KeepPtr guarantees that vector object wouldn't be collected by GC.
+//
+// Typically vector objects uses together with pools and and GC doesn't collect them. But for cases like
+// vec := &Vector{...}
+// node := vec.Get("foo", "bar")
+// <- here GC may collect vec
+// fmt.Println(node.String()) <- invalid operation due to vec already has been collected
+// vec.KeepPtr() <- just call me to avoid that trouble
+func (vec *Vector) KeepPtr() {
+	_ = vec.ptr()
+}
+
 // Return self pointer of the vector.
-func (vec *Vector) ptr() unsafe.Pointer {
-	if uintptr(vec.selfPtr) == 0 {
-		vec.selfPtr = unsafe.Pointer(vec)
+func (vec *Vector) ptr() uintptr {
+	if vec.selfPtr == 0 {
+		vec.selfPtr = uintptr(unsafe.Pointer(vec))
 	}
 	return vec.selfPtr
 }

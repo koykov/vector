@@ -32,7 +32,7 @@ type Node struct {
 	// Raw pointer to vector.
 	// It's safe to using uintptr here because vector guaranteed to exist while the node is alive and isn't a garbage
 	// collected.
-	vecPtr unsafe.Pointer
+	vecPtr uintptr
 }
 
 var (
@@ -279,7 +279,7 @@ func (n *Node) Reset() *Node {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
-	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, nilPtr
+	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, 0
 	return n
 }
 
@@ -323,8 +323,8 @@ func (n *Node) SwapWith(node *Node) {
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
 func (n *Node) indirectVector() *Vector {
-	if uintptr(n.vecPtr) == 0 {
+	if n.vecPtr == 0 {
 		return nil
 	}
-	return (*Vector)(n.vecPtr)
+	return (*Vector)(unsafe.Pointer(n.vecPtr))
 }
