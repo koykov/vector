@@ -41,6 +41,8 @@ type Interface interface {
 	DotInt(string) (int64, error)
 	DotUint(string) (uint64, error)
 
+	KeepPtr()
+
 	ErrorOffset() int
 	Reset()
 }
