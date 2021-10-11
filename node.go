@@ -2,7 +2,6 @@ package vector
 
 import (
 	"strconv"
-	"unsafe"
 
 	"github.com/koykov/bytealg"
 )
@@ -326,5 +325,5 @@ func (n *Node) indirectVector() *Vector {
 	if n.vecPtr == 0 {
 		return nil
 	}
-	return (*Vector)(unsafe.Pointer(n.vecPtr))
+	return indirectVector1(n.vecPtr)
 }

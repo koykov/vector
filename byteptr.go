@@ -1,8 +1,6 @@
 package vector
 
 import (
-	"unsafe"
-
 	"github.com/koykov/bitset"
 	"github.com/koykov/byteptr"
 	"github.com/koykov/fastconv"
@@ -48,5 +46,5 @@ func (p *Byteptr) indirectVector() *Vector {
 	if p.vecPtr == 0 {
 		return nil
 	}
-	return (*Vector)(unsafe.Pointer(p.vecPtr))
+	return indirectVector1(p.vecPtr)
 }
