@@ -224,6 +224,7 @@ func (vec *Vector) ptr() uintptr {
 // Split path by given separator.
 //
 // Caution! Don't user "@" as a separator, it will break work with attributes.
+// TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
 	ti := len(vec.bufSS) - 1
@@ -233,7 +234,9 @@ func (vec *Vector) splitPath(path, separator string) {
 	tail := vec.bufSS[ti]
 	if p := strings.IndexByte(tail, '@'); p != -1 {
 		if p > 0 {
-			vec.bufSS = append(vec.bufSS, tail[p+1:])
+			if len(tail[p:]) > 1 {
+				vec.bufSS = append(vec.bufSS, tail[p:])
+			}
 			vec.bufSS[ti] = vec.bufSS[ti][:p]
 		} else {
 			vec.bufSS[ti] = vec.bufSS[ti][1:]
