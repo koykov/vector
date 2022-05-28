@@ -22,7 +22,7 @@ func (n *Node) Get(keys ...string) *Node {
 		for i := n.offset; i < n.limit; i++ {
 			idx := vec.Index.val(n.depth+1, i)
 			child := &vec.nodes[idx]
-			if child.key.String() == keys[0] {
+			if child.keyEqual(keys[0]) {
 				if len(keys[1:]) == 0 {
 					return child
 				} else {
@@ -139,12 +139,12 @@ func (n *Node) GetPS(path, separator string) *Node {
 }
 
 // Look and get child object by given path and separator.
-func (n *Node) GetObjectPS(path, sep string) *Node {
+func (n *Node) GetObjectPS(path, separator string) *Node {
 	vec := n.indirectVector()
 	if vec == nil {
 		return nullNode
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.Type() != TypeObj {
 		return nullNode
@@ -153,12 +153,12 @@ func (n *Node) GetObjectPS(path, sep string) *Node {
 }
 
 // Look and get child array by given path and separator.
-func (n *Node) GetArrayPS(path, sep string) *Node {
+func (n *Node) GetArrayPS(path, separator string) *Node {
 	vec := n.indirectVector()
 	if vec == nil {
 		return nullNode
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.Type() != TypeArr {
 		return nullNode
@@ -167,12 +167,12 @@ func (n *Node) GetArrayPS(path, sep string) *Node {
 }
 
 // Look and get child bytes by given path and separator.
-func (n *Node) GetBytesPS(path, sep string) []byte {
+func (n *Node) GetBytesPS(path, separator string) []byte {
 	vec := n.indirectVector()
 	if vec == nil {
 		return nil
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.Type() != TypeStr {
 		return nil
@@ -181,12 +181,12 @@ func (n *Node) GetBytesPS(path, sep string) []byte {
 }
 
 // Look and get child string by given path and separator.
-func (n *Node) GetStringPS(path, sep string) string {
+func (n *Node) GetStringPS(path, separator string) string {
 	vec := n.indirectVector()
 	if vec == nil {
 		return ""
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.Type() != TypeStr {
 		return ""
@@ -195,12 +195,12 @@ func (n *Node) GetStringPS(path, sep string) string {
 }
 
 // Look and get child bool by given path and separator.
-func (n *Node) GetBoolPS(path, sep string) bool {
+func (n *Node) GetBoolPS(path, separator string) bool {
 	vec := n.indirectVector()
 	if vec == nil {
 		return false
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.Type() != TypeBool {
 		return false
@@ -209,12 +209,12 @@ func (n *Node) GetBoolPS(path, sep string) bool {
 }
 
 // Look and get child float by given path and separator.
-func (n *Node) GetFloatPS(path, sep string) (float64, error) {
+func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 	vec := n.indirectVector()
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
@@ -226,12 +226,12 @@ func (n *Node) GetFloatPS(path, sep string) (float64, error) {
 }
 
 // Look and get child integer by given path and separator.
-func (n *Node) GetIntPS(path, sep string) (int64, error) {
+func (n *Node) GetIntPS(path, separator string) (int64, error) {
 	vec := n.indirectVector()
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
@@ -243,12 +243,12 @@ func (n *Node) GetIntPS(path, sep string) (int64, error) {
 }
 
 // Look and get child unsigned int by given path and separator.
-func (n *Node) GetUintPS(path, sep string) (uint64, error) {
+func (n *Node) GetUintPS(path, separator string) (uint64, error) {
 	vec := n.indirectVector()
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, sep, -1)
+	vec.splitPath(path, separator)
 	node := n.Get(vec.bufSS...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound

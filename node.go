@@ -318,6 +318,17 @@ func (n *Node) SwapWith(node *Node) {
 	}
 }
 
+// Check key equality.
+//
+// Also check node type for keys with "@" prefix (must be TypeAttr).
+func (n *Node) keyEqual(key string) bool {
+	if key[0] == '@' {
+		key = key[1:]
+		return n.key.String() == key && n.typ == TypeAttr
+	}
+	return n.key.String() == key
+}
+
 // Restore the entire object from the unsafe pointer.
 //
 // This needs to reduce pointers count and avoids redundant GC checks.

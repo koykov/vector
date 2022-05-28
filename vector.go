@@ -3,9 +3,11 @@ package vector
 import (
 	"io"
 	"reflect"
+	"strings"
 	"unsafe"
 
 	"github.com/koykov/bitset"
+	"github.com/koykov/bytealg"
 )
 
 // Vector parser object.
@@ -217,4 +219,17 @@ func (vec *Vector) ptr() uintptr {
 		vec.selfPtr = uintptr(unsafe.Pointer(vec))
 	}
 	return vec.selfPtr
+}
+
+// Split path by given separator.
+//
+// Caution! Don't user "@" as a separator, it will break work with attributes.
+func (vec *Vector) splitPath(path, separator string) {
+	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	ti := len(vec.bufSS) - 1
+	tail := vec.bufSS[ti]
+	if p := strings.IndexByte(tail, '@'); p != -1 {
+		vec.bufSS = append(vec.bufSS, tail[p:])
+		vec.bufSS[ti] = vec.bufSS[ti][:p]
+	}
 }

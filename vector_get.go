@@ -2,8 +2,6 @@ package vector
 
 import (
 	"strconv"
-
-	"github.com/koykov/bytealg"
 )
 
 // Get node by given keys.
@@ -123,13 +121,13 @@ func (vec *Vector) GetUint(keys ...string) (uint64, error) {
 
 // Get node by given path and separator.
 func (vec *Vector) GetPS(path, separator string) *Node {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	return vec.Get(vec.bufSS...)
 }
 
 // Look and get object by given path and separator.
 func (vec *Vector) GetObjectPS(path, separator string) *Node {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() != TypeObj {
 		return nullNode
@@ -139,7 +137,7 @@ func (vec *Vector) GetObjectPS(path, separator string) *Node {
 
 // Look and get array by given path and separator.
 func (vec *Vector) GetArrayPS(path, separator string) *Node {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() != TypeArr {
 		return nullNode
@@ -149,7 +147,7 @@ func (vec *Vector) GetArrayPS(path, separator string) *Node {
 
 // Look and get bytes by given path and separator.
 func (vec *Vector) GetBytesPS(path, separator string) []byte {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() != TypeStr {
 		return nil
@@ -159,7 +157,7 @@ func (vec *Vector) GetBytesPS(path, separator string) []byte {
 
 // Look and get string by given path and separator.
 func (vec *Vector) GetStringPS(path, separator string) string {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() != TypeStr {
 		return ""
@@ -169,7 +167,7 @@ func (vec *Vector) GetStringPS(path, separator string) string {
 
 // Look and get bool by given path and separator.
 func (vec *Vector) GetBoolPS(path, separator string) bool {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() != TypeBool {
 		return false
@@ -179,7 +177,7 @@ func (vec *Vector) GetBoolPS(path, separator string) bool {
 
 // Look and get float by given path and separator.
 func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() == TypeUnk {
 		return 0, ErrNotFound
@@ -192,7 +190,7 @@ func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
 
 // Look and get integer by given path and separator.
 func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() == TypeUnk {
 		return 0, ErrNotFound
@@ -205,7 +203,7 @@ func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
 
 // Look and get unsigned integer by given path and separator.
 func (vec *Vector) GetUintPS(path, separator string) (uint64, error) {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
 	if node.Type() == TypeUnk {
 		return 0, ErrNotFound
