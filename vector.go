@@ -232,7 +232,11 @@ func (vec *Vector) splitPath(path, separator string) {
 	}
 	tail := vec.bufSS[ti]
 	if p := strings.IndexByte(tail, '@'); p != -1 {
-		vec.bufSS = append(vec.bufSS, tail[p:])
-		vec.bufSS[ti] = vec.bufSS[ti][:p]
+		if p > 0 {
+			vec.bufSS = append(vec.bufSS, tail[p+1:])
+			vec.bufSS[ti] = vec.bufSS[ti][:p]
+		} else {
+			vec.bufSS[ti] = vec.bufSS[ti][1:]
+		}
 	}
 }
