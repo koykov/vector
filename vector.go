@@ -238,8 +238,6 @@ func (vec *Vector) splitPath(path, separator string) {
 				vec.bufSS = append(vec.bufSS, tail[p:])
 			}
 			vec.bufSS[ti] = vec.bufSS[ti][:p]
-		} else {
-			vec.bufSS[ti] = vec.bufSS[ti][1:]
 		}
 	}
 }
