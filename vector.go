@@ -227,6 +227,9 @@ func (vec *Vector) ptr() uintptr {
 func (vec *Vector) splitPath(path, separator string) {
 	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
 	ti := len(vec.bufSS) - 1
+	if ti < 0 {
+		return
+	}
 	tail := vec.bufSS[ti]
 	if p := strings.IndexByte(tail, '@'); p != -1 {
 		vec.bufSS = append(vec.bufSS, tail[p:])
