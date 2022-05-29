@@ -326,7 +326,7 @@ func (n *Node) keyEqual(key string) bool {
 		key = key[1:]
 		return n.key.String() == key && n.typ == TypeAttr
 	}
-	return n.key.String() == key
+	return n.typ != TypeAttr && n.key.String() == key
 }
 
 // Restore the entire object from the unsafe pointer.
