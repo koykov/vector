@@ -2,6 +2,7 @@ package vector
 
 import (
 	"strconv"
+	"unsafe"
 
 	"github.com/koykov/bytealg"
 )
@@ -18,6 +19,8 @@ const (
 	TypeNum
 	TypeBool
 	TypeAttr
+
+	FlagGroup int = 0
 )
 
 // Node object.
@@ -28,10 +31,10 @@ type Node struct {
 	key, val Byteptr
 	// Node index in array, depth in a index tree, offset in index row and limit of childs in index row.
 	idx, depth, offset, limit int
-	// Raw pointer to vector.
-	// It's safe to using uintptr here because vector guaranteed to exist while the node is alive and isn't a garbage
+	// Raw pointers to vector and parent node.
+	// It's safe to usi uintptr here because vector guaranteed to exist while the node is alive and isn't garbage
 	// collected.
-	vecPtr uintptr
+	vptr, pptr uintptr
 }
 
 var (
@@ -222,7 +225,14 @@ func (n *Node) Uint() (uint64, error) {
 
 // Apply custom function to each child of the node.
 func (n *Node) Each(fn func(idx int, node *Node)) {
-	idx := n.childrenIdx()
+	var idx []int
+	if n.key.CheckBit(FlagGroup) {
+		if pn := n.indirectNode(); pn != nil {
+			idx = pn.childrenIdx()
+		}
+	} else {
+		idx = n.childrenIdx()
+	}
 	vec := n.indirectVector()
 	if len(idx) == 0 || vec == nil {
 		return
@@ -278,7 +288,7 @@ func (n *Node) Reset() *Node {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
-	n.depth, n.offset, n.limit, n.vecPtr = 0, 0, 0, 0
+	n.depth, n.offset, n.limit, n.vptr = 0, 0, 0, 0
 	return n
 }
 
@@ -329,12 +339,27 @@ func (n *Node) keyEqual(key string) bool {
 	return n.typ != TypeAttr && n.key.String() == key
 }
 
-// Restore the entire object from the unsafe pointer.
+// Return self pointer of the node.
+func (n *Node) ptr() uintptr {
+	return uintptr(unsafe.Pointer(n))
+}
+
+// Restore the entire vector object from the unsafe pointer.
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
 func (n *Node) indirectVector() *Vector {
-	if n.vecPtr == 0 {
+	if n.vptr == 0 {
 		return nil
 	}
-	return indirectVector1(n.vecPtr)
+	return indirectVector1(n.vptr)
+}
+
+// Restore the entire node object from the unsafe pointer.
+//
+// This needs to reduce pointers count and avoids redundant GC checks.
+func (n *Node) indirectNode() *Node {
+	if n.pptr == 0 {
+		return nil
+	}
+	return indirectNode1(n.pptr)
 }

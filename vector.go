@@ -127,15 +127,14 @@ func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
 
 // Get node and register it as a child of root node.
 func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
-	node, idx := vec.getNode(depth)
-	root.SetLimit(vec.Index.Register(depth, idx))
-	return node, idx
+	return vec.GetChildWT(root, depth, TypeUnk)
 }
 
 // Get node,  register it as a child of root node and set type at once.
 func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 	node, idx := vec.getNode(depth)
 	node.typ = typ
+	node.pptr = root.ptr()
 	root.SetLimit(vec.Index.Register(depth, idx))
 	return node, idx
 }
@@ -152,8 +151,8 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 		vec.nodes = append(vec.nodes, *node)
 	}
 	vec.nodeL++
-	node.vecPtr, node.depth = vec.ptr(), depth
-	node.key.vecPtr, node.val.vecPtr = node.vecPtr, node.vecPtr
+	node.vptr, node.depth = vec.ptr(), depth
+	node.key.vecPtr, node.val.vecPtr = node.vptr, node.vptr
 	idx = vec.Len() - 1
 	node.idx = idx
 	return
