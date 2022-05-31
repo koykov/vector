@@ -26,7 +26,7 @@ type Node struct {
 	// Node type.
 	typ Type
 	// Key/value byteptr objects.
-	key, val Byteptr
+	key, val, aka Byteptr
 	// Node index in array, depth in a index tree, offset in index row and limit of childs in index row.
 	idx, depth, offset, limit int
 	// Raw pointers to vector and parent node.
@@ -177,6 +177,11 @@ func (n *Node) ForceString() string {
 	return n.val.String()
 }
 
+// AKA returns pointer to alias object.
+func (n *Node) AKA() *Byteptr {
+	return &n.aka
+}
+
 // Get value as boolean.
 func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
@@ -279,6 +284,7 @@ func (n *Node) Reset() *Node {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
+	n.aka.Reset()
 	n.depth, n.offset, n.limit, n.vptr = 0, 0, 0, 0
 	return n
 }
