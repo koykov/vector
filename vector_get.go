@@ -218,6 +218,9 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 	if len(keys) == 0 {
 		return root
 	}
+	if len(keys) == 1 && root.aka.Len() > 0 && root.aka.String() == keys[1] {
+		return root
+	}
 	k, err := strconv.Atoi(keys[0])
 	if err != nil || k >= root.limit {
 		return nullNode
