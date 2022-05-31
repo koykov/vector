@@ -19,8 +19,6 @@ const (
 	TypeNum
 	TypeBool
 	TypeAttr
-
-	FlagGroup int = 0
 )
 
 // Node object.
@@ -225,14 +223,7 @@ func (n *Node) Uint() (uint64, error) {
 
 // Apply custom function to each child of the node.
 func (n *Node) Each(fn func(idx int, node *Node)) {
-	var idx []int
-	if n.key.CheckBit(FlagGroup) {
-		if pn := n.indirectNode(); pn != nil {
-			idx = pn.childrenIdx()
-		}
-	} else {
-		idx = n.childrenIdx()
-	}
+	idx := n.childrenIdx()
 	vec := n.indirectVector()
 	if len(idx) == 0 || vec == nil {
 		return
