@@ -166,7 +166,9 @@ func (n *Node) RawBytes() []byte {
 //
 // Allow only for [string, number, bool, attribute] types.
 func (n *Node) String() string {
-	if n.typ != TypeStr && n.typ != TypeNum && n.typ != TypeBool && n.typ != TypeAttr {
+	mayStr := n.typ != TypeStr && n.typ != TypeNum && n.typ != TypeBool && n.typ != TypeAttr
+	mayObjStr := n.typ == TypeObj && n.val.Len() > 0
+	if !mayStr && !mayObjStr {
 		return ""
 	}
 	return n.val.String()
