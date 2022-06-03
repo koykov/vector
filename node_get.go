@@ -6,7 +6,7 @@ import (
 	"github.com/koykov/bytealg"
 )
 
-// Get child node by given keys.
+// Get returns child node by given keys.
 func (n *Node) Get(keys ...string) *Node {
 	if len(keys) == 0 {
 		return n
@@ -50,7 +50,7 @@ func (n *Node) Get(keys ...string) *Node {
 	return nullNode
 }
 
-// Look and get child object by given keys.
+// GetObject looks and get child object by given keys.
 func (n *Node) GetObject(keys ...string) *Node {
 	node := n.Get(keys...)
 	if node.Type() != TypeObj {
@@ -59,7 +59,7 @@ func (n *Node) GetObject(keys ...string) *Node {
 	return node.Object()
 }
 
-// Look and get child array by given keys.
+// GetArray looks and get child array by given keys.
 func (n *Node) GetArray(keys ...string) *Node {
 	node := n.Get(keys...)
 	if node.Type() != TypeArr {
@@ -68,7 +68,7 @@ func (n *Node) GetArray(keys ...string) *Node {
 	return node.Array()
 }
 
-// Look and get child bytes by given keys.
+// GetBytes looks and get child bytes by given keys.
 func (n *Node) GetBytes(keys ...string) []byte {
 	node := n.Get(keys...)
 	if node.Type() != TypeStr {
@@ -77,7 +77,7 @@ func (n *Node) GetBytes(keys ...string) []byte {
 	return node.Bytes()
 }
 
-// Look and get child string by given keys.
+// GetString looks and get child string by given keys.
 func (n *Node) GetString(keys ...string) string {
 	node := n.Get(keys...)
 	if node.Type() != TypeStr {
@@ -86,7 +86,7 @@ func (n *Node) GetString(keys ...string) string {
 	return node.String()
 }
 
-// Look and get child bool by given keys.
+// GetBool looks and get child bool by given keys.
 func (n *Node) GetBool(keys ...string) bool {
 	node := n.Get(keys...)
 	if node.Type() != TypeBool {
@@ -95,7 +95,7 @@ func (n *Node) GetBool(keys ...string) bool {
 	return node.Bool()
 }
 
-// Look and get child float by given keys.
+// GetFloat looks and get child float by given keys.
 func (n *Node) GetFloat(keys ...string) (float64, error) {
 	node := n.Get(keys...)
 	if node.typ == TypeNull {
@@ -107,7 +107,7 @@ func (n *Node) GetFloat(keys ...string) (float64, error) {
 	return node.Float()
 }
 
-// Look and get child integer by given keys.
+// GetInt looks and get child integer by given keys.
 func (n *Node) GetInt(keys ...string) (int64, error) {
 	node := n.Get(keys...)
 	if node.typ == TypeNull {
@@ -119,7 +119,7 @@ func (n *Node) GetInt(keys ...string) (int64, error) {
 	return node.Int()
 }
 
-// Look and get child unsigned integer by given keys.
+// GetUint looks and get child unsigned integer by given keys.
 func (n *Node) GetUint(keys ...string) (uint64, error) {
 	node := n.Get(keys...)
 	if node.typ == TypeNull {
@@ -131,7 +131,7 @@ func (n *Node) GetUint(keys ...string) (uint64, error) {
 	return node.Uint()
 }
 
-// Get child node by path and separator.
+// GetPS returns child node by path and separator.
 func (n *Node) GetPS(path, separator string) *Node {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -141,7 +141,7 @@ func (n *Node) GetPS(path, separator string) *Node {
 	return n.Get(vec.bufSS...)
 }
 
-// Look and get child object by given path and separator.
+// GetObjectPS looks and get child object by given path and separator.
 func (n *Node) GetObjectPS(path, separator string) *Node {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -155,7 +155,7 @@ func (n *Node) GetObjectPS(path, separator string) *Node {
 	return node.Object()
 }
 
-// Look and get child array by given path and separator.
+// GetArrayPS looks and get child array by given path and separator.
 func (n *Node) GetArrayPS(path, separator string) *Node {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -169,7 +169,7 @@ func (n *Node) GetArrayPS(path, separator string) *Node {
 	return node.Array()
 }
 
-// Look and get child bytes by given path and separator.
+// GetBytesPS looks and get child bytes by given path and separator.
 func (n *Node) GetBytesPS(path, separator string) []byte {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -183,7 +183,7 @@ func (n *Node) GetBytesPS(path, separator string) []byte {
 	return node.Bytes()
 }
 
-// Look and get child string by given path and separator.
+// GetStringPS looks and get child string by given path and separator.
 func (n *Node) GetStringPS(path, separator string) string {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -197,7 +197,7 @@ func (n *Node) GetStringPS(path, separator string) string {
 	return node.String()
 }
 
-// Look and get child bool by given path and separator.
+// GetBoolPS looks and get child bool by given path and separator.
 func (n *Node) GetBoolPS(path, separator string) bool {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -211,7 +211,7 @@ func (n *Node) GetBoolPS(path, separator string) bool {
 	return node.Bool()
 }
 
-// Look and get child float by given path and separator.
+// GetFloatPS looks and get child float by given path and separator.
 func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -228,7 +228,7 @@ func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 	return node.Float()
 }
 
-// Look and get child integer by given path and separator.
+// GetIntPS looks and get child integer by given path and separator.
 func (n *Node) GetIntPS(path, separator string) (int64, error) {
 	vec := n.indirectVector()
 	if vec == nil {
@@ -245,7 +245,7 @@ func (n *Node) GetIntPS(path, separator string) (int64, error) {
 	return node.Int()
 }
 
-// Look and get child unsigned int by given path and separator.
+// GetUintPS looks and get child unsigned int by given path and separator.
 func (n *Node) GetUintPS(path, separator string) (uint64, error) {
 	vec := n.indirectVector()
 	if vec == nil {

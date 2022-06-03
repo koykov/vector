@@ -1,8 +1,8 @@
 package vector
 
-// Nodes index.
+// Index represents nodes index matrix.
 //
-// Contains indexes of nodes in the vector divided by depth.
+// Contain indexes of nodes in the vector divided by depth.
 // Y-axis means depth, X-axis means position in index.
 type Index struct {
 	// Index tree.
@@ -23,7 +23,7 @@ func (idx *Index) Register(depth, i int) int {
 	return len(idx.tree[depth])
 }
 
-// Get length of index row registered on depth.
+// Len returns length of index row registered on depth.
 func (idx *Index) Len(depth int) int {
 	if len(idx.tree) <= depth {
 		return 0

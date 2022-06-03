@@ -2,11 +2,11 @@ package vector
 
 // Helper object interface.
 type Helper interface {
-	// Convert byteptr to byte slice and apply custom logic.
+	// Indirect convert byteptr to byte slice and apply custom logic.
 	Indirect(*Byteptr) []byte
 }
 
-// Assign helper to vector object.
+// SetHelper sets helper to vector object.
 func (vec *Vector) SetHelper(helper Helper) {
 	vec.Helper = helper
 }

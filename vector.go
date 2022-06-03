@@ -33,32 +33,32 @@ type Vector struct {
 	Helper Helper
 }
 
-// Parse source bytes.
+// Parse parses source bytes.
 func (vec *Vector) Parse(_ []byte) error {
 	return ErrNotImplement
 }
 
-// Parse source string.
+// ParseStr parses source string.
 func (vec *Vector) ParseStr(_ string) error {
 	return ErrNotImplement
 }
 
-// Copy source bytes and parse it.
+// ParseCopy copies source bytes and parse it.
 func (vec *Vector) ParseCopy(_ []byte) error {
 	return ErrNotImplement
 }
 
-// Copy source string and parse it.
+// ParseCopyStr copies source string and parse it.
 func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }
 
-// Format vector in human readable representation.
+// Beautify formats vector in human-readable representation.
 func (vec *Vector) Beautify(_ io.Writer) error {
 	return ErrNotImplement
 }
 
-// Set source bytes to parse.
+// SetSrc sets source bytes.
 func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	if len(s) == 0 {
 		return ErrEmptySrc
@@ -75,62 +75,66 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	return nil
 }
 
-// Get length of nodes array.
+// Len returns length of nodes array.
 func (vec *Vector) Len() int {
 	return vec.nodeL
 }
 
-// Get length of source bytes.
+// SrcLen returns length of source bytes.
 func (vec *Vector) SrcLen() int {
 	return len(vec.src)
 }
 
-// Get raw source bytes.
+// Src returns raw source bytes.
+//
+// Please note, source bytes may be "corrupt" when unescaped.
 func (vec *Vector) Src() []byte {
 	return vec.src
 }
 
-// Get byte at position i.
+// SrcAt returns byte at position i.
 func (vec *Vector) SrcAt(i int) byte {
 	return vec.src[i]
 }
 
-// Get source address in virtual memory.
+// SrcAddr returns source address in virtual memory.
 func (vec *Vector) SrcAddr() uint64 {
 	return vec.addr
 }
 
-// Get root node.
+// Root returns root node.
 func (vec *Vector) Root() *Node {
 	return vec.Get()
 }
 
-// Check if node exists by given key.
+// Exists checks if node exists by given key.
 func (vec *Vector) Exists(key string) bool {
 	n := vec.Root()
 	return n.Exists(key)
 }
 
-// Get node from the nodes array.
+// GetNode returns new node with index from position matrix by given depth.
 func (vec *Vector) GetNode(depth int) (node *Node, idx int) {
 	node, idx = vec.getNode(depth)
 	vec.Index.Register(depth, idx)
 	return
 }
 
-// Get node and set type at once.
+// GetNodeWT returns node and set type at once.
 func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
 	node, idx := vec.GetNode(depth)
 	node.typ = typ
 	return node, idx
 }
 
-// Get node and register it as a child of root node.
+// GetChild get node and register it as a child of root node.
+//
+// Similar to GetNode.
 func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
 	return vec.GetChildWT(root, depth, TypeUnk)
 }
 
-// Get node,  register it as a child of root node and set type at once.
+// GetChildWT get node, register it as a child of root node and set type at once.
 func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 	node, idx := vec.getNode(depth)
 	node.typ = typ
@@ -158,17 +162,17 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	return
 }
 
-// Return node back to the array.
+// PutNode returns node back to the array.
 func (vec *Vector) PutNode(idx int, node *Node) {
 	vec.nodes[idx] = *node
 }
 
-// Set error offset.
+// SetErrOffset sets error offset.
 func (vec *Vector) SetErrOffset(offset int) {
 	vec.errOff = offset
 }
 
-// Get last error offset.
+// ErrorOffset returns last error offset.
 func (vec *Vector) ErrorOffset() int {
 	return vec.errOff
 }
@@ -189,7 +193,7 @@ func (vec *Vector) Reset() {
 	vec.Bitset.Reset()
 }
 
-// Forget nodes from given position to the end of the array.
+// ForgetFrom forgets nodes from given position to the end of the array.
 func (vec *Vector) ForgetFrom(idx int) {
 	if idx >= vec.nodeL {
 		return
@@ -202,7 +206,7 @@ func (vec *Vector) ForgetFrom(idx int) {
 
 // KeepPtr guarantees that vector object wouldn't be collected by GC.
 //
-// Typically vector objects uses together with pools and and GC doesn't collect them. But for cases like
+// Typically, vector objects uses together with pools and GC doesn't collect them. But for cases like
 // vec := &Vector{...}
 // node := vec.Get("foo", "bar")
 // <- here GC may collect vec

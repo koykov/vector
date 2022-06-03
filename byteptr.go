@@ -6,7 +6,7 @@ import (
 	"github.com/koykov/fastconv"
 )
 
-// Vector implementation of byteptr.Byteptr object.
+// Byteptr represents Vector implementation of byteptr.Byteptr object.
 type Byteptr struct {
 	byteptr.Byteptr
 	bitset.Bitset
@@ -14,7 +14,7 @@ type Byteptr struct {
 	vecPtr uintptr
 }
 
-// Convert byteptr object to bytes slice and implements vector's helper logic over it.
+// Bytes converts byteptr object to bytes slice and implements vector's helper logic over it.
 func (p *Byteptr) Bytes() []byte {
 	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
 		return vec.Helper.Indirect(p)
@@ -27,7 +27,7 @@ func (p *Byteptr) String() string {
 	return fastconv.B2S(p.Bytes())
 }
 
-// Convert byteptr to byte slice without any logic.
+// RawBytes converts byteptr to byte slice without any logic.
 func (p *Byteptr) RawBytes() []byte {
 	return p.Byteptr.Bytes()
 }

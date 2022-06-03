@@ -7,7 +7,7 @@ import (
 	"github.com/koykov/bytealg"
 )
 
-// Node type.
+// Type represents Node type.
 type Type int
 
 const (
@@ -40,44 +40,44 @@ var (
 	nullNode = &Node{typ: TypeNull}
 )
 
-// Set type of the node.
+// SetType sets type of the node.
 func (n *Node) SetType(typ Type) {
 	n.typ = typ
 }
 
-// Get node type.
+// Type returns node type.
 func (n *Node) Type() Type {
 	return n.typ
 }
 
-// Get node index in the array of nodes.
+// Index returns node index in the array of nodes.
 func (n *Node) Index() int {
 	return n.idx
 }
 
-// Get node depth in index tree.
+// Depth returns node depth in index matrix.
 func (n *Node) Depth() int {
 	return n.depth
 }
 
-// Set offset in the index row.
+// SetOffset sets offset in the index row.
 func (n *Node) SetOffset(offset int) *Node {
 	n.offset = offset
 	return n
 }
 
-// Get offset of childs in the index row.
+// Offset returns offset of childs in the index row.
 func (n *Node) Offset() int {
 	return n.offset
 }
 
-// Set limit of childs in index row.
+// SetLimit sets limit of childs in index row.
 func (n *Node) SetLimit(limit int) *Node {
 	n.limit = limit
 	return n
 }
 
-// Get limit of childs in index row.
+// Limit returns limit of childs in index row.
 func (n *Node) Limit() int {
 	if n.limit != n.offset && n.limit >= n.offset {
 		return n.limit - n.offset
@@ -87,7 +87,7 @@ func (n *Node) Limit() int {
 	return 1
 }
 
-// Check if given key exists in the node.
+// Exists checks if given key exists in the node.
 func (n *Node) Exists(key string) bool {
 	if n.typ != TypeObj {
 		return false
@@ -106,7 +106,7 @@ func (n *Node) Exists(key string) bool {
 	return false
 }
 
-// Check node is object and return it.
+// Object checks node is object and return it.
 func (n *Node) Object() *Node {
 	if n.typ != TypeObj {
 		return nullNode
@@ -114,7 +114,7 @@ func (n *Node) Object() *Node {
 	return n
 }
 
-// Check node is array and return it.
+// Array checks node is array and return it.
 func (n *Node) Array() *Node {
 	if n.typ != TypeArr {
 		return nullNode
@@ -122,27 +122,27 @@ func (n *Node) Array() *Node {
 	return n
 }
 
-// Get key as byteptr object.
+// Key returns key as byteptr object.
 func (n *Node) Key() *Byteptr {
 	return &n.key
 }
 
-// Get key as bytes.
+// KeyBytes returns key as bytes.
 func (n *Node) KeyBytes() []byte {
 	return n.key.RawBytes()
 }
 
-// Get key as string.
+// KeyString returns key as string.
 func (n *Node) KeyString() string {
 	return n.key.String()
 }
 
-// Get value as byteptr object.
+// Value returns value as byteptr object.
 func (n *Node) Value() *Byteptr {
 	return &n.val
 }
 
-// Get value as bytes.
+// Bytes returns value as bytes.
 //
 // Allow only for [string, number, bool, attribute] types.
 func (n *Node) Bytes() []byte {
@@ -152,12 +152,12 @@ func (n *Node) Bytes() []byte {
 	return n.val.Bytes()
 }
 
-// Get value as bytes independent of the type.
+// ForceBytes returns value as bytes independent of the type.
 func (n *Node) ForceBytes() []byte {
 	return n.val.Bytes()
 }
 
-// Get value as bytes without implement any conversion logic.
+// RawBytes returns value as bytes without implement any conversion logic.
 func (n *Node) RawBytes() []byte {
 	return n.val.RawBytes()
 }
@@ -174,7 +174,7 @@ func (n *Node) String() string {
 	return n.val.String()
 }
 
-// Get value as string independent of the type.
+// ForceString returns value as string independent of the type.
 func (n *Node) ForceString() string {
 	return n.val.String()
 }
@@ -184,7 +184,7 @@ func (n *Node) AKA() *Byteptr {
 	return &n.aka
 }
 
-// Get value as boolean.
+// Bool returns value as boolean.
 func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
@@ -192,7 +192,7 @@ func (n *Node) Bool() bool {
 	return bytealg.ToLowerStr(n.val.String()) == "true"
 }
 
-// Get value as float number.
+// Float returns value as float number.
 func (n *Node) Float() (float64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -204,7 +204,7 @@ func (n *Node) Float() (float64, error) {
 	return f, nil
 }
 
-// Get value as integer.
+// Int returns value as integer.
 func (n *Node) Int() (int64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -216,7 +216,7 @@ func (n *Node) Int() (int64, error) {
 	return i, nil
 }
 
-// Get value as unsigned integer.
+// Uint returns value as unsigned integer.
 func (n *Node) Uint() (uint64, error) {
 	if n.typ != TypeNum {
 		return 0, ErrIncompatType
@@ -228,7 +228,7 @@ func (n *Node) Uint() (uint64, error) {
 	return u, nil
 }
 
-// Apply custom function to each child of the node.
+// Each applies custom function to each child of the node.
 func (n *Node) Each(fn func(idx int, node *Node)) {
 	idx := n.childrenIdx()
 	vec := n.indirectVector()
@@ -266,7 +266,7 @@ func (n *Node) Look(key string) *Node {
 	return nullNode
 }
 
-// Get node from array at position idx.
+// At returns node from array at position idx.
 //
 // May be used only for array nodes.
 func (n *Node) At(idx int) *Node {
@@ -303,7 +303,7 @@ func (n *Node) childrenIdx() []int {
 	return nil
 }
 
-// Get list of children nodes.
+// Children returns list of children nodes.
 func (n *Node) Children() []Node {
 	if ci := n.childrenIdx(); len(ci) > 0 {
 		if vec := n.indirectVector(); vec != nil {
@@ -316,7 +316,7 @@ func (n *Node) Children() []Node {
 	return nil
 }
 
-// Swap node with another given node in the nodes array.
+// SwapWith swaps node with another given node in the nodes array.
 func (n *Node) SwapWith(node *Node) {
 	if vec := n.indirectVector(); vec != nil {
 		i, j := n.idx, node.idx

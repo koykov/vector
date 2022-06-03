@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-// Get node by given keys.
+// Get returns node by given keys.
 func (vec *Vector) Get(keys ...string) *Node {
 	if len(keys) == 0 {
 		if vec.Len() > 0 {
@@ -30,7 +30,7 @@ func (vec *Vector) Get(keys ...string) *Node {
 	return node
 }
 
-// Get node by known index in nodes array.
+// GetByIdx returns node by known index in nodes array.
 func (vec *Vector) GetByIdx(idx int) *Node {
 	if idx < vec.Len() {
 		return &vec.nodes[idx]
@@ -38,7 +38,7 @@ func (vec *Vector) GetByIdx(idx int) *Node {
 	return nullNode
 }
 
-// Look and get object by given keys.
+// GetObject looks and get object by given keys.
 func (vec *Vector) GetObject(keys ...string) *Node {
 	node := vec.Get(keys...)
 	if node.Type() != TypeObj {
@@ -47,7 +47,7 @@ func (vec *Vector) GetObject(keys ...string) *Node {
 	return node.Object()
 }
 
-// Look and get array by given keys.
+// GetArray looks and get array by given keys.
 func (vec *Vector) GetArray(keys ...string) *Node {
 	node := vec.Get(keys...)
 	if node.Type() != TypeArr {
@@ -56,7 +56,7 @@ func (vec *Vector) GetArray(keys ...string) *Node {
 	return node.Array()
 }
 
-// Look and get bytes by given keys.
+// GetBytes looks and get bytes by given keys.
 func (vec *Vector) GetBytes(keys ...string) []byte {
 	node := vec.Get(keys...)
 	if node.Type() != TypeStr {
@@ -65,7 +65,7 @@ func (vec *Vector) GetBytes(keys ...string) []byte {
 	return node.Bytes()
 }
 
-// Look and get string by given keys.
+// GetString looks and get string by given keys.
 func (vec *Vector) GetString(keys ...string) string {
 	node := vec.Get(keys...)
 	if node.Type() != TypeStr {
@@ -74,7 +74,7 @@ func (vec *Vector) GetString(keys ...string) string {
 	return node.String()
 }
 
-// Look and get bool by given keys.
+// GetBool looks and get bool by given keys.
 func (vec *Vector) GetBool(keys ...string) bool {
 	node := vec.Get(keys...)
 	if node.Type() != TypeBool {
@@ -83,7 +83,7 @@ func (vec *Vector) GetBool(keys ...string) bool {
 	return node.Bool()
 }
 
-// Look and get float by given keys.
+// GetFloat looks and get float by given keys.
 func (vec *Vector) GetFloat(keys ...string) (float64, error) {
 	node := vec.Get(keys...)
 	if node.Type() == TypeUnk {
@@ -95,7 +95,7 @@ func (vec *Vector) GetFloat(keys ...string) (float64, error) {
 	return node.Float()
 }
 
-// Look and get integer by given keys.
+// GetInt looks and get integer by given keys.
 func (vec *Vector) GetInt(keys ...string) (int64, error) {
 	node := vec.Get(keys...)
 	if node.Type() == TypeUnk {
@@ -107,7 +107,7 @@ func (vec *Vector) GetInt(keys ...string) (int64, error) {
 	return node.Int()
 }
 
-// Look and get unsigned integer by given keys.
+// GetUint looks and get unsigned integer by given keys.
 func (vec *Vector) GetUint(keys ...string) (uint64, error) {
 	node := vec.Get(keys...)
 	if node.Type() == TypeUnk {
@@ -119,13 +119,13 @@ func (vec *Vector) GetUint(keys ...string) (uint64, error) {
 	return node.Uint()
 }
 
-// Get node by given path and separator.
+// GetPS returns node by given path and separator.
 func (vec *Vector) GetPS(path, separator string) *Node {
 	vec.splitPath(path, separator)
 	return vec.Get(vec.bufSS...)
 }
 
-// Look and get object by given path and separator.
+// GetObjectPS looks and get object by given path and separator.
 func (vec *Vector) GetObjectPS(path, separator string) *Node {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -135,7 +135,7 @@ func (vec *Vector) GetObjectPS(path, separator string) *Node {
 	return node.Object()
 }
 
-// Look and get array by given path and separator.
+// GetArrayPS looks and get array by given path and separator.
 func (vec *Vector) GetArrayPS(path, separator string) *Node {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -145,7 +145,7 @@ func (vec *Vector) GetArrayPS(path, separator string) *Node {
 	return node.Array()
 }
 
-// Look and get bytes by given path and separator.
+// GetBytesPS looks and get bytes by given path and separator.
 func (vec *Vector) GetBytesPS(path, separator string) []byte {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -155,7 +155,7 @@ func (vec *Vector) GetBytesPS(path, separator string) []byte {
 	return node.Bytes()
 }
 
-// Look and get string by given path and separator.
+// GetStringPS looks and get string by given path and separator.
 func (vec *Vector) GetStringPS(path, separator string) string {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -165,7 +165,7 @@ func (vec *Vector) GetStringPS(path, separator string) string {
 	return node.String()
 }
 
-// Look and get bool by given path and separator.
+// GetBoolPS looks and get bool by given path and separator.
 func (vec *Vector) GetBoolPS(path, separator string) bool {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -175,7 +175,7 @@ func (vec *Vector) GetBoolPS(path, separator string) bool {
 	return node.Bool()
 }
 
-// Look and get float by given path and separator.
+// GetFloatPS looks and get float by given path and separator.
 func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -188,7 +188,7 @@ func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
 	return node.Float()
 }
 
-// Look and get integer by given path and separator.
+// GetIntPS looks and get integer by given path and separator.
 func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)
@@ -201,7 +201,7 @@ func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
 	return node.Int()
 }
 
-// Look and get unsigned integer by given path and separator.
+// GetUintPS looks and get unsigned integer by given path and separator.
 func (vec *Vector) GetUintPS(path, separator string) (uint64, error) {
 	vec.splitPath(path, separator)
 	node := vec.Get(vec.bufSS...)

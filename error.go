@@ -13,4 +13,6 @@ var (
 	ErrUnexpId      = errors.New("unexpected identifier")
 	ErrUnexpEOF     = errors.New("unexpected end of file")
 	ErrUnexpEOS     = errors.New("unexpected end of string")
+
+	_, _, _, _, _ = ErrShortSrc, ErrUnparsedTail, ErrUnexpId, ErrUnexpEOF, ErrUnexpEOS
 )
