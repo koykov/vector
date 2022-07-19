@@ -46,3 +46,8 @@ func (vec *Vector) BufAppendUint(u uint64) {
 func (vec *Vector) BufAppendFloat(f float64) {
 	vec.buf = strconv.AppendFloat(vec.buf, f, 'f', -1, 64)
 }
+
+// BufAppendFloatTune appends float with extended params to the buffer.
+func (vec *Vector) BufAppendFloatTune(f float64, fmt byte, prec, bitSize int) {
+	vec.buf = strconv.AppendFloat(vec.buf, f, fmt, prec, bitSize)
+}
