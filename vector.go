@@ -127,6 +127,14 @@ func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
 	return node, idx
 }
 
+// NodeAt returns node at given position.
+func (vec *Vector) NodeAt(idx int) *Node {
+	if idx < 0 || idx >= vec.Len() {
+		return nullNode
+	}
+	return &vec.nodes[idx]
+}
+
 // GetChild get node and register it as a child of root node.
 //
 // Similar to GetNode.

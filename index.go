@@ -31,6 +31,14 @@ func (idx *Index) Len(depth int) int {
 	return len(idx.tree[depth])
 }
 
+// GetRow returns indices row registered at given depth.
+func (idx *Index) GetRow(depth int) []int {
+	if depth < 0 || depth >= len(idx.tree) {
+		return nil
+	}
+	return idx.tree[depth]
+}
+
 // Reset rest of the index starting of given depth and offset in the tree.
 func (idx *Index) Reset(depth, offset int) {
 	if depth >= len(idx.tree) {
