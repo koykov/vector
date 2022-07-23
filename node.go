@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"io"
 	"strconv"
 	"unsafe"
 
@@ -325,6 +326,11 @@ func (n *Node) SwapWith(node *Node) {
 			vec.nodes[i], vec.nodes[j] = vec.nodes[j], vec.nodes[i]
 		}
 	}
+}
+
+// Beautify formats node in human-readable representation.
+func (n *Node) Beautify(_ io.Writer) error {
+	return ErrNotImplement
 }
 
 // Check key equality.

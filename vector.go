@@ -107,6 +107,18 @@ func (vec *Vector) Root() *Node {
 	return vec.Get()
 }
 
+// RootByIndex returns root node by given index.
+//
+// For cases when one vector instance uses for parse many sources.
+func (vec *Vector) RootByIndex(index int) *Node {
+	rootRow := vec.Index.GetRow(0)
+	if index < 0 || index >= len(rootRow) {
+		return nullNode
+	}
+	idx := rootRow[index]
+	return &vec.nodes[idx]
+}
+
 // Exists checks if node exists by given key.
 func (vec *Vector) Exists(key string) bool {
 	n := vec.Root()
