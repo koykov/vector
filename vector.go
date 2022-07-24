@@ -113,6 +113,11 @@ func (vec *Vector) Root() *Node {
 	return vec.Get()
 }
 
+// RootLen returns count of root nodes.
+func (vec *Vector) RootLen() int {
+	return vec.Index.Len(0)
+}
+
 // RootByIndex returns root node by given index.
 //
 // For cases when one vector instance uses for parse many sources.
@@ -123,6 +128,31 @@ func (vec *Vector) RootByIndex(index int) *Node {
 	}
 	idx := rootRow[index]
 	return &vec.nodes[idx]
+}
+
+// RootTop returns last root node.
+func (vec *Vector) RootTop() *Node {
+	rootRow := vec.Index.GetRow(0)
+	if len(rootRow) == 0 {
+		return nullNode
+	}
+	return &vec.nodes[rootRow[len(rootRow)-1]]
+}
+
+// Each applies custom function to each root node.
+func (vec *Vector) Each(fn func(idx int, node *Node)) {
+	rootRow := vec.Index.GetRow(0)
+	l := len(rootRow)
+	if l == 0 {
+		return
+	}
+	c := 0
+	_ = rootRow[l-1]
+	for i := 0; i < l; i++ {
+		root := &vec.nodes[i]
+		fn(c, root)
+		c++
+	}
 }
 
 // Exists checks if node exists by given key.
