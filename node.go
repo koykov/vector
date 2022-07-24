@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/koykov/bytealg"
+	"github.com/koykov/indirect"
 )
 
 // Type represents Node type.
@@ -329,8 +330,11 @@ func (n *Node) SwapWith(node *Node) {
 }
 
 // Beautify formats node in human-readable representation.
-func (n *Node) Beautify(_ io.Writer) error {
-	return ErrNotImplement
+func (n *Node) Beautify(w io.Writer) error {
+	if vec := n.indirectVectorIptr(); vec != nil {
+		return (*vec).Beautify(w)
+	}
+	return ErrInternal
 }
 
 // Check key equality.
@@ -356,7 +360,14 @@ func (n *Node) indirectVector() *Vector {
 	if n.vptr == 0 {
 		return nil
 	}
-	return indirectVector1(n.vptr)
+	return (*Vector)(indirect.ToUnsafePtr(n.vptr))
+}
+
+func (n *Node) indirectVectorIptr() *Interface {
+	if n.vptr == 0 {
+		return nil
+	}
+	return (*Interface)(indirect.ToUnsafePtr(n.vptr))
 }
 
 // Restore the entire node object from the unsafe pointer.
@@ -366,5 +377,5 @@ func (n *Node) indirectNode() *Node {
 	if n.pptr == 0 {
 		return nil
 	}
-	return indirectNode1(n.pptr)
+	return (*Node)(indirect.ToUnsafePtr(n.pptr))
 }

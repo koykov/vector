@@ -1,5 +1,7 @@
 package vector
 
+import "io"
+
 type Interface interface {
 	SetHelper(helper Helper)
 
@@ -42,6 +44,8 @@ type Interface interface {
 	DotUint(string) (uint64, error)
 
 	KeepPtr()
+
+	Beautify(io.Writer) error
 
 	ErrorOffset() int
 	Reset()

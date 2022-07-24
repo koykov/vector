@@ -7,4 +7,5 @@ require (
 	github.com/koykov/bytealg v0.0.0-20220528213442-ac92b7cc2f07
 	github.com/koykov/byteptr v0.0.0-20210620190848-e0b56dd286d9
 	github.com/koykov/fastconv v0.0.0-20211028200057-f6897ace3bc2
+	github.com/koykov/indirect v0.0.0-20220403200712-f40904459e17
 )
