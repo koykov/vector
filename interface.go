@@ -11,6 +11,9 @@ type Interface interface {
 	ParseCopyStr(string) error
 
 	Root() *Node
+	RootByIndex(int) *Node
+	RootTop() *Node
+	Each(fn func(int, *Node))
 	Exists(string) bool
 
 	Get(...string) *Node
