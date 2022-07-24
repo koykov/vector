@@ -9,6 +9,7 @@ var (
 	ErrIncompatType = errors.New("incompatible type")
 	ErrNotFound     = errors.New("node not found")
 	ErrInternal     = errors.New("internal vector error")
+	ErrNoHelper     = errors.New("helper not found")
 	ErrUnparsedTail = errors.New("unparsed tail")
 	ErrUnexpId      = errors.New("unexpected identifier")
 	ErrUnexpEOF     = errors.New("unexpected end of file")

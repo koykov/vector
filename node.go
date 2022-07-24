@@ -331,10 +331,14 @@ func (n *Node) SwapWith(node *Node) {
 
 // Beautify formats node in human-readable representation.
 func (n *Node) Beautify(w io.Writer) error {
-	if vec := n.indirectVectorIptr(); vec != nil {
-		return (*vec).Beautify(w)
+	vec := n.indirectVector()
+	if vec == nil {
+		return ErrInternal
 	}
-	return ErrInternal
+	if vec.Helper == nil {
+		return ErrNoHelper
+	}
+	return vec.Helper.Beautify(w, n)
 }
 
 // Check key equality.
@@ -361,13 +365,6 @@ func (n *Node) indirectVector() *Vector {
 		return nil
 	}
 	return (*Vector)(indirect.ToUnsafePtr(n.vptr))
-}
-
-func (n *Node) indirectVectorIptr() *Interface {
-	if n.vptr == 0 {
-		return nil
-	}
-	return (*Interface)(indirect.ToUnsafePtr(n.vptr))
 }
 
 // Restore the entire node object from the unsafe pointer.
