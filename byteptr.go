@@ -4,6 +4,7 @@ import (
 	"github.com/koykov/bitset"
 	"github.com/koykov/byteptr"
 	"github.com/koykov/fastconv"
+	"github.com/koykov/indirect"
 )
 
 // Byteptr represents Vector implementation of byteptr.Byteptr object.
@@ -46,5 +47,5 @@ func (p *Byteptr) indirectVector() *Vector {
 	if p.vecPtr == 0 {
 		return nil
 	}
-	return indirectVector1(p.vecPtr)
+	return (*Vector)(indirect.ToUnsafePtr(p.vecPtr))
 }
