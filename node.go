@@ -318,6 +318,30 @@ func (n *Node) Children() []Node {
 	return nil
 }
 
+// SortKeys sorts child nodes by key in AB order.
+func (n *Node) SortKeys() *Node {
+	if n.Type() != TypeObj {
+		return n
+	}
+	children := n.Children()
+	if l := len(children); l > 0 {
+		quickSort(children, 0, l-1, sortByKey)
+	}
+	return n
+}
+
+// Sort sorts child nodes by value in AB order.
+func (n *Node) Sort() *Node {
+	if n.Type() != TypeObj && n.Type() != TypeArr {
+		return n
+	}
+	children := n.Children()
+	if l := len(children); l > 0 {
+		quickSort(children, 0, l-1, sortByValue)
+	}
+	return n
+}
+
 // SwapWith swaps node with another given node in the nodes array.
 func (n *Node) SwapWith(node *Node) {
 	if vec := n.indirectVector(); vec != nil {
