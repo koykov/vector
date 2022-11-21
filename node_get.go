@@ -23,10 +23,11 @@ func (n *Node) Get(keys ...string) *Node {
 			idx := vec.Index.val(n.depth+1, i)
 			child := &vec.nodes[idx]
 			if child.keyEqual(keys[0]) {
-				if len(keys[1:]) == 0 {
+				tail := keys[1:]
+				if len(tail) == 0 {
 					return child
 				} else {
-					return child.Get(keys[1:]...)
+					return child.Get(tail...)
 				}
 			}
 		}
@@ -38,13 +39,13 @@ func (n *Node) Get(keys ...string) *Node {
 		}
 		idx := vec.Index.val(n.depth+1, n.offset+i)
 		child := &vec.nodes[idx]
-		keys = keys[1:]
-		if len(keys) == 0 {
+		tail := keys[1:]
+		if len(tail) == 0 {
 			return child
-		} else if n.aka.Len() > 0 && len(keys) == 1 && n.aka.String() == keys[0] {
+		} else if n.aka.Len() > 0 && len(tail) == 1 && n.aka.String() == tail[0] {
 			return n
 		} else {
-			return n.Get(keys[1:]...)
+			return n.Get(tail...)
 		}
 	}
 	return nullNode
