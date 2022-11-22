@@ -45,7 +45,7 @@ func (n *Node) Get(keys ...string) *Node {
 		} else if n.aka.Len() > 0 && len(tail) == 1 && n.aka.String() == tail[0] {
 			return n
 		} else {
-			return n.Get(tail...)
+			return child.Get(tail...)
 		}
 	}
 	return nullNode
