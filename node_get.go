@@ -138,7 +138,7 @@ func (n *Node) GetPS(path, separator string) *Node {
 	if vec == nil {
 		return nullNode
 	}
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.bufSS = bytealg.AppendSplit(vec.bufSS[:0], path, separator, -1)
 	return n.Get(vec.bufSS...)
 }
 

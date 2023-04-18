@@ -285,7 +285,7 @@ func (vec *Vector) ptr() uintptr {
 // Caution! Don't user "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
-	vec.bufSS = bytealg.AppendSplitStr(vec.bufSS[:0], path, separator, -1)
+	vec.bufSS = bytealg.AppendSplit(vec.bufSS[:0], path, separator, -1)
 	ti := len(vec.bufSS) - 1
 	if ti < 0 {
 		return
