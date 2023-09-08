@@ -246,6 +246,29 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
+	idx := n.childrenIdx()
+	vec := n.indirectVector()
+	if len(idx) == 0 || vec == nil {
+		return
+	}
+	c, u := 0, 0
+	_ = idx[len(idx)-1]
+	for _, i := range idx {
+		cn := &vec.nodes[i]
+		if cond(c, cn) {
+			vec.nodes[u] = vec.nodes[i]
+			if n.limit -= 1; n.limit < 0 {
+				n.limit = 0
+			}
+			c++
+			continue
+		}
+		c++
+		u++
+	}
+}
+
 // Look for the child node by given key.
 //
 // May be used only for object nodes.
