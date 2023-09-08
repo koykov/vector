@@ -167,6 +167,7 @@ func (vec *Vector) RemoveIf(cond func(idx int, node *Node) bool) {
 		root := &vec.nodes[i]
 		if cond(c, root) {
 			vec.nodes[u] = vec.nodes[i]
+			vec.Index.tree[0] = vec.Index.tree[0][:len(vec.Index.tree[0])-1]
 			c++
 			continue
 		}
