@@ -246,6 +246,7 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+// RemoveIf deletes all children nodes satisfies condition cond.
 func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
 	idx := n.childrenIdx()
 	vec := n.indirectVector()

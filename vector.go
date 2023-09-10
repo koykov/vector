@@ -155,6 +155,7 @@ func (vec *Vector) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+// RemoveIf deletes all root nodes satisfies condition cond.
 func (vec *Vector) RemoveIf(cond func(idx int, node *Node) bool) {
 	rootRow := vec.Index.GetRow(0)
 	l := len(rootRow)
