@@ -157,23 +157,23 @@ func (vec *Vector) Each(fn func(idx int, node *Node)) {
 
 // RemoveIf deletes all root nodes satisfies condition cond.
 func (vec *Vector) RemoveIf(cond func(idx int, node *Node) bool) {
-	rootRow := vec.Index.GetRow(0)
-	l := len(rootRow)
+	idx := vec.Index.GetRow(0)
+	l := len(idx)
 	if l == 0 {
 		return
 	}
-	c, u := 0, 0
-	_ = rootRow[l-1]
-	for i := 0; i < l; i++ {
-		root := &vec.nodes[i]
-		if cond(c, root) {
-			vec.nodes[u] = vec.nodes[i]
-			vec.Index.tree[0] = vec.Index.tree[0][:len(vec.Index.tree[0])-1]
+	c := 0
+	_ = idx[l-1]
+	for i := 0; i < len(idx); {
+		i_ := idx[i]
+		cn := &vec.nodes[i_]
+		if cond(c, cn) {
+			idx = append(idx[:i], idx[i+1:]...)
 			c++
 			continue
 		}
+		i++
 		c++
-		u++
 	}
 }
 
