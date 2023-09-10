@@ -257,10 +257,11 @@ func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
 	for _, i := range idx {
 		cn := &vec.nodes[i]
 		if cond(c, cn) {
-			vec.nodes[u] = vec.nodes[i]
+			vec.nodes[idx[u]] = vec.nodes[i]
 			if n.limit -= 1; n.limit < 0 {
 				n.limit = 0
 			}
+			vec.nodes[n.idx] = *n
 			c++
 			continue
 		}
