@@ -252,12 +252,13 @@ func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
 	if len(idx) == 0 || vec == nil {
 		return
 	}
-	c, u := 0, 0
+	c := 0
 	_ = idx[len(idx)-1]
-	for _, i := range idx {
-		cn := &vec.nodes[i]
+	for i := 0; i < len(idx); {
+		i_ := idx[i]
+		cn := &vec.nodes[i_]
 		if cond(c, cn) {
-			vec.nodes[idx[u]] = vec.nodes[i]
+			idx = append(idx[:i], idx[i+1:]...)
 			if n.limit -= 1; n.limit < 0 {
 				n.limit = 0
 			}
@@ -265,8 +266,8 @@ func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
 			c++
 			continue
 		}
+		i++
 		c++
-		u++
 	}
 }
 
