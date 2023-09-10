@@ -343,6 +343,11 @@ func (n *Node) Children() []Node {
 	return nil
 }
 
+// ChildrenIndices returns list of indices of children nodes.
+func (n *Node) ChildrenIndices() []int {
+	return n.childrenIdx()
+}
+
 // SortKeys sorts child nodes by key in AB order.
 func (n *Node) SortKeys() *Node {
 	if n.Type() != TypeObj {
