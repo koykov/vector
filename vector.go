@@ -155,6 +155,28 @@ func (vec *Vector) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+// RemoveIf deletes all root nodes satisfies condition cond.
+func (vec *Vector) RemoveIf(cond func(idx int, node *Node) bool) {
+	idx := vec.Index.GetRow(0)
+	l := len(idx)
+	if l == 0 {
+		return
+	}
+	c := 0
+	_ = idx[l-1]
+	for i := 0; i < len(idx); {
+		i_ := idx[i]
+		cn := &vec.nodes[i_]
+		if cond(c, cn) {
+			idx = append(idx[:i], idx[i+1:]...)
+			c++
+			continue
+		}
+		i++
+		c++
+	}
+}
+
 // Exists checks if node exists by given key.
 func (vec *Vector) Exists(key string) bool {
 	n := vec.Root()

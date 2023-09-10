@@ -246,6 +246,32 @@ func (n *Node) Each(fn func(idx int, node *Node)) {
 	}
 }
 
+// RemoveIf deletes all children nodes satisfies condition cond.
+func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
+	idx := n.childrenIdx()
+	vec := n.indirectVector()
+	if len(idx) == 0 || vec == nil {
+		return
+	}
+	c := 0
+	_ = idx[len(idx)-1]
+	for i := 0; i < len(idx); {
+		i_ := idx[i]
+		cn := &vec.nodes[i_]
+		if cond(c, cn) {
+			idx = append(idx[:i], idx[i+1:]...)
+			if n.limit -= 1; n.limit < 0 {
+				n.limit = 0
+			}
+			vec.nodes[n.idx] = *n
+			c++
+			continue
+		}
+		i++
+		c++
+	}
+}
+
 // Look for the child node by given key.
 //
 // May be used only for object nodes.
@@ -316,6 +342,11 @@ func (n *Node) Children() []Node {
 		}
 	}
 	return nil
+}
+
+// ChildrenIndices returns list of indices of children nodes.
+func (n *Node) ChildrenIndices() []int {
+	return n.childrenIdx()
 }
 
 // SortKeys sorts child nodes by key in AB order.
