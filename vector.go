@@ -55,13 +55,24 @@ func (vec *Vector) ParseCopyStr(_ string) error {
 
 // Beautify formats first root node in human-readable representation.
 //
-// Second and next roots must beautify manually by call node's Beautify methods.
+// Second and next roots must beautify manually by call Beautify method of each node.
 func (vec *Vector) Beautify(w io.Writer) error {
 	if vec.Helper == nil {
 		return ErrNoHelper
 	}
 	root := vec.Root()
 	return vec.Helper.Beautify(w, root)
+}
+
+// Marshal serializes first root node.
+//
+// Second and next roots must beautify manually by call Marshal method of each node.
+func (vec *Vector) Marshal(w io.Writer) error {
+	if vec.Helper == nil {
+		return ErrNoHelper
+	}
+	root := vec.Root()
+	return vec.Helper.Marshal(w, root)
 }
 
 // SetSrc sets source bytes.

@@ -8,6 +8,8 @@ type Helper interface {
 	Indirect(*Byteptr) []byte
 	// Beautify makes a beauty view of node.
 	Beautify(io.Writer, *Node) error
+	// Marshal serializes node.
+	Marshal(io.Writer, *Node) error
 }
 
 // SetHelper sets helper to vector object.
