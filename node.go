@@ -396,6 +396,18 @@ func (n *Node) Beautify(w io.Writer) error {
 	return vec.Helper.Beautify(w, n)
 }
 
+// Marshal serializes node.
+func (n *Node) Marshal(w io.Writer) error {
+	vec := n.indirectVector()
+	if vec == nil {
+		return ErrInternal
+	}
+	if vec.Helper == nil {
+		return ErrNoHelper
+	}
+	return vec.Helper.Marshal(w, n)
+}
+
 // Check key equality.
 //
 // Also check node type for keys with "@" prefix (must be TypeAttr).
