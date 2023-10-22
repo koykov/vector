@@ -49,6 +49,7 @@ type Interface interface {
 	KeepPtr()
 
 	Beautify(io.Writer) error
+	Marshal(io.Writer) error
 
 	ErrorOffset() int
 	Reset()
