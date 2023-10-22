@@ -10,7 +10,7 @@ import (
 // Byteptr represents Vector implementation of byteptr.Byteptr object.
 type Byteptr struct {
 	byteptr.Byteptr
-	bitset.Bitset
+	bitset.Bitset8
 	// Vector raw pointer.
 	vecPtr uintptr
 }
@@ -36,7 +36,7 @@ func (p *Byteptr) RawBytes() []byte {
 // Reset byteptr object.
 func (p *Byteptr) Reset() {
 	p.Byteptr.Reset()
-	p.Bitset.Reset()
+	p.Bitset8.Reset()
 	p.vecPtr = 0
 }
 
