@@ -272,9 +272,6 @@ func (vec *Vector) Reset() {
 		return
 	}
 	_ = vec.nodes[vec.nodeL-1]
-	// for i := 0; i < vec.nodeL; i++ {
-	// 	vec.nodes[i].Reset()
-	// }
 	vec.buf, vec.src = vec.buf[:0], nil
 	vec.bufSS = vec.bufSS[:0]
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
