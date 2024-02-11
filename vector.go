@@ -236,12 +236,16 @@ func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 //
 // Returns new node and its index in the nodes array.
 func (vec *Vector) getNode(depth int) (node *Node, idx int) {
-	if vec.nodeL < len(vec.nodes) {
+	n := len(vec.nodes)
+	if vec.nodeL < n {
+		_ = vec.nodes[n-1]
 		node = &vec.nodes[vec.nodeL]
 		node.Reset()
 	} else {
-		node = &Node{typ: TypeUnk}
-		vec.nodes = append(vec.nodes, *node)
+		vec.nodes = append(vec.nodes, Node{typ: TypeUnk})
+		n++
+		_ = vec.nodes[n-1]
+		node = &vec.nodes[n-1]
 	}
 	vec.nodeL++
 	node.vptr, node.depth = vec.ptr(), depth
@@ -253,7 +257,11 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 
 // PutNode returns node back to the array.
 func (vec *Vector) PutNode(idx int, node *Node) {
-	vec.nodes[idx] = *node
+	l := unsafe.Pointer(&vec.nodes[idx])
+	r := unsafe.Pointer(node)
+	if uintptr(l) != uintptr(r) {
+		vec.nodes[idx] = *node
+	}
 }
 
 // SetErrOffset sets error offset.
