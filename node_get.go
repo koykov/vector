@@ -42,6 +42,8 @@ func (n *Node) Get(keys ...string) *Node {
 		tail := keys[1:]
 		if len(tail) == 0 {
 			return child
+		} else if n.val.Len() > 0 && len(tail) == 1 && n.val.String() == tail[0] {
+			return n
 		} else {
 			return child.Get(tail...)
 		}
