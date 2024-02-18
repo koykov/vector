@@ -7,8 +7,8 @@ import (
 	"github.com/koykov/indirect"
 )
 
-// Byteptr represents Vector implementation of byteptr.Byteptr object.
-type Byteptr struct {
+// ByteptrV1 represents Vector implementation of byteptr.Byteptr object.
+type ByteptrV1 struct {
 	byteptr.Byteptr
 	bitset.Bitset8
 	// Vector raw pointer.
@@ -16,25 +16,25 @@ type Byteptr struct {
 }
 
 // Bytes converts byteptr object to bytes slice and implements vector's helper logic over it.
-func (p *Byteptr) Bytes() []byte {
-	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
-		return vec.Helper.Indirect(p)
-	}
+func (p *ByteptrV1) Bytes() []byte {
+	// if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
+	// 	return vec.Helper.Indirect(p)
+	// }
 	return p.RawBytes()
 }
 
 // Convert byteptr to string.
-func (p *Byteptr) String() string {
+func (p *ByteptrV1) String() string {
 	return fastconv.B2S(p.Bytes())
 }
 
 // RawBytes converts byteptr to byte slice without any logic.
-func (p *Byteptr) RawBytes() []byte {
+func (p *ByteptrV1) RawBytes() []byte {
 	return p.Byteptr.Bytes()
 }
 
 // Reset byteptr object.
-func (p *Byteptr) Reset() {
+func (p *ByteptrV1) Reset() {
 	p.Byteptr.Reset()
 	p.Bitset8.Reset()
 	p.vecPtr = 0
@@ -43,7 +43,7 @@ func (p *Byteptr) Reset() {
 // Restore the entire object from the unsafe pointer.
 //
 // This needs to reduce pointers count and avoids redundant GC checks.
-func (p *Byteptr) indirectVector() *Vector {
+func (p *ByteptrV1) indirectVector() *Vector {
 	if p.vecPtr == 0 {
 		return nil
 	}
