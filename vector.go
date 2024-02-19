@@ -16,7 +16,7 @@ type Vector struct {
 	// Source data to parse.
 	src []byte
 	// Source data pointer.
-	addr uint64
+	addr uintptr
 	// Buffers.
 	buf   []byte
 	bufSS []string
@@ -88,7 +88,7 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	}
 	// Get source data address.
 	h := (*reflect.SliceHeader)(unsafe.Pointer(&vec.src))
-	vec.addr = uint64(h.Data)
+	vec.addr = h.Data
 	return nil
 }
 
@@ -115,7 +115,7 @@ func (vec *Vector) SrcAt(i int) byte {
 }
 
 // SrcAddr returns source address in virtual memory.
-func (vec *Vector) SrcAddr() uint64 {
+func (vec *Vector) SrcAddr() uintptr {
 	return vec.addr
 }
 
