@@ -23,6 +23,8 @@ const (
 	TypeAttr
 )
 
+const nodeSize = 120
+
 // Node object.
 type Node struct {
 	// Node type.
@@ -37,10 +39,8 @@ type Node struct {
 	vptr, pptr uintptr
 }
 
-var (
-	// Null node instance. Will return for empty results.
-	nullNode = &Node{typ: TypeNull}
-)
+// Null node instance. Will return for empty results.
+var nullNode = &Node{typ: TypeNull}
 
 // SetType sets type of the node.
 func (n *Node) SetType(typ Type) {
@@ -309,7 +309,8 @@ func (n *Node) Reset() *Node {
 	n.typ = TypeUnk
 	n.key.Reset()
 	n.val.Reset()
-	n.depth, n.offset, n.limit, n.vptr = 0, 0, 0, 0
+	n.depth, n.offset, n.limit = 0, 0, 0
+	n.vptr, n.pptr = 0, 0
 	return n
 }
 
