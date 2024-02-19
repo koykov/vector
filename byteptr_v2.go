@@ -9,6 +9,8 @@ import (
 	"github.com/koykov/indirect"
 )
 
+const byteptrSize = 32
+
 type Byteptr struct {
 	addr, vptr uintptr
 
@@ -44,6 +46,13 @@ func (p *Byteptr) Init(s []byte, offset, len int) *Byteptr {
 	return p.TakeAddr(s).SetOffset(offset).SetLen(len)
 }
 
+func (p *Byteptr) InitRaw(addr uintptr, offset, len int) *Byteptr {
+	p.addr = addr
+	p.offset = uint32(offset)
+	p.len = uint32(len)
+	return p
+}
+
 func (p *Byteptr) InitString(s string, offset, len int) *Byteptr {
 	return p.TakeStringAddr(s).SetOffset(offset).SetLen(len)
 }
@@ -51,6 +60,11 @@ func (p *Byteptr) InitString(s string, offset, len int) *Byteptr {
 // DEPRECATED: use InitString instead.
 func (p *Byteptr) InitStr(s string, offset, len int) *Byteptr {
 	return p.InitString(s, offset, len)
+}
+
+func (p *Byteptr) SetAddr(addr uintptr, cap int) *Byteptr {
+	p.addr, p.cap = addr, uint32(cap)
+	return p
 }
 
 func (p *Byteptr) SetOffset(offset int) *Byteptr {
