@@ -249,7 +249,7 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	}
 	vec.nodeL++
 	node.vptr, node.depth = vec.ptr(), depth
-	node.key.vecPtr, node.val.vecPtr = node.vptr, node.vptr
+	node.key.vptr, node.val.vptr = node.vptr, node.vptr
 	idx = vec.Len() - 1
 	node.idx = idx
 	return
