@@ -8,6 +8,7 @@ import (
 
 	"github.com/koykov/bitset"
 	"github.com/koykov/bytealg"
+	"github.com/koykov/openrt"
 )
 
 // Vector parser object.
@@ -240,7 +241,7 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	if vec.nodeL < n {
 		_ = vec.nodes[n-1]
 		node = &vec.nodes[vec.nodeL]
-		node.Reset()
+		// node.Reset()
 	} else {
 		vec.nodes = append(vec.nodes, Node{typ: TypeUnk})
 		n++
@@ -279,7 +280,9 @@ func (vec *Vector) Reset() {
 	if vec.nodeL == 0 {
 		return
 	}
-	_ = vec.nodes[vec.nodeL-1]
+	openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
+	vec.nodeL = 0
+
 	vec.buf, vec.src = vec.buf[:0], nil
 	vec.bufSS = vec.bufSS[:0]
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
