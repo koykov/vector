@@ -10,3 +10,5 @@ github.com/koykov/fastconv v1.0.2 h1:csOWpctD9OcpkfI07LEtqtolc4TT8Y6QG3zQvkTmhrQ
 github.com/koykov/fastconv v1.0.2/go.mod h1:9jOx5KRGe4UKHxGiDw5Yrp/qrqn2cRwH3xvFjqqCE3c=
 github.com/koykov/indirect v1.0.0 h1:3kog1xvVUEB2142K2/AZRhnOKN2N8KNahHHkE+KT7ec=
 github.com/koykov/indirect v1.0.0/go.mod h1:2qWC0hrIHIexlKaqPA0VWEa0s2V/qxxNJv7XPncnh2I=
+github.com/koykov/openrt v0.0.0-20240220213454-7b5b4e8c30a5 h1:Gf4EYzitGI5RjjRKT2fhYJcGuo9g6HRM4jvCO4KmmlA=
+github.com/koykov/openrt v0.0.0-20240220213454-7b5b4e8c30a5/go.mod h1:y8Xa99HTBmthCilUUW36IZJd5SP9Rb+W8S9CJaauyU8=
