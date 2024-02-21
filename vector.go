@@ -315,10 +315,7 @@ func (vec *Vector) KeepPtr() {
 
 // Return self pointer of the vector.
 func (vec *Vector) ptr() uintptr {
-	if vec.selfPtr == 0 {
-		vec.selfPtr = uintptr(unsafe.Pointer(vec))
-	}
-	return vec.selfPtr
+	return uintptr(unsafe.Pointer(vec))
 }
 
 // Split path by given separator.
