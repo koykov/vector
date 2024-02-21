@@ -25,10 +25,10 @@ func (idx *Index) Register(depth, i int) int {
 		}
 	}
 	b := &idx.tree[depth]
-	if b.len >= len(b.buf) {
-		b.buf = append(b.buf, i)
-	} else {
+	if b.len < len(b.buf) {
 		b.buf[b.len] = i
+	} else {
+		b.buf = append(b.buf, i)
 	}
 	b.len++
 	return b.len
