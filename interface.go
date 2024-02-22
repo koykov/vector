@@ -52,5 +52,6 @@ type Interface interface {
 	Marshal(io.Writer) error
 
 	ErrorOffset() int
+	Prealloc(uint)
 	Reset()
 }
