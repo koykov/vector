@@ -249,7 +249,8 @@ func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 		node = &vec.nodes[n-1]
 	}
 	vec.nodeL++
-	node.vptr, node.depth = vec.ptr(), depth
+	node.depth = depth
+	node.vptr = vec.ptr()
 	node.key.vptr, node.val.vptr = node.vptr, node.vptr
 	idx = vec.Len() - 1
 	node.idx = idx
@@ -273,6 +274,13 @@ func (vec *Vector) SetErrOffset(offset int) {
 // ErrorOffset returns last error offset.
 func (vec *Vector) ErrorOffset() int {
 	return vec.errOff
+}
+
+// Prealloc prepares space for further parse.
+func (vec *Vector) Prealloc(size uint) {
+	if ul := uint(len(vec.nodes)); ul < size {
+		vec.nodes = append(vec.nodes, make([]Node, size-ul+1)...)
+	}
 }
 
 // Reset vector data.
