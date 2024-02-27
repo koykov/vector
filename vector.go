@@ -239,13 +239,10 @@ func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 func (vec *Vector) getNode(depth int) (node *Node, idx int) {
 	n := len(vec.nodes)
 	if vec.nodeL < n {
-		_ = vec.nodes[n-1]
 		node = &vec.nodes[vec.nodeL]
-		// node.Reset()
 	} else {
 		vec.nodes = append(vec.nodes, Node{typ: TypeUnk})
 		n++
-		_ = vec.nodes[n-1]
 		node = &vec.nodes[n-1]
 	}
 	vec.nodeL++
@@ -288,7 +285,9 @@ func (vec *Vector) Reset() {
 	if vec.nodeL == 0 {
 		return
 	}
-	openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
+	if !vec.CheckBit(FlagNoClear) {
+		openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
+	}
 	vec.nodeL = 0
 
 	vec.buf, vec.src = vec.buf[:0], nil
