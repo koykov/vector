@@ -47,7 +47,8 @@ func (idx *Index) GetRow(depth int) []int {
 	if depth < 0 || depth >= len(idx.tree) {
 		return nil
 	}
-	return idx.tree[depth].buf
+	b := &idx.tree[depth]
+	return b.buf[:b.len]
 }
 
 // Reset rest of the index starting of given depth and offset in the tree.
