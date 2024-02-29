@@ -90,6 +90,7 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 	// Get source data address.
 	h := (*reflect.SliceHeader)(unsafe.Pointer(&vec.src))
 	vec.addr = h.Data
+	vec.selfPtr = uintptr(unsafe.Pointer(vec))
 	return nil
 }
 
@@ -236,22 +237,25 @@ func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 // Generic node getter.
 //
 // Returns new node and its index in the nodes array.
-func (vec *Vector) getNode(depth int) (node *Node, idx int) {
+func (vec *Vector) getNode(depth int) (*Node, int) {
 	n := len(vec.nodes)
+	if n > 0 {
+		_ = vec.nodes[n-1]
+	}
+	var node *Node
 	if vec.nodeL < n {
 		node = &vec.nodes[vec.nodeL]
 	} else {
 		vec.nodes = append(vec.nodes, Node{typ: TypeUnk})
-		n++
-		node = &vec.nodes[n-1]
+		node = &vec.nodes[n]
 	}
-	vec.nodeL++
 	node.depth = depth
-	node.vptr = vec.ptr()
-	node.key.vptr, node.val.vptr = node.vptr, node.vptr
-	idx = vec.Len() - 1
-	node.idx = idx
-	return
+	node.vptr = vec.selfPtr
+	node.key.vptr = node.vptr
+	node.val.vptr = node.vptr
+	node.idx = vec.nodeL
+	vec.nodeL++
+	return node, node.idx
 }
 
 // PutNode returns node back to the array.
