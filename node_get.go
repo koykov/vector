@@ -34,10 +34,10 @@ func (n *Node) Get(keys ...string) *Node {
 	}
 	if n.typ == TypeArr {
 		i, err := strconv.Atoi(keys[0])
-		if err != nil || i >= n.limit {
+		if err != nil || uint32(i) >= n.limit {
 			return nullNode
 		}
-		idx := vec.Index.val(n.depth+1, n.offset+i)
+		idx := vec.Index.val(n.depth+1, n.offset+uint32(i))
 		child := &vec.nodes[idx]
 		tail := keys[1:]
 		if len(tail) == 0 {

@@ -25,7 +25,7 @@ type Vector struct {
 	selfPtr uintptr
 	// List of nodes and length of it.
 	nodes []Node
-	nodeL int
+	nodeL uint32
 	// Error offset.
 	errOff int
 	// Nodes index.
@@ -95,7 +95,7 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 }
 
 // Len returns length of nodes array.
-func (vec *Vector) Len() int {
+func (vec *Vector) Len() uint32 {
 	return vec.nodeL
 }
 
@@ -127,7 +127,7 @@ func (vec *Vector) Root() *Node {
 }
 
 // RootLen returns count of root nodes.
-func (vec *Vector) RootLen() int {
+func (vec *Vector) RootLen() uint32 {
 	return vec.Index.Len(0)
 }
 
@@ -197,21 +197,21 @@ func (vec *Vector) Exists(key string) bool {
 }
 
 // GetNode returns new node with index from position matrix by given depth.
-func (vec *Vector) GetNode(depth int) (node *Node, idx int) {
+func (vec *Vector) GetNode(depth uint32) (node *Node, idx uint32) {
 	node, idx = vec.getNode(depth)
 	vec.Index.Register(depth, idx)
 	return
 }
 
 // GetNodeWT returns node and set type at once.
-func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
+func (vec *Vector) GetNodeWT(depth uint32, typ Type) (*Node, uint32) {
 	node, idx := vec.GetNode(depth)
 	node.typ = typ
 	return node, idx
 }
 
 // NodeAt returns node at given position.
-func (vec *Vector) NodeAt(idx int) *Node {
+func (vec *Vector) NodeAt(idx uint32) *Node {
 	if idx < 0 || idx >= vec.Len() {
 		return nullNode
 	}
@@ -221,12 +221,12 @@ func (vec *Vector) NodeAt(idx int) *Node {
 // GetChild get node and register it as a child of root node.
 //
 // Similar to GetNode.
-func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
+func (vec *Vector) GetChild(root *Node, depth uint32) (*Node, uint32) {
 	return vec.GetChildWT(root, depth, TypeUnk)
 }
 
 // GetChildWT get node, register it as a child of root node and set type at once.
-func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
+func (vec *Vector) GetChildWT(root *Node, depth uint32, typ Type) (*Node, uint32) {
 	node, idx := vec.getNode(depth)
 	node.typ = typ
 	node.pptr = root.ptr()
@@ -237,8 +237,8 @@ func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 // Generic node getter.
 //
 // Returns new node and its index in the nodes array.
-func (vec *Vector) getNode(depth int) (*Node, int) {
-	n := len(vec.nodes)
+func (vec *Vector) getNode(depth uint32) (*Node, uint32) {
+	n := uint32(len(vec.nodes))
 	if n > 0 {
 		_ = vec.nodes[n-1]
 	}
@@ -290,7 +290,7 @@ func (vec *Vector) Reset() {
 		return
 	}
 	if !vec.CheckBit(FlagNoClear) {
-		openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
+		openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), int(vec.nodeL*nodeSize))
 	}
 	vec.nodeL = 0
 
@@ -302,7 +302,7 @@ func (vec *Vector) Reset() {
 }
 
 // ForgetFrom forgets nodes from given position to the end of the array.
-func (vec *Vector) ForgetFrom(idx int) {
+func (vec *Vector) ForgetFrom(idx uint32) {
 	if idx >= vec.nodeL {
 		return
 	}

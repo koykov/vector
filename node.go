@@ -10,7 +10,7 @@ import (
 )
 
 // Type represents Node type.
-type Type int
+type Type uint32
 
 const (
 	TypeUnk Type = iota
@@ -23,7 +23,7 @@ const (
 	TypeAttr
 )
 
-const nodeSize = 120
+const nodeSize = 104
 
 // Node object.
 type Node struct {
@@ -31,8 +31,8 @@ type Node struct {
 	typ Type
 	// Key/value byteptr objects.
 	key, val Byteptr
-	// Node index in array, depth in a index tree, offset in index row and limit of childs in index row.
-	idx, depth, offset, limit int
+	// Node index in array, depth in an index tree, offset in index row and limit of childs in index row.
+	idx, depth, offset, limit uint32
 	// Raw pointers to vector and parent node.
 	// It's safe to usi uintptr here because vector guaranteed to exist while the node is alive and isn't garbage
 	// collected.
@@ -53,34 +53,34 @@ func (n *Node) Type() Type {
 }
 
 // Index returns node index in the array of nodes.
-func (n *Node) Index() int {
+func (n *Node) Index() uint32 {
 	return n.idx
 }
 
 // Depth returns node depth in index matrix.
-func (n *Node) Depth() int {
+func (n *Node) Depth() uint32 {
 	return n.depth
 }
 
 // SetOffset sets offset in the index row.
-func (n *Node) SetOffset(offset int) *Node {
+func (n *Node) SetOffset(offset uint32) *Node {
 	n.offset = offset
 	return n
 }
 
 // Offset returns offset of childs in the index row.
-func (n *Node) Offset() int {
+func (n *Node) Offset() uint32 {
 	return n.offset
 }
 
 // SetLimit sets limit of childs in index row.
-func (n *Node) SetLimit(limit int) *Node {
+func (n *Node) SetLimit(limit uint32) *Node {
 	n.limit = limit
 	return n
 }
 
 // Limit returns limit of childs in index row.
-func (n *Node) Limit() int {
+func (n *Node) Limit() uint32 {
 	if n.limit != n.offset && n.limit >= n.offset {
 		return n.limit - n.offset
 	} else if n.limit == 0 && n.offset > 0 {
@@ -315,7 +315,7 @@ func (n *Node) Reset() *Node {
 }
 
 // Get list of children indexes.
-func (n *Node) childrenIdx() []int {
+func (n *Node) childrenIdx() []uint32 {
 	if vec := n.indirectVector(); vec != nil {
 		var limit = n.limit
 		if limit == 0 {
@@ -340,7 +340,7 @@ func (n *Node) Children() []Node {
 }
 
 // ChildrenIndices returns list of indices of children nodes.
-func (n *Node) ChildrenIndices() []int {
+func (n *Node) ChildrenIndices() []uint32 {
 	return n.childrenIdx()
 }
 

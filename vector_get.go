@@ -31,7 +31,7 @@ func (vec *Vector) Get(keys ...string) *Node {
 }
 
 // GetByIdx returns node by known index in nodes array.
-func (vec *Vector) GetByIdx(idx int) *Node {
+func (vec *Vector) GetByIdx(idx uint32) *Node {
 	if idx < vec.Len() {
 		return &vec.nodes[idx]
 	}
@@ -222,10 +222,10 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 		return root
 	}
 	k, err := strconv.Atoi(keys[0])
-	if err != nil || k >= root.limit {
+	if err != nil || uint32(k) >= root.limit {
 		return nullNode
 	}
-	i := vec.Index.val(root.depth+1, root.offset+k)
+	i := vec.Index.val(root.depth+1, root.offset+uint32(k))
 	node := &vec.nodes[i]
 	tail := keys[1:]
 	if node.typ != TypeArr && node.typ != TypeObj {

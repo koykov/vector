@@ -8,6 +8,7 @@ import (
 )
 
 // ByteptrV1 represents Vector implementation of byteptr.Byteptr object.
+// DEPRECATED: use Byteptr instead.
 type ByteptrV1 struct {
 	byteptr.Byteptr
 	bitset.Bitset8
