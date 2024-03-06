@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/koykov/bitset"
+	"github.com/koykov/entry"
 	"github.com/koykov/fastconv"
 	"github.com/koykov/indirect"
 )
@@ -138,4 +139,10 @@ func (p *Byteptr) indirectVector() *Vector {
 		return nil
 	}
 	return (*Vector)(indirect.ToUnsafePtr(p.vptr))
+}
+
+func (p *Byteptr) equalKE(s string, e entry.Entry64) bool {
+	lo, hi := e.Decode()
+	ks := s[lo:hi]
+	return ks == p.String()
 }

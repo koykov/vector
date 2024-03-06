@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/koykov/bytealg"
+	"github.com/koykov/entry"
 )
 
 // Get returns child node by given keys.
@@ -46,6 +47,52 @@ func (n *Node) Get(keys ...string) *Node {
 			return n
 		} else {
 			return child.Get(tail...)
+		}
+	}
+	return nullNode
+}
+
+func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
+	if len(keys) == 0 {
+		return n
+	}
+	if n.typ != TypeObj && n.typ != TypeArr {
+		return nullNode
+	}
+	var vec *Vector
+	if vec = n.indirectVector(); vec == nil {
+		return n
+	}
+	if n.typ == TypeObj {
+		for i := n.offset; i < n.limit; i++ {
+			idx := vec.Index.val(n.depth+1, i)
+			child := &vec.nodes[idx]
+			if child.keyEqualKE(path, keys[0]) {
+				tail := keys[1:]
+				if len(tail) == 0 {
+					return child
+				} else {
+					return child.getKE(path, tail...)
+				}
+			}
+		}
+	}
+	if n.typ == TypeArr {
+		lo, hi := keys[0].Decode()
+		skey := path[lo:hi]
+		i, err := strconv.Atoi(skey)
+		if err != nil || i >= n.limit {
+			return nullNode
+		}
+		idx := vec.Index.val(n.depth+1, n.offset+i)
+		child := &vec.nodes[idx]
+		tail := keys[1:]
+		if len(tail) == 0 {
+			return child
+		} else if n.val.Len() > 0 && len(tail) == 1 && n.val.equalKE(path, tail[0]) {
+			return n
+		} else {
+			return child.getKE(path, tail...)
 		}
 	}
 	return nullNode
@@ -138,8 +185,8 @@ func (n *Node) GetPS(path, separator string) *Node {
 	if vec == nil {
 		return nullNode
 	}
-	vec.bufSS = bytealg.AppendSplit(vec.bufSS[:0], path, separator, -1)
-	return n.Get(vec.bufSS...)
+	vec.bufKE = bytealg.AppendSplitEntryString(vec.bufKE[:0], path, separator, -1)
+	return n.getKE(path, vec.bufKE...)
 }
 
 // GetObjectPS looks and get child object by given path and separator.
@@ -149,7 +196,7 @@ func (n *Node) GetObjectPS(path, separator string) *Node {
 		return nullNode
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeObj {
 		return nullNode
 	}
@@ -163,7 +210,7 @@ func (n *Node) GetArrayPS(path, separator string) *Node {
 		return nullNode
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeArr {
 		return nullNode
 	}
@@ -177,7 +224,7 @@ func (n *Node) GetBytesPS(path, separator string) []byte {
 		return nil
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeStr {
 		return nil
 	}
@@ -191,7 +238,7 @@ func (n *Node) GetStringPS(path, separator string) string {
 		return ""
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeStr {
 		return ""
 	}
@@ -205,7 +252,7 @@ func (n *Node) GetBoolPS(path, separator string) bool {
 		return false
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeBool {
 		return false
 	}
@@ -219,7 +266,7 @@ func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 		return 0, ErrInternal
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
@@ -236,7 +283,7 @@ func (n *Node) GetIntPS(path, separator string) (int64, error) {
 		return 0, ErrInternal
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
@@ -253,7 +300,7 @@ func (n *Node) GetUintPS(path, separator string) (uint64, error) {
 		return 0, ErrInternal
 	}
 	vec.splitPath(path, separator)
-	node := n.Get(vec.bufSS...)
+	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}

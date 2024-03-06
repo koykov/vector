@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/koykov/bytealg"
+	"github.com/koykov/entry"
 	"github.com/koykov/indirect"
 )
 
@@ -412,6 +413,16 @@ func (n *Node) keyEqual(key string) bool {
 		return n.key.String() == key && n.typ == TypeAttr
 	}
 	return n.typ != TypeAttr && n.key.String() == key
+}
+
+func (n *Node) keyEqualKE(path string, key entry.Entry64) bool {
+	lo, hi := key.Decode()
+	skey := path[lo:hi]
+	if skey[0] == '@' {
+		skey = skey[1:]
+		return n.key.String() == skey && n.typ == TypeAttr
+	}
+	return n.typ != TypeAttr && n.key.String() == skey
 }
 
 // Return self pointer of the node.
