@@ -1,12 +1,15 @@
 github.com/koykov/bitset v1.0.0 h1:2mEbAhKelhpdWqnpa+mR3HRhdMsto5od7ACOi6MIAmk=
 github.com/koykov/bitset v1.0.0/go.mod h1:DVR3bH49c1oOcNtD38h+aQq7lp1ZY91cXmjOldlTk8A=
-github.com/koykov/bytealg v1.0.3 h1:za9rkXplGzR3QrHYPS9hrAxRA0+ADtGntAGymmgfIpQ=
-github.com/koykov/bytealg v1.0.3/go.mod h1:OXm+Nppt6hrH+Yrffh6U9Myuj1pB5Vscx4gjJFgTLr8=
+github.com/koykov/bytealg v1.0.4-0.20240304210918-a851188c7945 h1:Nah/u3QYiP8ilmDO/yQ/DUA02n3nwDjFuM2T1Ukva7Q=
+github.com/koykov/bytealg v1.0.4-0.20240304210918-a851188c7945/go.mod h1:hKrpKHsfJ7aeSOOcmSqGnEfC//2rfMmQt2OugvJxy9s=
 github.com/koykov/byteconv v1.0.0 h1:C8NThxj3Vcmv7f1h384Ti7F9zjVDnOy9AZj9KxTaYqM=
+github.com/koykov/byteconv v1.0.0/go.mod h1:viZknv/akQJrXOQS3bZu2U7TE+gjA03LFQpSsRExZR4=
 github.com/koykov/byteptr v1.0.0 h1:tOMEM2qwfFOKTeMNgnzHKyBVWeXxiD1SduLlbzVKJJg=
 github.com/koykov/byteptr v1.0.0/go.mod h1:SSRuU7v8JgUo1deHib6Za8s6ya1PQEG2gNpRVKsO3QM=
 github.com/koykov/byteseq v1.0.1 h1:PbsGtxkUnvrqlwnjNxnRq5FDIvLXJg5CcN9yRuSQY7A=
 github.com/koykov/byteseq v1.0.1/go.mod h1:JlIJ6P3/ocuGNRbTVyP0NVRS/ExofhOS8g7mtefjefw=
+github.com/koykov/entry v1.0.2 h1:6mZJUt4POGQHRPJ9Iw4GyIZJi9wj2lews3yRRNHfTY4=
+github.com/koykov/entry v1.0.2/go.mod h1:WmCy/YM0sPb4ETL9wYY0OJwO89KJ7qeQPGOwLUG4rZU=
 github.com/koykov/fastconv v1.0.2 h1:csOWpctD9OcpkfI07LEtqtolc4TT8Y6QG3zQvkTmhrQ=
 github.com/koykov/fastconv v1.0.2/go.mod h1:9jOx5KRGe4UKHxGiDw5Yrp/qrqn2cRwH3xvFjqqCE3c=
 github.com/koykov/indirect v1.0.1 h1:1veVipIWBeklFHMvzuwhL82X5eDaJzN+hPeVGRvu22Y=

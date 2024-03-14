@@ -8,6 +8,7 @@ import (
 
 	"github.com/koykov/bitset"
 	"github.com/koykov/bytealg"
+	"github.com/koykov/entry"
 	"github.com/koykov/openrt"
 )
 
@@ -20,7 +21,7 @@ type Vector struct {
 	addr uintptr
 	// Buffers.
 	buf   []byte
-	bufSS []string
+	bufKE []entry.Entry64
 	// Self pointer.
 	selfPtr uintptr
 	// List of nodes and length of it.
@@ -295,7 +296,7 @@ func (vec *Vector) Reset() {
 	vec.nodeL = 0
 
 	vec.buf, vec.src = vec.buf[:0], nil
-	vec.bufSS = vec.bufSS[:0]
+	vec.bufKE = vec.bufKE[:0]
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.Index.reset()
 	vec.Bitset.Reset()
@@ -331,21 +332,24 @@ func (vec *Vector) ptr() uintptr {
 
 // Split path by given separator.
 //
-// Caution! Don't user "@" as a separator, it will break work with attributes.
+// Caution! Don't use "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
-	vec.bufSS = bytealg.AppendSplit(vec.bufSS[:0], path, separator, -1)
-	ti := len(vec.bufSS) - 1
+	vec.bufKE = bytealg.AppendSplitEntryString(vec.bufKE[:0], path, separator, -1)
+	ti := len(vec.bufKE) - 1
 	if ti < 0 {
 		return
 	}
-	tail := vec.bufSS[ti]
+	lo, hi := vec.bufKE[ti].Decode()
+	tail := path[lo:hi]
 	if p := strings.IndexByte(tail, '@'); p != -1 {
 		if p > 0 {
 			if len(tail[p:]) > 1 {
-				vec.bufSS = append(vec.bufSS, tail[p:])
+				var ne entry.Entry64
+				ne.Encode(lo+uint32(p), hi)
+				vec.bufKE = append(vec.bufKE, ne)
 			}
-			vec.bufSS[ti] = vec.bufSS[ti][:p]
+			vec.bufKE[ti].Encode(lo, lo+uint32(p))
 		}
 	}
 }
