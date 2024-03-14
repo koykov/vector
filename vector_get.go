@@ -32,6 +32,7 @@ func (vec *Vector) Get(keys ...string) *Node {
 	return node
 }
 
+// Entry based version of Get.
 func (vec *Vector) getKE(path string, keys ...entry.Entry64) *Node {
 	if len(keys) == 0 {
 		if vec.Len() > 0 {
@@ -300,6 +301,7 @@ func (vec *Vector) getObj(root *Node, keys ...string) *Node {
 	return nullNode
 }
 
+// Entry based version of getArr.
 func (vec *Vector) getArrKE(root *Node, path string, keys ...entry.Entry64) *Node {
 	if len(keys) == 0 {
 		return root
@@ -331,6 +333,7 @@ func (vec *Vector) getArrKE(root *Node, path string, keys ...entry.Entry64) *Nod
 	return nullNode
 }
 
+// Entry based version of getObj.
 func (vec *Vector) getObjKE(root *Node, path string, keys ...entry.Entry64) *Node {
 	if len(keys) == 0 {
 		return root

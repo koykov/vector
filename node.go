@@ -415,8 +415,9 @@ func (n *Node) keyEqual(key string) bool {
 	return n.typ != TypeAttr && n.key.String() == key
 }
 
-func (n *Node) keyEqualKE(path string, key entry.Entry64) bool {
-	lo, hi := key.Decode()
+// Check if key of n equals to substring of s described by e.
+func (n *Node) keyEqualKE(path string, e entry.Entry64) bool {
+	lo, hi := e.Decode()
 	skey := path[lo:hi]
 	if skey[0] == '@' {
 		skey = skey[1:]

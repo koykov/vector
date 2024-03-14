@@ -52,6 +52,7 @@ func (n *Node) Get(keys ...string) *Node {
 	return nullNode
 }
 
+// Entry based version of Get.
 func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 	if len(keys) == 0 {
 		return n

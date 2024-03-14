@@ -141,6 +141,7 @@ func (p *Byteptr) indirectVector() *Vector {
 	return (*Vector)(indirect.ToUnsafePtr(p.vptr))
 }
 
+// Check if p equals to substring of s described by e.
 func (p *Byteptr) equalKE(s string, e entry.Entry64) bool {
 	lo, hi := e.Decode()
 	ks := s[lo:hi]
