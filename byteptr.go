@@ -5,8 +5,8 @@ import (
 	"unsafe"
 
 	"github.com/koykov/bitset"
+	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
-	"github.com/koykov/fastconv"
 	"github.com/koykov/indirect"
 )
 
@@ -91,7 +91,7 @@ func (p *Byteptr) Bytes() []byte {
 func (p *Byteptr) String() string {
 	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
 		b := vec.Helper.Indirect(p)
-		return fastconv.B2S(b)
+		return byteconv.B2S(b)
 	}
 	return p.RawString()
 }
