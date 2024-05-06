@@ -40,7 +40,13 @@ func (vec *Vector) Parse(_ []byte) error {
 	return ErrNotImplement
 }
 
+// ParseString parses source string.
+func (vec *Vector) ParseString(_ string) error {
+	return ErrNotImplement
+}
+
 // ParseStr parses source string.
+// DEPRECATED: use ParseString instead.
 func (vec *Vector) ParseStr(_ string) error {
 	return ErrNotImplement
 }
@@ -50,7 +56,13 @@ func (vec *Vector) ParseCopy(_ []byte) error {
 	return ErrNotImplement
 }
 
+// ParseCopyString copies source string and parse it.
+func (vec *Vector) ParseCopyString(_ string) error {
+	return ErrNotImplement
+}
+
 // ParseCopyStr copies source string and parse it.
+// DEPRECATED: use ParseCopyString instead.
 func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }

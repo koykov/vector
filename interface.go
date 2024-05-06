@@ -7,7 +7,11 @@ type Interface interface {
 
 	Parse([]byte) error
 	ParseCopy([]byte) error
+	ParseString(string) error
+	ParseCopyString(string) error
+	// DEPRECATED: use ParseString instead.
 	ParseStr(string) error
+	// DEPRECATED: use ParseCopyString instead.
 	ParseCopyStr(string) error
 
 	Root() *Node
