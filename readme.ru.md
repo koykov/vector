@@ -14,3 +14,34 @@
 
 Таким образом главная главная цель всего проекта заключается в том, чтобы минимизировать количество указателей в памяти,
 и, тем самым, сократить издержки на работу GC. Дополнительной целью является минимизация использования памяти.
+
+Сравним эти два подхода на конкретном примере. Пусть мы имеем JSON документ:
+```json
+{
+  "a":{"c":"foobar","d":3.1415},
+  "b":["asdfgh","zxcvb"]
+}
+```
+
+Типичный парсер создаст в памяти дерево вида:
+<img width="100%" src="static/typical.svg" alt="">
+
+, где каждый узел будет являться структурой:
+```go
+type Node struct {
+	typ Type    // [null, object, array, string, number, true, false]
+	obj Object  // one pointer to slice and N*2 pointers inside KeyValue struct, see below
+	arr []*Node // one pointer for the slice and N pointers for each array item
+	str string  // one pointer
+}
+
+type Object []KeyValue
+
+type KeyValue struct {
+	key string // one pointer
+	val *Node  // one pointer to node
+}
+```
+
+Нетрудно заметить, что такая структура плодит черезсчур много указателей и с ростом сложности исходного документа их будет
+всё больше.
