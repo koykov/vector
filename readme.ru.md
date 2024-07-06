@@ -78,3 +78,60 @@ func (Vector) ParseCopyString(string) error
 copy-версии позволяют явно сделать копию исходных данных внутри вектора. По умолчанию копирование не происходит и ноды
 указывают на память вне вектора. Обязанностью разработчика является обеспечить сохранность данных на протяжении всей
 жизни вектора. Если сделать это невозможно, то лучше воспользоваться copy-методом, это безопаснее.
+
+### Чтение данных
+
+Самыми базовыми методами чтения данных в vector API являются:
+```go
+func (Vector) Get(path ...string) *Node
+func (Vector) GetObject(path ...string) *Node
+func (Vector) GetArray(path ...string) *Node
+func (Vector) GetBytes(path ...string) []byte
+func (Vector) GetString(path ...string) string
+func (Vector) GetBool(path ...string) bool
+func (Vector) GetFloat(path ...string) (float64, error)
+func (Vector) GetInt(path ...string) (int64, error)
+func (Vector) GetUint(path ...string) (uint64, error)
+```
+По variadic пути эти методы позволяют получить или ноду или сразу нужное значением (типы в исходных данных должны совпадать
+, например метод `GetInt` вернёт число только в том случае, если по `path` в исходном документе лежит именно
+челочисленное число).
+
+vector API также позволяет задавать получать данные, не используя variadic переменную пути:
+```go
+func (Vector) GetPS(path, separator string) *Node
+func (Vector) GetObjectPS(path, separator string) *Node
+func (Vector) GetArrayPS(path, separator string) *Node
+func (Vector) GetBytesPS(path, separator string) []byte
+func (Vector) GetStringPS(path, separator string) string
+func (Vector) GetBoolPS(path, separator string) bool
+func (Vector) GetFloatPS(path, separator string) (float64, error)
+func (Vector) GetIntPS(path, separator string) (int64, error)
+func (Vector) GetUintPS(path, separator string) (uint64, error)
+```
+Пример:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+s := vec.GetStringPS("a.b.c", ".")
+println(s) // foobar
+```
+
+Т.к. наиболее популярным разделителем является точка (`"."`), то vector API предоставляет удобные алиас-методы:
+```go
+func (Vector) Dot(path string) *Node
+func (Vector) DotObject(path string) *Node
+func (Vector) DotArray(path string) *Node
+func (Vector) DotBytes(path string) []byte
+func (Vector) DotString(path string) string
+func (Vector) DotBool(path string) bool
+func (Vector) DotFloat(path string) (float64, error)
+func (Vector) DotInt(path string) (int64, error)
+func (Vector) DotUint(path string) (uint64, error)
+```
+Пример:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+s := vec.DotString("a.b.c")
+println(s) // foobar
+```
+Это просто удобный синтаксический сахар, чтобы не указывать самый популярный разделитель.
