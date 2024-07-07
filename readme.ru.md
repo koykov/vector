@@ -167,3 +167,18 @@ vector может вернуть ошибку при парсинге данны
 func (Vector) ErrorOffset() int
 ```
 С его помощью можно будет легко найти нужное место в исходном документе.
+
+### Итерирование
+
+Если вектором распарсили больше одного документа, то обойти их можно не использую `RootByIndex` метод:
+```go
+func (Vector) Each(fn func(int, *Node))
+```
+Пример:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+vec.ParseString(`{"x":{"y":{"z":"asdfgh"}}}`)
+vec.Each(func(i int, node *Node) {
+	node.Get("...")
+})
+```
