@@ -257,3 +257,19 @@ func (Node) Marshal(io.Writer) error
 ```
 
 Таким образом, можно сериализовать не весь докучмент целиком, а только нужную его часть.
+
+## Helper
+
+Очень важная часть API. В рамках vector API это интерфейс:
+```go
+type Helper interface {
+	Indirect(*Byteptr) []byte        // in-place unescape
+	Beautify(io.Writer, *Node) error
+	Marshal(io.Writer, *Node) error 
+}
+```
+Т.к. vector API это общее решение для парсеров, то конкретные реализации этого интерфейса обеспечивают де-экранирование
+и сериализацию для конкретных форматов данных ([JSON](https://github.com/koykov/jsonvector/blob/master/helper.go),
+[XML](https://github.com/koykov/xmlvector/blob/master/helper.go), ...).
+ 
+Замечу, что де-экранирование происходит in-place и дополнительная память для этого не нужна.
