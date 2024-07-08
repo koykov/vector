@@ -170,7 +170,7 @@ func (Vector) ErrorOffset() int
 
 ### Итерирование
 
-Если вектором распарсили больше одного документа, то обойти их можно не использую `RootByIndex` метод:
+Если вектором распарсили больше одного документа, то обойти их можно не используя `RootByIndex` метод:
 ```go
 func (Vector) Each(fn func(int, *Node))
 ```
@@ -181,4 +181,69 @@ vec.ParseString(`{"x":{"y":{"z":"asdfgh"}}}`)
 vec.Each(func(i int, node *Node) {
 	node.Get("...")
 })
+```
+
+## Node API
+
+### Чтение данных
+
+Аналогично vector API, есть три группы методов:
+* Get-методы
+* GetPS-методы
+* Dot-методы
+
+В дополнение, нода может возвращать отдельно ключ/значение в виде [Byteptr](byteptr.go) объектов:
+```go
+func (Node) Key() *Byteptr
+func (Node) Value() *Byteptr
+```
+или сразу конвертировать ключ/значение в типы:
+```go
+// key
+func (Node) KeyBytes() []byte
+func (Node) KeyString() string
+// value
+func (Node) Bytes() []byte
+func (Node) ForceBytes() []byte
+func (Node) RawBytes() []byte
+func (Node) String() string
+func (Node) ForceString()
+func (Node) Bool() bool
+func (Node) Float() (float64, error)
+func (Node) Int() (int64, error)
+func (Node) Uint() (uint64, error)
+func (Node) Object() *Node
+func (Node) Array() *Node
+
+func (Node) Type() Type
+func (Node) Exists(key string) bool
+```
+
+### Итерирование
+
+Если нода имеет тип объект или массив, то пройтись по дочерним нодам можено методом:
+```go
+func (Node) Each(fn func(idx int, node *Node))
+```
+
+### Сортировка
+
+Ноды типа объект или массив могут сортировать свои дочерние элементы:
+```go
+func (Node) SortKeys() *Node // по ключу
+func (Node) Sort() *Node     // по значению
+```
+
+### Удаление
+
+Ноды поддерживают предикатное удаление:
+```go
+func (Node) RemoveIf(cond func(idx int, node *Node) bool)
+```
+
+### Дочерние ноды
+
+```go
+func (Node) Children() []Node
+func (Node) ChildrenIndices() []int
 ```
