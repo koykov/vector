@@ -247,3 +247,13 @@ func (Node) RemoveIf(cond func(idx int, node *Node) bool)
 func (Node) Children() []Node
 func (Node) ChildrenIndices() []int
 ```
+
+### Сериализация
+
+Сериализация устроена аналогично vector API, но позволяет затронуть только текущую ноду и ещё дочерние ноды (рекурсивно):
+```go
+func (Node) Beautify(io.Writer) error
+func (Node) Marshal(io.Writer) error
+```
+
+Таким образом, можно сериализовать не весь докучмент целиком, а только нужную его часть.
