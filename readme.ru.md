@@ -273,3 +273,18 @@ type Helper interface {
 [XML](https://github.com/koykov/xmlvector/blob/master/helper.go), ...).
  
 Замечу, что де-экранирование происходит in-place и дополнительная память для этого не нужна.
+
+## Пулинг
+
+vector изначально разрабатывался как highload решение и поэтому использовать его следует только через пулинг:
+```go
+vec := jsonvector.Acquire()
+defer jsonvector.Release(vec)
+// or
+vec := xmlvector.Acquire()
+defer xmlvector.Release(vec)
+// ...
+```
+
+Сам пакет vector возможности пулинга не предоставляет, т.к. это просто общее API, но в производных пакетах существуют
+`Acquire`/`Release` методы, которые работают с `sync.Pool` неявно.
