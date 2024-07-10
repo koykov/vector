@@ -84,3 +84,58 @@ println(s0, s1) // foobar asdfgh
 ```
 
 Thus, vector minimizes pointers count on multiple source data as if parse only one source document.
+
+### Reading
+
+The basic reading methods:
+```go
+func (Vector) Get(path ...string) *Node
+func (Vector) GetObject(path ...string) *Node
+func (Vector) GetArray(path ...string) *Node
+func (Vector) GetBytes(path ...string) []byte
+func (Vector) GetString(path ...string) string
+func (Vector) GetBool(path ...string) bool
+func (Vector) GetFloat(path ...string) (float64, error)
+func (Vector) GetInt(path ...string) (int64, error)
+func (Vector) GetUint(path ...string) (uint64, error)
+```
+They takes a variadic path to field you require to read. Methods with exact types (`GetInt`, `GetBool`, ...) additionally
+check a type of fields in source documents.
+
+vector API allows to avoid using variadic using path with separator:
+```go
+func (Vector) GetPS(path, separator string) *Node
+func (Vector) GetObjectPS(path, separator string) *Node
+func (Vector) GetArrayPS(path, separator string) *Node
+func (Vector) GetBytesPS(path, separator string) []byte
+func (Vector) GetStringPS(path, separator string) string
+func (Vector) GetBoolPS(path, separator string) bool
+func (Vector) GetFloatPS(path, separator string) (float64, error)
+func (Vector) GetIntPS(path, separator string) (int64, error)
+func (Vector) GetUintPS(path, separator string) (uint64, error)
+```
+Example:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+s := vec.GetStringPS("a.b.c", ".")
+println(s) // foobar
+```
+
+Due to most popular separator is a dot (".") there are special alias-methods:
+```go
+func (Vector) Dot(path string) *Node
+func (Vector) DotObject(path string) *Node
+func (Vector) DotArray(path string) *Node
+func (Vector) DotBytes(path string) []byte
+func (Vector) DotString(path string) string
+func (Vector) DotBool(path string) bool
+func (Vector) DotFloat(path string) (float64, error)
+func (Vector) DotInt(path string) (int64, error)
+func (Vector) DotUint(path string) (uint64, error)
+```
+Example:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+s := vec.DotString("a.b.c")
+println(s) // foobar
+```
