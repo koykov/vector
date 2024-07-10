@@ -57,3 +57,30 @@ In fact, node struct if more complex that present on the picture. Key/value isn'
 data, but special struct [Byteptr](byteptr.go). It stores additionally raw (uintptr) "pointer" to source data and extra
 flags. But the idea is the same: in GC eyes, both byteptr and node is simple structs and GC will not spend time to check
 them.
+
+## API
+
+### Parsing
+
+Vector API provides four methods to parsing:
+```go
+func (Vector) Parse([]byte) error
+func (Vector) ParseCopy([]byte) error
+func (Vector) ParseString(string) error
+func (Vector) ParseCopyString(string) error
+```
+
+copy-versions allow to make a copy of source data explicitly. By default, vector not makes a copy and nodes "points" to
+memory outside of vector. It's a developer responsibility to extend a life of a source data at least the same as vector's
+life. If it's impossible, he better way is to use a copy-methods.
+
+The exclusive feature of vector is a possibility to parse many source documents using one vector instance:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+vec.ParseString(`{"x":{"y":{"z":"asdfgh"}}}`)
+s0 := vec.RootByIndex(0).DotString("a.b.c")
+s1 := vec.RootByIndex(1).DotString("x.y.z")
+println(s0, s1) // foobar asdfgh
+```
+
+Thus, vector minimizes pointers count on multiple source data as if parse only one source document.
