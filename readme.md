@@ -149,3 +149,11 @@ func (Vector) Marshal(io.Writer) error
 ```
 
 `Beautify` method makes a human-readable view of the document, `Marshal` - minimized version.
+
+### Error handling
+
+vector may return an error during parsing. The error may be impersonal, like "unexpected identifier" and provides no
+information about the exact position in the document where error occurred. The following method may help in that case:
+```go
+func (Vector) ErrorOffset() int
+```
