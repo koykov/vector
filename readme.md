@@ -139,3 +139,13 @@ vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
 s := vec.DotString("a.b.c")
 println(s) // foobar
 ```
+
+### Serialization
+
+vector API allows to do the opposite operation - compose original document from parsed data:
+```go
+func (Vector) Beautify(io.Writer) error
+func (Vector) Marshal(io.Writer) error
+```
+
+`Beautify` method makes a human-readable view of the document, `Marshal` - minimized version.
