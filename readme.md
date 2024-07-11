@@ -157,3 +157,18 @@ information about the exact position in the document where error occurred. The f
 ```go
 func (Vector) ErrorOffset() int
 ```
+
+### Iterating
+
+If vector was used to parse more than one document, you may iterate them avoiding use of `RootByIndex` method:
+```go
+func (Vector) Each(fn func(int, *Node))
+```
+Example:
+```go
+vec.ParseString(`{"a":{"b":{"c":"foobar"}}}`)
+vec.ParseString(`{"x":{"y":{"z":"asdfgh"}}}`)
+vec.Each(func(i int, node *Node) {
+	node.Get("...")
+})
+```
