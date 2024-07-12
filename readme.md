@@ -264,3 +264,15 @@ concrete data formats ([JSON](https://github.com/koykov/jsonvector/blob/master/h
 [XML](https://github.com/koykov/xmlvector/blob/master/helper.go), ...).
 
 Note: unescaping (indirect) is happening in-place, not additional memory required.
+
+## Pooling
+
+vector was implemented as highload solution by design and therefore requires pooling to use: 
+```go
+vec := jsonvector.Acquire()
+defer jsonvector.Release(vec)
+// or
+vec := xmlvector.Acquire()
+defer xmlvector.Release(vec)
+// ...
+```
