@@ -230,3 +230,20 @@ Node API supports predicating deletion:
 ```go
 func (Node) RemoveIf(cond func(idx int, node *Node) bool)
 ```
+
+### Child nodes access
+
+```go
+func (Node) Children() []Node
+func (Node) ChildrenIndices() []int
+```
+
+### Serialization
+
+Serialization is similar to vector API, but allows to serialize only current node and its childrens (recursively):
+```go
+func (Node) Beautify(io.Writer) error
+func (Node) Marshal(io.Writer) error
+```
+
+Thus, you may serialize not the whole object, but only necessary part of it.
