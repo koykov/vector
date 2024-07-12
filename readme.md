@@ -208,3 +208,10 @@ func (Node) Array() *Node
 func (Node) Type() Type
 func (Node) Exists(key string) bool
 ```
+
+### Iterating
+
+If node has a type array or object, you may iterate through children nodes:
+```go
+func (Node) Each(fn func(idx int, node *Node))
+```
