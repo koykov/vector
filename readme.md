@@ -223,3 +223,10 @@ Nodes of type array or object may be sorted by keys or values:
 func (Node) SortKeys() *Node // by keys
 func (Node) Sort() *Node     // by values
 ```
+
+### Removing
+
+Node API supports predicating deletion:
+```go
+func (Node) RemoveIf(cond func(idx int, node *Node) bool)
+```
