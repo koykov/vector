@@ -172,3 +172,39 @@ vec.Each(func(i int, node *Node) {
 	node.Get("...")
 })
 ```
+
+## node API
+
+### Reading
+
+Similar to vector API, there are three groups of methods in node API:
+* Get-methods
+* GetPS-methods
+* Dot-methods
+
+In addition, node can return key/value separately as [Byteptr](byteptr.go) object:
+```go
+func (Node) Key() *Byteptr
+func (Node) Value() *Byteptr
+```
+or directly convert them to exact types:
+```go
+// key
+func (Node) KeyBytes() []byte
+func (Node) KeyString() string
+// value
+func (Node) Bytes() []byte
+func (Node) ForceBytes() []byte
+func (Node) RawBytes() []byte
+func (Node) String() string
+func (Node) ForceString()
+func (Node) Bool() bool
+func (Node) Float() (float64, error)
+func (Node) Int() (int64, error)
+func (Node) Uint() (uint64, error)
+func (Node) Object() *Node
+func (Node) Array() *Node
+
+func (Node) Type() Type
+func (Node) Exists(key string) bool
+```
