@@ -247,3 +247,20 @@ func (Node) Marshal(io.Writer) error
 ```
 
 Thus, you may serialize not the whole object, but only necessary part of it.
+
+## Helper
+
+The important part of the API. It must realize the interface:
+```go
+type Helper interface {
+	Indirect(*Byteptr) []byte        // in-place unescape
+	Beautify(io.Writer, *Node) error
+	Marshal(io.Writer, *Node) error 
+}
+```
+
+Since vector API is a common API for parsers, the concrete realization if that interface provides support for
+concrete data formats ([JSON](https://github.com/koykov/jsonvector/blob/master/helper.go),
+[XML](https://github.com/koykov/xmlvector/blob/master/helper.go), ...).
+
+Note: unescaping (indirect) is happening in-place, not additional memory required.
