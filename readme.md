@@ -276,3 +276,14 @@ vec := xmlvector.Acquire()
 defer xmlvector.Release(vec)
 // ...
 ```
+
+vector package doesn't provide pooling (because it is a common API), but high level packages provides `Acquire`/`Release`
+methods (working with `sync.Pool` implicitly).
+
+In fact, you may use vectors not exactly in high-loaded project. In that case pooling may be omitted:
+```go
+vec := jsonvector.NewVector()
+// or
+vec := xmlvector.NewVector()
+// ...
+```
