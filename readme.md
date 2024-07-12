@@ -215,3 +215,11 @@ If node has a type array or object, you may iterate through children nodes:
 ```go
 func (Node) Each(fn func(idx int, node *Node))
 ```
+
+### Sorting
+
+Nodes of type array or object may be sorted by keys or values:
+```go
+func (Node) SortKeys() *Node // by keys
+func (Node) Sort() *Node     // by values
+```
