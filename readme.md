@@ -24,6 +24,7 @@ Source document:
 
 Typical parse will make a tree in memory like this:
 <img width="100%" src="static/typical.svg" alt="">
+> **_NOTE:_**  Each arrow represents a pointer, same as an each non-empty string in nodes.    
 
 , each node will an instance of struct like this:
 ```go
@@ -45,18 +46,14 @@ type KeyValue struct {
 That way produces a too many pointers and on complex source document that count will grow even more.
 
 Vector in memory will look like:
-<img width="100%" src="static/vector-color.svg" alt="">
+<img width="100%" src="static/vector.svg" alt="">
+> **_NOTE:_**  In opposite to previous picture, arrows represents not a pointers, but integer indices.
 
 Looks redundant and strange, isn't it? But that way allow for any type of source document produces constant number of
 pointers:
 * one for array of nodes
 * one for index
 * one for each row in index
-
-In fact, node struct if more complex that present on the picture. Key/value isn't a bit-shifted lo/hi indices in source
-data, but special struct [Byteptr](byteptr.go). It stores additionally raw (uintptr) "pointer" to source data and extra
-flags. But the idea is the same: in GC eyes, both byteptr and node is simple structs and GC will not spend time to check
-them.
 
 ## API
 
