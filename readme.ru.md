@@ -3,9 +3,9 @@
 Описывает API для векторных парсеров.
 
 Главная идея: популярные форматы обмена данными (такие как JSON, XML, ...) хранят данные в виде дерева. А все популярные
-парсеры воспроизводят это дерево в памяти приложения. Более того, они создают копию исходных данных внутри себя и это
-приводит к перерасходу памяти. В комплексе это приводит к тому, что в памяти накапливается большое количество
-указателей и GC делает много дополнительной работы при маркировке.
+парсеры воспроизводят это дерево в памяти приложения. В комплексе это приводит к тому, что в памяти накапливается
+большое количество указателей и GC делает много дополнительной работы при маркировке. Более того, они создают копию
+исходных данных внутри себя и это приводит к перерасходу памяти.
 
 Этот парсер действует иначе: любые ноды (объект, массив, пары ключ-значение, ...) хранятся не в дереве, а в специальном
 массиве (векторе). Вместо указателей на дочерние ноды используются индексы дочерних нод в векторе, иными словами каждая
@@ -57,8 +57,9 @@ type KeyValue struct {
 * один на индекс
 * плюс по одному на каждую строку в индексе
 
-Таким образом если считать "сложность структуры по указателям", то она будет константной, в то время как у классических
-парсеров, она будет в лучшем случае линейной.
+Это преимущество имеет свою цену - написане нового парсера с использованием vector API это нетривиальная задача. Также
+дебаг вектора весьма сложен, т.к. дебаггер показывает вместо данных (например строк) отступы и длину в массивах, но не
+сами данные.
 
 ## API
 
@@ -66,12 +67,12 @@ type KeyValue struct {
 
 Vector API предоставляет 4 метода для парсинга:
 ```go
-func (Vector) Parse([]byte) error
-func (Vector) ParseCopy([]byte) error
-func (Vector) ParseString(string) error
-func (Vector) ParseCopyString(string) error
+func (Vector) Parse(source []byte) error
+func (Vector) ParseCopy(source []byte) error
+func (Vector) ParseString(source string) error
+func (Vector) ParseCopyString(source string) error
 ```
-copy-версии позволяют явно сделать копию исходных данных внутри вектора. По умолчанию копирование не происходит и ноды
+Copy-версии позволяют явно сделать копию исходных данных внутри вектора. По умолчанию копирование не происходит и ноды
 указывают на память вне вектора. Обязанностью разработчика является обеспечить сохранность данных на протяжении всей
 жизни вектора. Если сделать это невозможно, то лучше воспользоваться copy-методом, это безопаснее.
 
@@ -103,9 +104,9 @@ func (Vector) GetUint(path ...string) (uint64, error)
 ```
 По variadic пути эти методы позволяют получить или ноду или сразу нужное значением (типы в исходных данных должны совпадать
 , например метод `GetInt` вернёт число только в том случае, если по `path` в исходном документе лежит именно
-челочисленное число).
+целочисленное число).
 
-vector API также позволяет задавать получать данные, не используя variadic переменную пути:
+vector API также позволяет получать данные без использования variadic переменной пути:
 ```go
 func (Vector) GetPS(path, separator string) *Node
 func (Vector) GetObjectPS(path, separator string) *Node
@@ -148,8 +149,8 @@ println(s) // foobar
 
 vector API позволяет выполнить обратную операцию - из распарсенных данных собрать документ обратно:
 ```go
-func (Vector) Beautify(io.Writer) error
-func (Vector) Marshal(io.Writer) error
+func (Vector) Beautify(writer io.Writer) error
+func (Vector) Marshal(writer io.Writer) error
 ```
 
 `Beautify` метод записывает в writer человеко-читаемую форму документа с переносами строк и отступами, а `Marshal` -
@@ -168,7 +169,7 @@ func (Vector) ErrorOffset() int
 
 Если вектором распарсили больше одного документа, то обойти их можно не используя `RootByIndex` метод:
 ```go
-func (Vector) Each(fn func(int, *Node))
+func (Vector) Each(fn func(index int, node *Node))
 ```
 Пример:
 ```go
@@ -219,7 +220,7 @@ func (Node) Exists(key string) bool
 
 Если нода имеет тип объект или массив, то пройтись по дочерним нодам можно методом:
 ```go
-func (Node) Each(fn func(idx int, node *Node))
+func (Node) Each(fn func(index int, node *Node))
 ```
 
 ### Сортировка
@@ -234,7 +235,7 @@ func (Node) Sort() *Node     // по значению
 
 Ноды поддерживают предикатное удаление:
 ```go
-func (Node) RemoveIf(cond func(idx int, node *Node) bool)
+func (Node) RemoveIf(cond func(index int, node *Node) bool)
 ```
 
 ### Дочерние ноды
@@ -248,8 +249,8 @@ func (Node) ChildrenIndices() []int
 
 Сериализация устроена аналогично vector API, но позволяет затронуть только текущую ноду и ещё дочерние ноды (рекурсивно):
 ```go
-func (Node) Beautify(io.Writer) error
-func (Node) Marshal(io.Writer) error
+func (Node) Beautify(writer io.Writer) error
+func (Node) Marshal(writer io.Writer) error
 ```
 
 Таким образом, можно сериализовать не весь докучмент целиком, а только нужную его часть.
@@ -259,9 +260,9 @@ func (Node) Marshal(io.Writer) error
 Очень важная часть API. В рамках vector API это интерфейс:
 ```go
 type Helper interface {
-	Indirect(*Byteptr) []byte        // in-place unescape
-	Beautify(io.Writer, *Node) error
-	Marshal(io.Writer, *Node) error 
+	Indirect(ptr *Byteptr) []byte        // in-place unescape
+	Beautify(writer io.Writer, node *Node) error
+	Marshal(writer io.Writer, node *Node) error 
 }
 ```
 Т.к. vector API это общее решение для парсеров, то конкретные реализации этого интерфейса обеспечивают де-экранирование

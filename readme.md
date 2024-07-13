@@ -3,18 +3,17 @@
 Provide Vector API for vector parsers.
 
 The main idea: popular data interchange formats (such as JSON, XML, ...) stores data as a tree.
-Parsers of that formats reproduces that tree in a memory somehow or other. Moreover, each of them makes a copy of source
-data, it's often is redundant. This makes a lot of pointers in the heap and GC does a lot of work during marking.
+Parsers of that formats reproduces that tree in a memory somehow or other. This makes a lot of pointers in the heap and
+GC does a lot of work during marking.Moreover, each of them makes a copy of source data, it's often is redundant. 
 
 This parser uses different way: it stores all parsed nodes (key-value pairs) in a special array (vector). Instead of
-pointers to child nodes, each node stores adjacency list of indices of childs. In fact, to reduce pointers node stores
-not and array of indices, but offset/length of child indices in special struct calls `Index` (see below).
+pointers to child nodes, each node stores adjacency list of indices of childs. In fact (to reduce pointers) node stores
+not an array of indices, but offset/length of child indices in special struct calls `Index` (see picture #2 below).
 
 Thus, the main purpose of the whole project is minimising of pointers and thereby cut the costs of GC work.
-An additional purpose if memory economy.
+An additional purpose is a memory economy.
 
-Let's check difference of that approaches on example:
-Source document:
+Let's check difference of that approaches on example. Source document:
 ```json
 {
   "a":{"c":"foobar","d":3.1415},
@@ -22,9 +21,9 @@ Source document:
 }
 ```
 
-Typical parse will make a tree in memory like this:
+Typical parser will make a tree in memory like this:
 <img width="100%" src="static/typical.svg" alt="">
-> **_NOTE:_**  Each arrow represents a pointer, same as an each non-empty string in nodes.    
+> **_NOTE:_**  Each arrow represents a pointer, same as each non-empty string in nodes.    
 
 , each node will an instance of struct like this:
 ```go
@@ -55,6 +54,9 @@ pointers:
 * one for index
 * one for each row in index
 
+Of course, this advantage has a cost - writing new parser using vector API is a hard challenge. Also, debug of vector
+instance is non-trivial, due to debugger shows not a data (e.g strings), but offset/length of data in arrays outside.
+
 ## API
 
 ### Parsing
@@ -67,9 +69,9 @@ func (Vector) ParseString(string) error
 func (Vector) ParseCopyString(string) error
 ```
 
-copy-versions allow to make a copy of source data explicitly. By default, vector not makes a copy and nodes "points" to
+Copy-versions allow to make a copy of source data explicitly. By default, vector not makes a copy and nodes "points" to
 memory outside of vector. It's a developer responsibility to extend a life of a source data at least the same as vector's
-life. If it's impossible, he better way is to use a copy-methods.
+life. If it's impossible, the better way is to use a copy-methods.
 
 The exclusive feature of vector is a possibility to parse many source documents using one vector instance:
 ```go
@@ -141,11 +143,11 @@ println(s) // foobar
 
 vector API allows to do the opposite operation - compose original document from parsed data:
 ```go
-func (Vector) Beautify(io.Writer) error
-func (Vector) Marshal(io.Writer) error
+func (Vector) Beautify(writer io.Writer) error
+func (Vector) Marshal(writer io.Writer) error
 ```
 
-`Beautify` method makes a human-readable view of the document, `Marshal` - minimized version.
+`Beautify` method writer to writer a human-readable view of the document, `Marshal` - minimized version.
 
 ### Error handling
 
@@ -159,7 +161,7 @@ func (Vector) ErrorOffset() int
 
 If vector was used to parse more than one document, you may iterate them avoiding use of `RootByIndex` method:
 ```go
-func (Vector) Each(fn func(int, *Node))
+func (Vector) Each(fn func(index int, node *Node))
 ```
 Example:
 ```go
@@ -210,7 +212,7 @@ func (Node) Exists(key string) bool
 
 If node has a type array or object, you may iterate through children nodes:
 ```go
-func (Node) Each(fn func(idx int, node *Node))
+func (Node) Each(fn func(index int, node *Node))
 ```
 
 ### Sorting
@@ -225,7 +227,7 @@ func (Node) Sort() *Node     // by values
 
 Node API supports predicating deletion:
 ```go
-func (Node) RemoveIf(cond func(idx int, node *Node) bool)
+func (Node) RemoveIf(cond func(index int, node *Node) bool)
 ```
 
 ### Child nodes access
@@ -239,8 +241,8 @@ func (Node) ChildrenIndices() []int
 
 Serialization is similar to vector API, but allows to serialize only current node and its childrens (recursively):
 ```go
-func (Node) Beautify(io.Writer) error
-func (Node) Marshal(io.Writer) error
+func (Node) Beautify(writer io.Writer) error
+func (Node) Marshal(writer io.Writer) error
 ```
 
 Thus, you may serialize not the whole object, but only necessary part of it.
@@ -250,9 +252,9 @@ Thus, you may serialize not the whole object, but only necessary part of it.
 The important part of the API. It must realize the interface:
 ```go
 type Helper interface {
-	Indirect(*Byteptr) []byte        // in-place unescape
-	Beautify(io.Writer, *Node) error
-	Marshal(io.Writer, *Node) error 
+	Indirect(ptr *Byteptr) []byte        // in-place unescape
+	Beautify(writer io.Writer, node *Node) error
+	Marshal(writer io.Writer, node *Node) error 
 }
 ```
 
