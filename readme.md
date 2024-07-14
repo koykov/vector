@@ -4,13 +4,13 @@ Provide Vector API for vector parsers.
 
 The main idea: popular data interchange formats (such as JSON, XML, ...) stores data as a tree.
 Parsers of that formats reproduces that tree in a memory somehow or other. This makes a lot of pointers in the heap and
-GC does a lot of work during marking.Moreover, each of them makes a copy of source data, it's often is redundant. 
+GC does a lot of work during marking. Moreover, each of them makes a copy of source data, it's often is redundant. 
 
 This parser uses different way: it stores all parsed nodes (key-value pairs) in a special array (vector). Instead of
 pointers to child nodes, each node stores adjacency list of indices of childs. In fact (to reduce pointers) node stores
 not an array of indices, but offset/length of child indices in special struct calls `Index` (see picture #2 below).
 
-Thus, the main purpose of the whole project is minimising of pointers and thereby cut the costs of GC work.
+Thus, the main purpose of the whole project is minimizing of pointers and thereby cut the costs of GC work.
 An additional purpose is a memory economy.
 
 Let's check difference of that approaches on example. Source document:
@@ -98,10 +98,10 @@ func (Vector) GetFloat(path ...string) (float64, error)
 func (Vector) GetInt(path ...string) (int64, error)
 func (Vector) GetUint(path ...string) (uint64, error)
 ```
-They takes a variadic path to field you require to read. Methods with exact types (`GetInt`, `GetBool`, ...) additionally
+They take a variadic path to field you require to read. Methods with exact types (`GetInt`, `GetBool`, ...) additionally
 check a type of fields in source documents.
 
-vector API allows to avoid using variadic using path with separator:
+Vector API allows avoiding variadic usage using path with separator:
 ```go
 func (Vector) GetPS(path, separator string) *Node
 func (Vector) GetObjectPS(path, separator string) *Node
@@ -141,7 +141,7 @@ println(s) // foobar
 
 ### Serialization
 
-vector API allows to do the opposite operation - compose original document from parsed data:
+Vector API allows to do the opposite operation - compose original document from parsed data:
 ```go
 func (Vector) Beautify(writer io.Writer) error
 func (Vector) Marshal(writer io.Writer) error
@@ -239,7 +239,7 @@ func (Node) ChildrenIndices() []int
 
 ### Serialization
 
-Serialization is similar to vector API, but allows to serialize only current node and its childrens (recursively):
+Serialization is similar to vector API, but allows serializing only current node and its childrens (recursively):
 ```go
 func (Node) Beautify(writer io.Writer) error
 func (Node) Marshal(writer io.Writer) error
@@ -266,7 +266,7 @@ Note: unescaping (indirect) is happening in-place, not additional memory require
 
 ## Pooling
 
-vector was implemented as highload solution by design and therefore requires pooling to use: 
+Vector was implemented as high-load solution by design and therefore requires pooling to use: 
 ```go
 vec := jsonvector.Acquire()
 defer jsonvector.Release(vec)
@@ -276,7 +276,7 @@ defer xmlvector.Release(vec)
 // ...
 ```
 
-vector package doesn't provide pooling (because it is a common API), but high level packages provides `Acquire`/`Release`
+Vector package doesn't provide pooling (because it is a common API), but high level packages provides `Acquire`/`Release`
 methods (working with `sync.Pool` implicitly).
 
 In fact, you may use vectors not exactly in high-loaded project. In that case pooling may be omitted:
