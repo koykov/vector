@@ -286,3 +286,63 @@ vec := jsonvector.NewVector()
 vec := xmlvector.NewVector()
 // ...
 ```
+
+## Performance
+
+There are versus-projects for each of the existing vector parsers:
+* https://github.com/koykov/versus/tree/master/jsonvector
+* https://github.com/koykov/versus/tree/master/xmlvector
+* https://github.com/koykov/versus/tree/master/urlvector
+* https://github.com/koykov/versus/tree/master/halvector
+* todo: yamlvector
+
+The most interesting is [jsonvector](https://github.com/koykov/versus/tree/master/jsonvector), due to worthy opponents.
+Thus, let's focus on jsonvector.
+
+### Testing dataset
+* [small.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/small.json)
+* [medium.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/medium.json)
+* [large.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/large.json)
+* [canada.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/canada.json)
+* [citm_catalog.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/citm_catalog.json)
+* [twitter.json](https://github.com/koykov/versus/blob/master/jsonvector/testdata/twitter.json)
+
+### Testing stages
+* [i7-7700HQ](https://github.com/koykov/versus/blob/master/jsonvector/benchstat/i7-7700HQ--10n-5m--new.txt)
+* [i7-1185G7](https://github.com/koykov/versus/blob/master/jsonvector/benchstat/i7-1185G7--10n-1m--new.txt)
+* [Apple M2](https://github.com/koykov/versus/blob/master/jsonvector/benchstat/Apple-M2--10n-1m--new.txt)
+* [Xeon 4214](https://github.com/koykov/versus/blob/master/jsonvector/benchstat/Xeon-4214--10n-1m--new.txt)
+
+All stages works on Ubuntu 22.04, Go version 1.22.
+
+### Competitors
+* https://github.com/valyala/fastjson
+* https://github.com/koykov/jsonvector
+* https://github.com/minio/simdjson-go
+
+### The result
+
+Server CPU Xeon 4214 is the most interested due to its closeness to production conditions:
+
+#### sec/op:
+| DS/lib       | fastjson         | jsonvector       | simdjson         |
+|--------------|------------------|------------------|------------------|
+| small.json   | 31.61n ± 10%     | **30.21n ±  7%** | 162.2n ±  7%     | 
+| medium.json  | **214.0n ±  9%** | 221.7n ±  2%     | 590.9n ±  8%     |
+| large.json   | **2.452µ ±  1%** | 3.168µ ±  2%     | 5.910µ ± 14%     |
+| canada.json  | 1.087m ±  3%     | 1.253m ±  0%     | **948.1µ ±  1%** |
+| citm.json    | 375.2µ ±  1%     | 280.6µ ±  1%     | **212.0µ ±  4%** |
+| twitter.json | 101.88µ ±  3%    | **80.80µ ±  1%** | 114.8µ ± 10%     |
+
+#### B/s
+| DS/lib       | fastjson          | jsonvector        | simdjson          |
+|--------------|-------------------|-------------------|-------------------|
+| small.json   | 5.598Gi ± 11%     | **5.858Gi ±  8%** | 1.091Gi ±  6%     | 
+| medium.json  | **10.14Gi ± 10%** | 9.784Gi ±  2%     | 3.671Gi ±  8%     |
+| large.json   | **10.68Gi ±  1%** | 8.267Gi ±  2%     | 4.431Gi ± 13%     |
+| canada.json  | 1.928Gi ±  3%     | 1713.4Mi ±  0%    | **2.211Gi ±  1%** |
+| citm.json    | 4.287Gi ±  1%     | 5.732Gi ±  1%     | **7.587Gi ±  4%** |
+| twitter.json | 5.773Gi ±  3%     | **7.279Gi ±  1%** | 5.124Gi ±  9%     |
+
+Results are similar to each other, and this is a good achievement for vector, because the main advantage of vector -
+long work outside of synthetic tests and optimizations for pointers. The similar speed is an extra bonus.
