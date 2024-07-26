@@ -22,6 +22,7 @@ const (
 	TypeNum
 	TypeBool
 	TypeAttr
+	TypeAlias
 )
 
 const nodeSize = 120
