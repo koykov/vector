@@ -21,7 +21,9 @@ func (n *Node) Get(keys ...string) *Node {
 	}
 	node := n
 	if n.typ == TypeAlias {
-	    node = n.Children()[0]
+		if idxs := n.ChildrenIndices(); len(idxs) > 0 {
+			node = &vec.nodes[0]
+		}
 	}
 	if node.typ == TypeObj {
 		for i := node.offset; i < node.limit; i++ {
@@ -70,7 +72,9 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 	}
 	node := n
 	if n.typ == TypeAlias {
-	    node = n
+		if idxs := n.ChildrenIndices(); len(idxs) > 0 {
+			node = &vec.nodes[0]
+		}
 	}
 	if node.typ == TypeObj {
 		for i := node.offset; i < node.limit; i++ {
