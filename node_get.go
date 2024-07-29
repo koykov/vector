@@ -19,9 +19,13 @@ func (n *Node) Get(keys ...string) *Node {
 	if vec = n.indirectVector(); vec == nil {
 		return n
 	}
-	if n.typ == TypeObj {
-		for i := n.offset; i < n.limit; i++ {
-			idx := vec.Index.val(n.depth+1, i)
+	node := n
+	if n.typ == TypeAlias {
+	    node = n.Children()[0]
+	}
+	if node.typ == TypeObj {
+		for i := node.offset; i < node.limit; i++ {
+			idx := vec.Index.val(node.depth+1, i)
 			child := &vec.nodes[idx]
 			if child.keyEqual(keys[0]) {
 				tail := keys[1:]
@@ -33,18 +37,18 @@ func (n *Node) Get(keys ...string) *Node {
 			}
 		}
 	}
-	if n.typ == TypeArr {
+	if node.typ == TypeArr {
 		i, err := strconv.Atoi(keys[0])
-		if err != nil || i >= n.limit {
+		if err != nil || i >= node.limit {
 			return nullNode
 		}
-		idx := vec.Index.val(n.depth+1, n.offset+i)
+		idx := vec.Index.val(node.depth+1, node.offset+i)
 		child := &vec.nodes[idx]
 		tail := keys[1:]
 		if len(tail) == 0 {
 			return child
-		} else if n.val.Len() > 0 && len(tail) == 1 && n.val.String() == tail[0] {
-			return n
+		} else if n.val.Len() > 0 && len(tail) == 1 && node.val.String() == tail[0] {
+			return node
 		} else {
 			return child.Get(tail...)
 		}
@@ -64,9 +68,13 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 	if vec = n.indirectVector(); vec == nil {
 		return n
 	}
-	if n.typ == TypeObj {
-		for i := n.offset; i < n.limit; i++ {
-			idx := vec.Index.val(n.depth+1, i)
+	node := n
+	if n.typ == TypeAlias {
+	    node = n
+	}
+	if node.typ == TypeObj {
+		for i := node.offset; i < node.limit; i++ {
+			idx := vec.Index.val(node.depth+1, i)
 			child := &vec.nodes[idx]
 			if child.keyEqualKE(path, keys[0]) {
 				tail := keys[1:]
@@ -78,20 +86,20 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 			}
 		}
 	}
-	if n.typ == TypeArr {
+	if node.typ == TypeArr {
 		lo, hi := keys[0].Decode()
 		skey := path[lo:hi]
 		i, err := strconv.Atoi(skey)
-		if err != nil || i >= n.limit {
+		if err != nil || i >= node.limit {
 			return nullNode
 		}
-		idx := vec.Index.val(n.depth+1, n.offset+i)
+		idx := vec.Index.val(node.depth+1, node.offset+i)
 		child := &vec.nodes[idx]
 		tail := keys[1:]
 		if len(tail) == 0 {
 			return child
-		} else if n.val.Len() > 0 && len(tail) == 1 && n.val.equalKE(path, tail[0]) {
-			return n
+		} else if node.val.Len() > 0 && len(tail) == 1 && node.val.equalKE(path, tail[0]) {
+			return node
 		} else {
 			return child.getKE(path, tail...)
 		}
