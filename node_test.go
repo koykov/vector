@@ -14,6 +14,7 @@ func TestNode(t *testing.T) {
 	})
 	t.Run("alias", func(t *testing.T) {
 		vec := &Vector{}
+		_ = vec.SetSrc([]byte("N/D"), false) // emulate parsing to init vector
 		root, ri := vec.GetNodeWT(0, TypeObj)
 
 		sn, si := vec.GetChildWT(root, 1, TypeStr)
