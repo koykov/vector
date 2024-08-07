@@ -356,6 +356,9 @@ func (vec *Vector) getObjKE(root *Node, path string, keys ...entry.Entry64) *Nod
 		if len(tail) > 0 {
 			return nullNode
 		}
+		if node.Type() == TypeAlias {
+			return node.FirstChild()
+		}
 		return node
 	}
 	if node.typ == TypeArr {

@@ -346,6 +346,26 @@ func (n *Node) ChildrenIndices() []int {
 	return n.childrenIdx()
 }
 
+// FirstChild returns first child node of node n. If node has no childs then non-empty null will return.
+func (n *Node) FirstChild() *Node {
+	if idx := n.childrenIdx(); len(idx) > 0 {
+		if vec := n.indirectVector(); vec != nil {
+			return &vec.nodes[idx[0]]
+		}
+	}
+	return nullNode
+}
+
+// LastChild returns last child node of node n. If node has no childs then non-empty null will return.
+func (n *Node) LastChild() *Node {
+	if idx := n.childrenIdx(); len(idx) > 0 {
+		if vec := n.indirectVector(); vec != nil {
+			return &vec.nodes[idx[len(idx)-1]]
+		}
+	}
+	return nullNode
+}
+
 // SortKeys sorts child nodes by key in AB order.
 func (n *Node) SortKeys() *Node {
 	if n.Type() != TypeObj {
@@ -379,6 +399,22 @@ func (n *Node) SwapWith(node *Node) {
 			vec.nodes[i], vec.nodes[j] = vec.nodes[j], vec.nodes[i]
 		}
 	}
+}
+
+// AliasOf registers given node as alias of n.
+func (n *Node) AliasOf(node *Node) *Node {
+	if n.Type() != TypeAlias {
+		return nullNode
+	}
+	if vec := n.indirectVector(); vec != nil {
+		var limit = n.limit
+		if limit == 0 {
+			limit = n.offset + 1
+		}
+		n.SetLimit(vec.Index.Register(n.depth+1, node.Index()))
+		return n
+	}
+	return nullNode
 }
 
 // Beautify formats node in human-readable representation.
