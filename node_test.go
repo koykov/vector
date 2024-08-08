@@ -23,7 +23,7 @@ func TestNode(t *testing.T) {
 		vec.PutNode(si, sn)
 
 		an, ai := vec.GetChildWT(root, 1, TypeAlias)
-		an.Key().InitString("qwer", 0, 3)
+		an.Key().InitString("qwe", 0, 3)
 		an.AliasOf(sn)
 		vec.PutNode(ai, an)
 
