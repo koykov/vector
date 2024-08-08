@@ -13,7 +13,9 @@ func TestNode(t *testing.T) {
 		}
 	})
 	t.Run("alias", func(t *testing.T) {
-		vec := &Vector{}
+		vec := testPool.Get().(*Vector)
+		defer testPool.Put(vec)
+
 		_ = vec.SetSrc([]byte("N/D"), false) // emulate parsing to init vector
 		root, ri := vec.GetNodeWT(0, TypeObj)
 
