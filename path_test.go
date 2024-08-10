@@ -25,7 +25,6 @@ func TestPath(t *testing.T) {
 		t.Run(stg.path, func(t *testing.T) {
 			vec := Vector{}
 			vec.splitPath(stg.path, ".")
-			t.Log(stg.expect)
 			if !reflect.DeepEqual(stg.expect, vec.bufKE) {
 				t.FailNow()
 			}
