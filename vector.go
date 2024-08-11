@@ -382,7 +382,7 @@ func appendSplitPath(buf []entry.Entry64, s, sep string) []entry.Entry64 {
 		if p := strings.IndexByte(k, '['); p != -1 {
 			// todo check square brackets
 		} else if p := strings.IndexByte(k, '@'); p > 0 {
-			// check @ symbol
+			// todo check @ symbol
 		} else {
 			var e entry.Entry64
 			e.Encode(uint32(off), uint32(off+m))
