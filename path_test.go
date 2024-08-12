@@ -33,3 +33,26 @@ func TestPath(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkPath(b *testing.B) {
+	var stages = []string{
+		"foobar",
+		"foo.bar",
+		"@version",
+		"root@version",
+		"root.qwe.rty@version",
+		"foobar@",
+		"foo.bar[2]",
+		"foo[2].bar",
+	}
+	for _, path := range stages {
+		b.Run(path, func(b *testing.B) {
+			b.ReportAllocs()
+			vec := Vector{}
+			for i := 0; i < b.N; i++ {
+				vec.splitPath(path, ".")
+				vec.buf = vec.buf[:0]
+			}
+		})
+	}
+}
