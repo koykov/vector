@@ -14,14 +14,14 @@ func TestPath(t *testing.T) {
 	}
 
 	stages := []stage{
-		// {path: "foobar", expect: []entry.Entry64{6}},
-		// {path: "foo.bar", expect: []entry.Entry64{3, 17179869191}},
-		{path: "@version", expect: []entry.Entry64{8}},
-		// {path: "root@version", expect: []entry.Entry64{4, 17179869196}},
-		// {path: "root.qwe.rty@version", expect: []entry.Entry64{4, 21474836488, 38654705676, 51539607572}},
-		// {path: "foobar@", expect: []entry.Entry64{6}},
-		// {path: "foo.bar[2]", expect: []entry.Entry64{3, 17179869191, 17179869191}},
-		// {path: "foo[2].bar", expect: []entry.Entry64{3, 17179869191, 17179869191}},
+		{path: "foobar", expect: []entry.Entry64{6}},
+		{path: "foo.bar", expect: []entry.Entry64{3, 17179869191}},
+		{path: "@version", expect: []entry.Entry64{4294967304}},
+		{path: "root@version", expect: []entry.Entry64{4, 21474836492}},
+		{path: "root.qwe.rty@version", expect: []entry.Entry64{4, 21474836488, 38654705676, 55834574868}},
+		{path: "foobar@", expect: []entry.Entry64{6}},
+		{path: "foo.bar[2]", expect: []entry.Entry64{3, 17179869191, 34359738377}},
+		{path: "foo[2].bar", expect: []entry.Entry64{3, 17179869189, 30064771082}},
 	}
 	for _, stg := range stages {
 		t.Run(stg.path, func(t *testing.T) {

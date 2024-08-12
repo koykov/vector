@@ -208,7 +208,7 @@ func (n *Node) GetObjectPS(path, separator string) *Node {
 	if vec == nil {
 		return nullNode
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeObj {
 		return nullNode
@@ -222,7 +222,7 @@ func (n *Node) GetArrayPS(path, separator string) *Node {
 	if vec == nil {
 		return nullNode
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeArr {
 		return nullNode
@@ -236,7 +236,7 @@ func (n *Node) GetBytesPS(path, separator string) []byte {
 	if vec == nil {
 		return nil
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeStr {
 		return nil
@@ -250,7 +250,7 @@ func (n *Node) GetStringPS(path, separator string) string {
 	if vec == nil {
 		return ""
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeStr {
 		return ""
@@ -264,7 +264,7 @@ func (n *Node) GetBoolPS(path, separator string) bool {
 	if vec == nil {
 		return false
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.Type() != TypeBool {
 		return false
@@ -278,7 +278,7 @@ func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
@@ -295,7 +295,7 @@ func (n *Node) GetIntPS(path, separator string) (int64, error) {
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
@@ -312,7 +312,7 @@ func (n *Node) GetUintPS(path, separator string) (uint64, error) {
 	if vec == nil {
 		return 0, ErrInternal
 	}
-	vec.splitPath(path, separator)
+	path = vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
