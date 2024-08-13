@@ -2,40 +2,48 @@ package vector
 
 import (
 	"math"
+	"strings"
 
-	"github.com/koykov/bytealg"
-	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
 )
 
 // A wrapper around bytealg.AppendSplitEntryString with additional logic for checking square brackets and "@" separator.
-func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) (string, []entry.Entry64) {
+func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
 	_ = splitTable[math.MaxUint8]
-	n := len(s)
+	n := uint32(len(s))
 	if n == 0 {
-		return s, dst
+		return dst
 	}
 
-	off := len(vec.buf)
 	_ = s[n-1]
-	for i := 0; i < n; i++ {
-		if splitTable[s[i]] {
-			vec.buf = append(vec.buf, sep...)
-			continue
+	var lo, hi uint32
+	for lo < n {
+		for i := lo; i < n; i++ {
+			switch {
+			case splitTable[s[i]]:
+				hi = i
+				if e := entry.NewEntry64(lo, hi); lo != hi {
+					dst = append(dst, e)
+				}
+				lo = i + 1
+			case strings.HasPrefix(s[i:], sep):
+				hi = i
+				if e := entry.NewEntry64(lo, hi); lo != hi {
+					dst = append(dst, e)
+				}
+				lo = i + uint32(len(sep))
+			case i == n-1:
+				hi = n
+				if e := entry.NewEntry64(lo, hi); lo != hi {
+					dst = append(dst, e)
+				}
+				goto exit
+			}
 		}
-		vec.buf = append(vec.buf, s[i])
 	}
 
-	b := vec.buf[off:]
-	dst = bytealg.AppendSplitEntryBytes(dst, b, byteconv.S2B(sep), -1)
-
-	for i := 0; i < len(dst); i++ {
-		if lo, hi := dst[i].Decode(); lo == hi {
-			dst = append(dst[:i], dst[i+1:]...)
-		}
-	}
-
-	return byteconv.B2S(b), dst
+exit:
+	return dst
 }
 
 var splitTable = [math.MaxUint8 + 1]bool{}

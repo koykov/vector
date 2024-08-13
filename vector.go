@@ -344,7 +344,7 @@ func (vec *Vector) ptr() uintptr {
 //
 // Caution! Don't use "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
-func (vec *Vector) splitPath(path, separator string) (ns string) {
-	ns, vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
+func (vec *Vector) splitPath(path, separator string) {
+	vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
 	return
 }
