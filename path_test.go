@@ -51,7 +51,6 @@ func BenchmarkPath(b *testing.B) {
 			vec := Vector{}
 			for i := 0; i < b.N; i++ {
 				vec.splitPath(path, ".")
-				vec.buf = vec.buf[:0]
 			}
 		})
 	}
