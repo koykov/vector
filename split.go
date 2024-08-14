@@ -41,7 +41,7 @@ func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.E
 			}
 			if i == n-1 {
 				hi = n
-				if e := entry.NewEntry64(lo, hi); lo != hi {
+				if e := entry.NewEntry64(lo, hi); lo != hi && !splitTable[s[i]] {
 					dst = append(dst, e)
 				}
 				goto exit
