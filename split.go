@@ -38,7 +38,8 @@ func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.E
 					dst = append(dst, e)
 				}
 				lo = i + uint32(len(sep))
-			case i == n-1:
+			}
+			if i == n-1 {
 				hi = n
 				if e := entry.NewEntry64(lo, hi); lo != hi {
 					dst = append(dst, e)
