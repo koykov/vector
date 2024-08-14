@@ -9,7 +9,7 @@ import (
 
 // A wrapper around bytealg.AppendSplitEntryString with additional logic for checking square brackets and "@" separator.
 func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
-	_ = splitTable[math.MaxUint8]
+	_, _ = splitTable[math.MaxUint8], splitDelta[math.MaxUint8]
 	n, m := uint32(len(s)), len(sep)
 	if n == 0 {
 		return dst
@@ -25,7 +25,7 @@ func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.E
 				if e := entry.NewEntry64(lo, hi); lo != hi {
 					dst = append(dst, e)
 				}
-				lo = i + 1
+				lo = i + splitDelta[s[i]]
 			case m == 1 && s[i] == sep[0]:
 				hi = i
 				if e := entry.NewEntry64(lo, hi); lo != hi {
@@ -52,10 +52,16 @@ exit:
 	return dst
 }
 
-var splitTable = [math.MaxUint8 + 1]bool{}
+var (
+	splitTable = [math.MaxUint8 + 1]bool{}
+	splitDelta = [math.MaxUint8 + 1]uint32{}
+)
 
 func init() {
 	splitTable['@'] = true
 	splitTable['['] = true
 	splitTable[']'] = true
+
+	splitDelta['['] = 1
+	splitDelta[']'] = 1
 }
