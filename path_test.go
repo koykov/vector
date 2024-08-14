@@ -7,23 +7,24 @@ import (
 	"github.com/koykov/entry"
 )
 
-func TestPath(t *testing.T) {
-	type stage struct {
-		path   string
-		expect []entry.Entry64
-	}
+type pathStage struct {
+	path   string
+	expect []entry.Entry64
+}
 
-	stages := []stage{
-		{path: "foobar", expect: []entry.Entry64{6}},
-		{path: "foo.bar", expect: []entry.Entry64{3, 17179869191}},
-		{path: "@version", expect: []entry.Entry64{4294967304}},
-		{path: "root@version", expect: []entry.Entry64{4, 21474836492}},
-		{path: "root.qwe.rty@version", expect: []entry.Entry64{4, 21474836488, 38654705676, 55834574868}},
-		{path: "foobar@", expect: []entry.Entry64{6}},
-		{path: "foo.bar[2]", expect: []entry.Entry64{3, 17179869191, 34359738377}},
-		{path: "foo[2].bar", expect: []entry.Entry64{3, 17179869189, 30064771082}},
-	}
-	for _, stg := range stages {
+var pathStages = []pathStage{
+	{path: "foobar", expect: []entry.Entry64{6}},
+	{path: "foo.bar", expect: []entry.Entry64{3, 17179869191}},
+	{path: "@version", expect: []entry.Entry64{4294967304}},
+	{path: "root@version", expect: []entry.Entry64{4, 21474836492}},
+	{path: "root.qwe.rty@version", expect: []entry.Entry64{4, 21474836488, 38654705676, 55834574868}},
+	{path: "foobar@", expect: []entry.Entry64{6}},
+	{path: "foo.bar[2]", expect: []entry.Entry64{3, 17179869191, 34359738377}},
+	{path: "foo[2].bar", expect: []entry.Entry64{3, 17179869189, 30064771082}},
+}
+
+func TestPath(t *testing.T) {
+	for _, stg := range pathStages {
 		t.Run(stg.path, func(t *testing.T) {
 			vec := Vector{}
 			vec.splitPath(stg.path, ".")
@@ -35,22 +36,12 @@ func TestPath(t *testing.T) {
 }
 
 func BenchmarkPath(b *testing.B) {
-	var stages = []string{
-		"foobar",
-		"foo.bar",
-		"@version",
-		"root@version",
-		"root.qwe.rty@version",
-		"foobar@",
-		"foo.bar[2]",
-		"foo[2].bar",
-	}
-	for _, path := range stages {
-		b.Run(path, func(b *testing.B) {
+	for _, stg := range pathStages {
+		b.Run(stg.path, func(b *testing.B) {
 			b.ReportAllocs()
 			vec := Vector{}
 			for i := 0; i < b.N; i++ {
-				vec.splitPath(path, ".")
+				vec.splitPath(stg.path, ".")
 			}
 		})
 	}
