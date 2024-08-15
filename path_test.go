@@ -21,6 +21,7 @@ var pathStages = []pathStage{
 	{path: "foobar@", expect: []entry.Entry64{6}},
 	{path: "foo.bar[2]", expect: []entry.Entry64{3, 17179869191, 34359738377}},
 	{path: "foo[2].bar", expect: []entry.Entry64{3, 17179869189, 30064771082}},
+	{path: "foo.bar[15].baz@qwe", expect: []entry.Entry64{3, 17179869191, 34359738378, 51539607567, 64424509459}},
 }
 
 func TestPath(t *testing.T) {
