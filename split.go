@@ -7,6 +7,15 @@ import (
 	"github.com/koykov/entry"
 )
 
+// Split path by given separator.
+//
+// Caution! Don't use "@" as a separator, it will break work with attributes.
+// TODO: consider escaped at symbol "\@".
+func (vec *Vector) splitPath(path, separator string) {
+	vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
+	return
+}
+
 // A wrapper around bytealg.AppendSplitEntryString with additional logic for checking square brackets and "@" separator.
 func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
 	_, _ = splitTable[math.MaxUint8], splitDelta[math.MaxUint8]

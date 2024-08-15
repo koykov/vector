@@ -339,12 +339,3 @@ func (vec *Vector) KeepPtr() {
 func (vec *Vector) ptr() uintptr {
 	return uintptr(unsafe.Pointer(vec))
 }
-
-// Split path by given separator.
-//
-// Caution! Don't use "@" as a separator, it will break work with attributes.
-// TODO: consider escaped at symbol "\@".
-func (vec *Vector) splitPath(path, separator string) {
-	vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
-	return
-}
