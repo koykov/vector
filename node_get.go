@@ -12,7 +12,7 @@ func (n *Node) Get(keys ...string) *Node {
 	if len(keys) == 0 {
 		return n
 	}
-	if n.typ != TypeObj && n.typ != TypeArr {
+	if n.typ != TypeObject && n.typ != TypeArray {
 		return nullNode
 	}
 	var vec *Vector
@@ -25,7 +25,7 @@ func (n *Node) Get(keys ...string) *Node {
 			node = &vec.nodes[0]
 		}
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		for i := node.offset; i < node.limit; i++ {
 			idx := vec.Index.val(node.depth+1, i)
 			child := &vec.nodes[idx]
@@ -39,7 +39,7 @@ func (n *Node) Get(keys ...string) *Node {
 			}
 		}
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		i, err := strconv.Atoi(keys[0])
 		if err != nil || i >= node.limit {
 			return nullNode
@@ -63,7 +63,7 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 	if len(keys) == 0 {
 		return n
 	}
-	if n.typ != TypeObj && n.typ != TypeArr {
+	if n.typ != TypeObject && n.typ != TypeArray {
 		return nullNode
 	}
 	var vec *Vector
@@ -76,7 +76,7 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 			node = &vec.nodes[0]
 		}
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		for i := node.offset; i < node.limit; i++ {
 			idx := vec.Index.val(node.depth+1, i)
 			child := &vec.nodes[idx]
@@ -90,7 +90,7 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 			}
 		}
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		lo, hi := keys[0].Decode()
 		skey := path[lo:hi]
 		i, err := strconv.Atoi(skey)
@@ -114,7 +114,7 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 // GetObject looks and get child object by given keys.
 func (n *Node) GetObject(keys ...string) *Node {
 	node := n.Get(keys...)
-	if node.Type() != TypeObj {
+	if node.Type() != TypeObject {
 		return nullNode
 	}
 	return node.Object()
@@ -123,7 +123,7 @@ func (n *Node) GetObject(keys ...string) *Node {
 // GetArray looks and get child array by given keys.
 func (n *Node) GetArray(keys ...string) *Node {
 	node := n.Get(keys...)
-	if node.Type() != TypeArr {
+	if node.Type() != TypeArray {
 		return nullNode
 	}
 	return node.Array()
@@ -132,7 +132,7 @@ func (n *Node) GetArray(keys ...string) *Node {
 // GetBytes looks and get child bytes by given keys.
 func (n *Node) GetBytes(keys ...string) []byte {
 	node := n.Get(keys...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return nil
 	}
 	return node.Bytes()
@@ -141,7 +141,7 @@ func (n *Node) GetBytes(keys ...string) []byte {
 // GetString looks and get child string by given keys.
 func (n *Node) GetString(keys ...string) string {
 	node := n.Get(keys...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return ""
 	}
 	return node.String()
@@ -162,7 +162,7 @@ func (n *Node) GetFloat(keys ...string) (float64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Float()
@@ -174,7 +174,7 @@ func (n *Node) GetInt(keys ...string) (int64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Int()
@@ -186,7 +186,7 @@ func (n *Node) GetUint(keys ...string) (uint64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Uint()
@@ -210,7 +210,7 @@ func (n *Node) GetObjectPS(path, separator string) *Node {
 	}
 	vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
-	if node.Type() != TypeObj {
+	if node.Type() != TypeObject {
 		return nullNode
 	}
 	return node.Object()
@@ -224,7 +224,7 @@ func (n *Node) GetArrayPS(path, separator string) *Node {
 	}
 	vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
-	if node.Type() != TypeArr {
+	if node.Type() != TypeArray {
 		return nullNode
 	}
 	return node.Array()
@@ -238,7 +238,7 @@ func (n *Node) GetBytesPS(path, separator string) []byte {
 	}
 	vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return nil
 	}
 	return node.Bytes()
@@ -252,7 +252,7 @@ func (n *Node) GetStringPS(path, separator string) string {
 	}
 	vec.splitPath(path, separator)
 	node := n.getKE(path, vec.bufKE...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return ""
 	}
 	return node.String()
@@ -283,7 +283,7 @@ func (n *Node) GetFloatPS(path, separator string) (float64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Float()
@@ -300,7 +300,7 @@ func (n *Node) GetIntPS(path, separator string) (int64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Int()
@@ -317,7 +317,7 @@ func (n *Node) GetUintPS(path, separator string) (uint64, error) {
 	if node.typ == TypeNull {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Uint()

@@ -14,14 +14,14 @@ import (
 type Type int
 
 const (
-	TypeUnk Type = iota
+	TypeUnknown Type = iota
 	TypeNull
-	TypeObj
-	TypeArr
-	TypeStr
-	TypeNum
+	TypeObject
+	TypeArray
+	TypeString
+	TypeNumber
 	TypeBool
-	TypeAttr
+	TypeAttribute
 	TypeAlias
 )
 
@@ -93,7 +93,7 @@ func (n *Node) Limit() int {
 
 // Exists checks if given key exists in the node.
 func (n *Node) Exists(key string) bool {
-	if n.typ != TypeObj {
+	if n.typ != TypeObject {
 		return false
 	}
 	vec := n.indirectVector()
@@ -112,7 +112,7 @@ func (n *Node) Exists(key string) bool {
 
 // Object checks node is object and return it.
 func (n *Node) Object() *Node {
-	if n.typ != TypeObj {
+	if n.typ != TypeObject {
 		return nullNode
 	}
 	return n
@@ -120,7 +120,7 @@ func (n *Node) Object() *Node {
 
 // Array checks node is array and return it.
 func (n *Node) Array() *Node {
-	if n.typ != TypeArr {
+	if n.typ != TypeArray {
 		return nullNode
 	}
 	return n
@@ -150,7 +150,7 @@ func (n *Node) Value() *Byteptr {
 //
 // Allow only for [string, number, bool, attribute] types.
 func (n *Node) Bytes() []byte {
-	if n.typ != TypeStr && n.typ != TypeNum && n.typ != TypeBool && n.typ != TypeAttr {
+	if n.typ != TypeString && n.typ != TypeNumber && n.typ != TypeBool && n.typ != TypeAttribute {
 		return nil
 	}
 	return n.val.Bytes()
@@ -170,8 +170,8 @@ func (n *Node) RawBytes() []byte {
 //
 // Allow only for [string, number, bool, attribute] types.
 func (n *Node) String() string {
-	mayStr := n.typ == TypeStr || n.typ == TypeNum || n.typ == TypeBool || n.typ == TypeAttr
-	mayObjStr := n.typ == TypeObj && n.val.Len() > 0
+	mayStr := n.typ == TypeString || n.typ == TypeNumber || n.typ == TypeBool || n.typ == TypeAttribute
+	mayObjStr := n.typ == TypeObject && n.val.Len() > 0
 	if !mayStr && !mayObjStr {
 		return ""
 	}
@@ -193,7 +193,7 @@ func (n *Node) Bool() bool {
 
 // Float returns value as float number.
 func (n *Node) Float() (float64, error) {
-	if n.typ != TypeNum {
+	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	f, err := strconv.ParseFloat(n.val.String(), 64)
@@ -205,7 +205,7 @@ func (n *Node) Float() (float64, error) {
 
 // Int returns value as integer.
 func (n *Node) Int() (int64, error) {
-	if n.typ != TypeNum {
+	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	i, err := strconv.ParseInt(n.val.String(), 10, 64)
@@ -217,7 +217,7 @@ func (n *Node) Int() (int64, error) {
 
 // Uint returns value as unsigned integer.
 func (n *Node) Uint() (uint64, error) {
-	if n.typ != TypeNum {
+	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	u, err := strconv.ParseUint(n.val.String(), 10, 64)
@@ -273,7 +273,7 @@ func (n *Node) RemoveIf(cond func(idx int, node *Node) bool) {
 //
 // May be used only for object nodes.
 func (n *Node) Look(key string) *Node {
-	if n.typ != TypeObj {
+	if n.typ != TypeObject {
 		return nullNode
 	}
 	ci := n.childrenIdx()
@@ -295,7 +295,7 @@ func (n *Node) Look(key string) *Node {
 //
 // May be used only for array nodes.
 func (n *Node) At(idx int) *Node {
-	if n.typ != TypeArr {
+	if n.typ != TypeArray {
 		return nullNode
 	}
 	ci := n.childrenIdx()
@@ -308,7 +308,7 @@ func (n *Node) At(idx int) *Node {
 
 // Reset the node.
 func (n *Node) Reset() *Node {
-	n.typ = TypeUnk
+	n.typ = TypeUnknown
 	n.key.Reset()
 	n.val.Reset()
 	n.depth, n.offset, n.limit = 0, 0, 0
@@ -368,7 +368,7 @@ func (n *Node) LastChild() *Node {
 
 // SortKeys sorts child nodes by key in AB order.
 func (n *Node) SortKeys() *Node {
-	if n.Type() != TypeObj {
+	if n.Type() != TypeObject {
 		return n
 	}
 	children := n.Children()
@@ -380,7 +380,7 @@ func (n *Node) SortKeys() *Node {
 
 // Sort sorts child nodes by value in AB order.
 func (n *Node) Sort() *Node {
-	if n.Type() != TypeObj && n.Type() != TypeArr {
+	if n.Type() != TypeObject && n.Type() != TypeArray {
 		return n
 	}
 	children := n.Children()
@@ -443,13 +443,13 @@ func (n *Node) Marshal(w io.Writer) error {
 
 // Check key equality.
 //
-// Also check node type for keys with "@" prefix (must be TypeAttr).
+// Also check node type for keys with "@" prefix (must be TypeAttribute).
 func (n *Node) keyEqual(key string) bool {
 	if key[0] == '@' {
 		key = key[1:]
-		return n.key.String() == key && n.typ == TypeAttr
+		return n.key.String() == key && n.typ == TypeAttribute
 	}
-	return n.typ != TypeAttr && n.key.String() == key
+	return n.typ != TypeAttribute && n.key.String() == key
 }
 
 // Check if key of n equals to substring of s described by e.
@@ -458,9 +458,9 @@ func (n *Node) keyEqualKE(path string, e entry.Entry64) bool {
 	skey := path[lo:hi]
 	if skey[0] == '@' {
 		skey = skey[1:]
-		return n.key.String() == skey && n.typ == TypeAttr
+		return n.key.String() == skey && n.typ == TypeAttribute
 	}
-	return n.typ != TypeAttr && n.key.String() == skey
+	return n.typ != TypeAttribute && n.key.String() == skey
 }
 
 // Return self pointer of the node.

@@ -17,9 +17,9 @@ func TestNode(t *testing.T) {
 		defer testPool.Put(vec)
 
 		_ = vec.SetSrc([]byte("N/D"), false) // emulate parsing to init vector
-		root, ri := vec.GetNodeWT(0, TypeObj)
+		root, ri := vec.GetNodeWT(0, TypeObject)
 
-		sn, si := vec.GetChildWT(root, 1, TypeStr)
+		sn, si := vec.GetChildWT(root, 1, TypeString)
 		sn.Key().InitString("foo", 0, 3)
 		sn.Value().InitString("bar", 0, 3)
 		vec.PutNode(si, sn)

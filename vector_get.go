@@ -16,17 +16,17 @@ func (vec *Vector) Get(keys ...string) *Node {
 	}
 
 	node := &vec.nodes[0]
-	if node.typ != TypeObj && node.typ != TypeArr {
+	if node.typ != TypeObject && node.typ != TypeArray {
 		if len(keys) > 1 {
 			return nullNode
 		}
 		return node
 	}
 
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArr(node, keys...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObj(node, keys...)
 	}
 	return node
@@ -41,17 +41,17 @@ func (vec *Vector) getKE(path string, keys ...entry.Entry64) *Node {
 		return nullNode
 	}
 	node := &vec.nodes[0]
-	if node.typ != TypeObj && node.typ != TypeArr {
+	if node.typ != TypeObject && node.typ != TypeArray {
 		if len(keys) > 1 {
 			return nullNode
 		}
 		return node
 	}
 
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArrKE(node, path, keys...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObjKE(node, path, keys...)
 	}
 	return node
@@ -68,7 +68,7 @@ func (vec *Vector) GetByIdx(idx int) *Node {
 // GetObject looks and get object by given keys.
 func (vec *Vector) GetObject(keys ...string) *Node {
 	node := vec.Get(keys...)
-	if node.Type() != TypeObj {
+	if node.Type() != TypeObject {
 		return nullNode
 	}
 	return node.Object()
@@ -77,7 +77,7 @@ func (vec *Vector) GetObject(keys ...string) *Node {
 // GetArray looks and get array by given keys.
 func (vec *Vector) GetArray(keys ...string) *Node {
 	node := vec.Get(keys...)
-	if node.Type() != TypeArr {
+	if node.Type() != TypeArray {
 		return nullNode
 	}
 	return node.Array()
@@ -86,7 +86,7 @@ func (vec *Vector) GetArray(keys ...string) *Node {
 // GetBytes looks and get bytes by given keys.
 func (vec *Vector) GetBytes(keys ...string) []byte {
 	node := vec.Get(keys...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return nil
 	}
 	return node.Bytes()
@@ -95,7 +95,7 @@ func (vec *Vector) GetBytes(keys ...string) []byte {
 // GetString looks and get string by given keys.
 func (vec *Vector) GetString(keys ...string) string {
 	node := vec.Get(keys...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return ""
 	}
 	return node.String()
@@ -113,10 +113,10 @@ func (vec *Vector) GetBool(keys ...string) bool {
 // GetFloat looks and get float by given keys.
 func (vec *Vector) GetFloat(keys ...string) (float64, error) {
 	node := vec.Get(keys...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Float()
@@ -125,10 +125,10 @@ func (vec *Vector) GetFloat(keys ...string) (float64, error) {
 // GetInt looks and get integer by given keys.
 func (vec *Vector) GetInt(keys ...string) (int64, error) {
 	node := vec.Get(keys...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Int()
@@ -137,10 +137,10 @@ func (vec *Vector) GetInt(keys ...string) (int64, error) {
 // GetUint looks and get unsigned integer by given keys.
 func (vec *Vector) GetUint(keys ...string) (uint64, error) {
 	node := vec.Get(keys...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Uint()
@@ -156,7 +156,7 @@ func (vec *Vector) GetPS(path, separator string) *Node {
 func (vec *Vector) GetObjectPS(path, separator string) *Node {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() != TypeObj {
+	if node.Type() != TypeObject {
 		return nullNode
 	}
 	return node.Object()
@@ -166,7 +166,7 @@ func (vec *Vector) GetObjectPS(path, separator string) *Node {
 func (vec *Vector) GetArrayPS(path, separator string) *Node {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() != TypeArr {
+	if node.Type() != TypeArray {
 		return nullNode
 	}
 	return node.Array()
@@ -176,7 +176,7 @@ func (vec *Vector) GetArrayPS(path, separator string) *Node {
 func (vec *Vector) GetBytesPS(path, separator string) []byte {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return nil
 	}
 	return node.Bytes()
@@ -186,7 +186,7 @@ func (vec *Vector) GetBytesPS(path, separator string) []byte {
 func (vec *Vector) GetStringPS(path, separator string) string {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() != TypeStr {
+	if node.Type() != TypeString {
 		return ""
 	}
 	return node.String()
@@ -206,10 +206,10 @@ func (vec *Vector) GetBoolPS(path, separator string) bool {
 func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Float()
@@ -219,10 +219,10 @@ func (vec *Vector) GetFloatPS(path, separator string) (float64, error) {
 func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Int()
@@ -232,10 +232,10 @@ func (vec *Vector) GetIntPS(path, separator string) (int64, error) {
 func (vec *Vector) GetUintPS(path, separator string) (uint64, error) {
 	vec.splitPath(path, separator)
 	node := vec.getKE(path, vec.bufKE...)
-	if node.Type() == TypeUnk {
+	if node.Type() == TypeUnknown {
 		return 0, ErrNotFound
 	}
-	if node.Type() != TypeNum {
+	if node.Type() != TypeNumber {
 		return 0, ErrIncompatType
 	}
 	return node.Uint()
@@ -245,7 +245,7 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 	if len(keys) == 0 {
 		return root
 	}
-	if len(keys) == 1 && root.Type() == TypeArr && root.val.Len() > 0 && root.val.String() == keys[0] {
+	if len(keys) == 1 && root.Type() == TypeArray && root.val.Len() > 0 && root.val.String() == keys[0] {
 		return root
 	}
 	k, err := strconv.Atoi(keys[0])
@@ -255,16 +255,16 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 	i := vec.Index.val(root.depth+1, root.offset+k)
 	node := &vec.nodes[i]
 	tail := keys[1:]
-	if node.typ != TypeArr && node.typ != TypeObj {
+	if node.typ != TypeArray && node.typ != TypeObject {
 		if len(tail) > 0 {
 			return nullNode
 		}
 		return node
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArr(node, tail...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObj(node, tail...)
 	}
 	return nullNode
@@ -286,16 +286,16 @@ func (vec *Vector) getObj(root *Node, keys ...string) *Node {
 		return nullNode
 	}
 	tail := keys[1:]
-	if node.typ != TypeArr && node.typ != TypeObj {
+	if node.typ != TypeArray && node.typ != TypeObject {
 		if len(tail) > 0 {
 			return nullNode
 		}
 		return node
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArr(node, tail...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObj(node, tail...)
 	}
 	return nullNode
@@ -308,7 +308,7 @@ func (vec *Vector) getArrKE(root *Node, path string, keys ...entry.Entry64) *Nod
 	}
 	lo, hi := keys[0].Decode()
 	skey := path[lo:hi]
-	if len(keys) == 1 && root.Type() == TypeArr && root.val.Len() > 0 && root.val.String() == skey {
+	if len(keys) == 1 && root.Type() == TypeArray && root.val.Len() > 0 && root.val.String() == skey {
 		return root
 	}
 	k, err := strconv.Atoi(skey)
@@ -318,16 +318,16 @@ func (vec *Vector) getArrKE(root *Node, path string, keys ...entry.Entry64) *Nod
 	i := vec.Index.val(root.depth+1, root.offset+k)
 	node := &vec.nodes[i]
 	tail := keys[1:]
-	if node.typ != TypeArr && node.typ != TypeObj {
+	if node.typ != TypeArray && node.typ != TypeObject {
 		if len(tail) > 0 {
 			return nullNode
 		}
 		return node
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArrKE(node, path, tail...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObjKE(node, path, tail...)
 	}
 	return nullNode
@@ -352,7 +352,7 @@ func (vec *Vector) getObjKE(root *Node, path string, keys ...entry.Entry64) *Nod
 		return nullNode
 	}
 	tail := keys[1:]
-	if node.typ != TypeArr && node.typ != TypeObj {
+	if node.typ != TypeArray && node.typ != TypeObject {
 		if len(tail) > 0 {
 			return nullNode
 		}
@@ -361,10 +361,10 @@ func (vec *Vector) getObjKE(root *Node, path string, keys ...entry.Entry64) *Nod
 		}
 		return node
 	}
-	if node.typ == TypeArr {
+	if node.typ == TypeArray {
 		return vec.getArrKE(node, path, tail...)
 	}
-	if node.typ == TypeObj {
+	if node.typ == TypeObject {
 		return vec.getObjKE(node, path, tail...)
 	}
 	return nullNode
