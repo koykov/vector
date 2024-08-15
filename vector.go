@@ -3,11 +3,9 @@ package vector
 import (
 	"io"
 	"reflect"
-	"strings"
 	"unsafe"
 
 	"github.com/koykov/bitset"
-	"github.com/koykov/bytealg"
 	"github.com/koykov/entry"
 	"github.com/koykov/openrt"
 )
@@ -340,28 +338,4 @@ func (vec *Vector) KeepPtr() {
 // Return self pointer of the vector.
 func (vec *Vector) ptr() uintptr {
 	return uintptr(unsafe.Pointer(vec))
-}
-
-// Split path by given separator.
-//
-// Caution! Don't use "@" as a separator, it will break work with attributes.
-// TODO: consider escaped at symbol "\@".
-func (vec *Vector) splitPath(path, separator string) {
-	vec.bufKE = bytealg.AppendSplitEntryString(vec.bufKE[:0], path, separator, -1)
-	ti := len(vec.bufKE) - 1
-	if ti < 0 {
-		return
-	}
-	lo, hi := vec.bufKE[ti].Decode()
-	tail := path[lo:hi]
-	if p := strings.IndexByte(tail, '@'); p != -1 {
-		if p > 0 {
-			if len(tail[p:]) > 1 {
-				var ne entry.Entry64
-				ne.Encode(lo+uint32(p), hi)
-				vec.bufKE = append(vec.bufKE, ne)
-			}
-			vec.bufKE[ti].Encode(lo, lo+uint32(p))
-		}
-	}
 }
