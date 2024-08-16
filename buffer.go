@@ -1,6 +1,10 @@
 package vector
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/koykov/byteconv"
+)
 
 // BufLen returns length of buffer.
 func (vec *Vector) BufLen() int {
@@ -12,12 +16,33 @@ func (vec *Vector) Buf() []byte {
 	return vec.buf
 }
 
+// BufReplace replaces buffer with b.
+func (vec *Vector) BufReplace(b []byte) {
+	vec.buf = b
+}
+
 // BufUpdateWith replaces buffer with b.
+// DEPRECATED: use BufReplace instead.
 func (vec *Vector) BufUpdateWith(b []byte) {
 	vec.buf = b
 }
 
+// Bufferize appends b to internal buffer and returns buffered value.
+func (vec *Vector) Bufferize(b []byte) []byte {
+	off := vec.BufLen()
+	vec.buf = append(vec.buf, b...)
+	return vec.buf[off:]
+}
+
+// BufferizeString appends string to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeString(s string) string {
+	off := vec.BufLen()
+	vec.buf = append(vec.buf, s...)
+	return byteconv.B2S(vec.buf[off:])
+}
+
 // BufAppend appends bytes to the buffer.
+// DEPRECATED: use Bufferize instead.
 func (vec *Vector) BufAppend(s []byte) {
 	vec.buf = append(vec.buf, s...)
 }
