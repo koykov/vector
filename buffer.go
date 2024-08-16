@@ -14,14 +14,9 @@ func (vec *Vector) Buf() []byte {
 	return vec.buf
 }
 
-// BufReplace replaces buffer with b.
-func (vec *Vector) BufReplace(b []byte) {
-	vec.buf = b
-}
-
-// BufUpdateWith replaces buffer with b.
-// DEPRECATED: use BufReplace instead.
-func (vec *Vector) BufUpdateWith(b []byte) {
+// BufReplaceWith replaces buffer with b.
+// Use with caution! Buffer replacing may break copy-versions of parsing methods.
+func (vec *Vector) BufReplaceWith(b []byte) {
 	vec.buf = b
 }
 

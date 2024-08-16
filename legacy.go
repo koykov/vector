@@ -24,55 +24,61 @@ const (
 	TypeAttr Type = 7
 )
 
-// ParseStr parses source string.
+// ParseStr is a legacy version of ParseString.
 // DEPRECATED: use ParseString instead.
 func (vec *Vector) ParseStr(_ string) error {
 	return ErrNotImplement
 }
 
-// ParseCopyStr copies source string and parse it.
+// ParseCopyStr is a legacy version of ParseCopyString.
 // DEPRECATED: use ParseCopyString instead.
 func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }
 
-// BufAppend appends bytes to the buffer.
+// BufUpdateWith is a legacy version of BufReplaceWith.
+// DEPRECATED: use BufReplaceWith instead.
+func (vec *Vector) BufUpdateWith(b []byte) {
+	vec.buf = b
+}
+
+// BufAppend is a legacy version of Bufferize.
 // DEPRECATED: use Bufferize instead.
 func (vec *Vector) BufAppend(s []byte) {
 	vec.buf = append(vec.buf, s...)
 }
 
-// BufAppendStr appends string to the buffer.
+// BufAppendStr is a legacy version of BufferizeString.
 // DEPRECATED: use BufferizeString instead.
 func (vec *Vector) BufAppendStr(s string) {
 	vec.buf = append(vec.buf, s...)
 }
 
-// BufAppendByte appends single byte to the buffer.
+// BufAppendByte is a legacy version of BufferizeByte.
 // DEPRECATED: use BufferizeByte instead.
 func (vec *Vector) BufAppendByte(b byte) {
 	vec.buf = append(vec.buf, b)
 }
 
-// BufAppendInt appends int to the buffer.
+// BufAppendInt is a legacy version of BufferizeInt.
 // DEPRECATED: use BufferizeInt instead.
 func (vec *Vector) BufAppendInt(i int64) {
 	vec.buf = strconv.AppendInt(vec.buf, i, 10)
 }
 
-// BufAppendUint appends uint to the buffer.
+// BufAppendUint is a legacy version of BufferizeUint.
 // DEPRECATED: use BufferizeUint instead.
 func (vec *Vector) BufAppendUint(u uint64) {
 	vec.buf = strconv.AppendUint(vec.buf, u, 10)
 }
 
-// BufAppendFloat appends float to the buffer.
+// BufAppendFloat is a legacy version of BufferizeFloat.
 // DEPRECATED: use BufferizeFloat instead.
 func (vec *Vector) BufAppendFloat(f float64) {
 	vec.buf = strconv.AppendFloat(vec.buf, f, 'f', -1, 64)
 }
 
-// BufAppendFloatTune appends float with extended params to the buffer.
+// BufAppendFloatTune is a legacy version of BufferizeFloatTune.
 // DEPRECATED: use BufferizeFloatTune instead.
 func (vec *Vector) BufAppendFloatTune(f float64, fmt byte, prec, bitSize int) {
 	vec.buf = strconv.AppendFloat(vec.buf, f, fmt, prec, bitSize)
