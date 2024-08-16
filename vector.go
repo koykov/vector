@@ -2,10 +2,10 @@ package vector
 
 import (
 	"io"
-	"reflect"
 	"unsafe"
 
 	"github.com/koykov/bitset"
+	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
 	"github.com/koykov/openrt"
 )
@@ -87,7 +87,7 @@ func (vec *Vector) SetSrc(s []byte, copy bool) error {
 		vec.src = s
 	}
 	// Get source data address.
-	h := (*reflect.SliceHeader)(unsafe.Pointer(&vec.src))
+	h := (*byteconv.SliceHeader)(unsafe.Pointer(&vec.src))
 	vec.addr = h.Data
 	vec.selfPtr = uintptr(unsafe.Pointer(vec))
 	return nil
