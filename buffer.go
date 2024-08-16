@@ -1,6 +1,8 @@
 package vector
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // BufLen returns length of buffer.
 func (vec *Vector) BufLen() int {
@@ -12,42 +14,57 @@ func (vec *Vector) Buf() []byte {
 	return vec.buf
 }
 
-// BufUpdateWith replaces buffer with b.
-func (vec *Vector) BufUpdateWith(b []byte) {
+// BufReplaceWith replaces buffer with b.
+// Use with caution! Buffer replacing may break copy-versions of parsing methods.
+func (vec *Vector) BufReplaceWith(b []byte) {
 	vec.buf = b
 }
 
-// BufAppend appends bytes to the buffer.
-func (vec *Vector) BufAppend(s []byte) {
-	vec.buf = append(vec.buf, s...)
+// Bufferize appends b to internal buffer and returns buffered value.
+func (vec *Vector) Bufferize(b []byte) []byte {
+	off := vec.BufLen()
+	vec.buf = append(vec.buf, b...)
+	return vec.buf[off:]
 }
 
-// BufAppendStr appends string to the buffer.
-func (vec *Vector) BufAppendStr(s string) {
+// BufferizeString appends string to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeString(s string) []byte {
+	off := vec.BufLen()
 	vec.buf = append(vec.buf, s...)
+	return vec.buf[off:]
 }
 
-// BufAppendByte appends single byte to the buffer.
-func (vec *Vector) BufAppendByte(b byte) {
+// BufferizeByte appends b to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeByte(b byte) []byte {
+	off := vec.BufLen()
 	vec.buf = append(vec.buf, b)
+	return vec.buf[off:]
 }
 
-// BufAppendInt appends int to the buffer.
-func (vec *Vector) BufAppendInt(i int64) {
+// BufferizeInt appends integer to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeInt(i int64) []byte {
+	off := vec.BufLen()
 	vec.buf = strconv.AppendInt(vec.buf, i, 10)
+	return vec.buf[off:]
 }
 
-// BufAppendUint appends uint to the buffer.
-func (vec *Vector) BufAppendUint(u uint64) {
+// BufferizeUint appends unsigned integer to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeUint(u uint64) []byte {
+	off := vec.BufLen()
 	vec.buf = strconv.AppendUint(vec.buf, u, 10)
+	return vec.buf[off:]
 }
 
-// BufAppendFloat appends float to the buffer.
-func (vec *Vector) BufAppendFloat(f float64) {
+// BufferizeFloat appends unsigned integer to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeFloat(f float64) []byte {
+	off := vec.BufLen()
 	vec.buf = strconv.AppendFloat(vec.buf, f, 'f', -1, 64)
+	return vec.buf[off:]
 }
 
-// BufAppendFloatTune appends float with extended params to the buffer.
-func (vec *Vector) BufAppendFloatTune(f float64, fmt byte, prec, bitSize int) {
+// BufferizeFloatTune appends float to internal buffer and returns buffered value.
+func (vec *Vector) BufferizeFloatTune(f float64, fmt byte, prec, bitSize int) []byte {
+	off := vec.BufLen()
 	vec.buf = strconv.AppendFloat(vec.buf, f, fmt, prec, bitSize)
+	return vec.buf[off:]
 }

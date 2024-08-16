@@ -29,7 +29,7 @@ func equal(a, b *Node) bool {
 	}
 	ok := true
 	switch a.Type() {
-	case TypeObj:
+	case TypeObject:
 		a.Each(func(_ int, ac *Node) {
 			bc := b.Get(ac.KeyString())
 			if bc.Type() == TypeNull {
@@ -41,7 +41,7 @@ func equal(a, b *Node) bool {
 				return
 			}
 		})
-	case TypeArr:
+	case TypeArray:
 		a.Each(func(idx int, ac *Node) {
 			bc := b.At(idx)
 			if !equal(ac, bc) {
@@ -49,7 +49,7 @@ func equal(a, b *Node) bool {
 				return
 			}
 		})
-	case TypeUnk:
+	case TypeUnknown:
 	case TypeNull:
 		return true
 	default:

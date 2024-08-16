@@ -43,12 +43,6 @@ func (vec *Vector) ParseString(_ string) error {
 	return ErrNotImplement
 }
 
-// ParseStr parses source string.
-// DEPRECATED: use ParseString instead.
-func (vec *Vector) ParseStr(_ string) error {
-	return ErrNotImplement
-}
-
 // ParseCopy copies source bytes and parse it.
 func (vec *Vector) ParseCopy(_ []byte) error {
 	return ErrNotImplement
@@ -56,12 +50,6 @@ func (vec *Vector) ParseCopy(_ []byte) error {
 
 // ParseCopyString copies source string and parse it.
 func (vec *Vector) ParseCopyString(_ string) error {
-	return ErrNotImplement
-}
-
-// ParseCopyStr copies source string and parse it.
-// DEPRECATED: use ParseCopyString instead.
-func (vec *Vector) ParseCopyStr(_ string) error {
 	return ErrNotImplement
 }
 
@@ -233,7 +221,7 @@ func (vec *Vector) NodeAt(idx int) *Node {
 //
 // Similar to GetNode.
 func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
-	return vec.GetChildWT(root, depth, TypeUnk)
+	return vec.GetChildWT(root, depth, TypeUnknown)
 }
 
 // GetChildWT get node, register it as a child of root node and set type at once.
@@ -257,7 +245,7 @@ func (vec *Vector) getNode(depth int) (*Node, int) {
 	if vec.nodeL < n {
 		node = &vec.nodes[vec.nodeL]
 	} else {
-		vec.nodes = append(vec.nodes, Node{typ: TypeUnk})
+		vec.nodes = append(vec.nodes, Node{typ: TypeUnknown})
 		node = &vec.nodes[n]
 	}
 	node.depth = depth
