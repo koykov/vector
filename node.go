@@ -417,6 +417,34 @@ func (n *Node) AliasOf(node *Node) *Node {
 	return nullNode
 }
 
+// AcquireChild allocates new child of current node and return it with index.
+func (n *Node) AcquireChild(depth int) (*Node, int) {
+	vec := n.indirectVector()
+	if vec == nil {
+		return nullNode, -1
+	}
+	return vec.AcquireChild(n, depth)
+}
+
+// AcquireChildWithType allocates new child of current node, set the type at once and return it with index.
+func (n *Node) AcquireChildWithType(depth int, typ Type) (*Node, int) {
+	vec := n.indirectVector()
+	if vec == nil {
+		return nullNode, -1
+	}
+	return vec.AcquireChildWithType(n, depth, typ)
+}
+
+// ReleaseChild return node back to vector ownes current node.
+func (n *Node) ReleaseChild(idx int, node *Node) *Node {
+	vec := n.indirectVector()
+	if vec == nil {
+		return n
+	}
+	vec.ReleaseNode(idx, node)
+	return n
+}
+
 // Beautify formats node in human-readable representation.
 func (n *Node) Beautify(w io.Writer) error {
 	vec := n.indirectVector()
