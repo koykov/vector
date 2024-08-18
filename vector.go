@@ -195,16 +195,16 @@ func (vec *Vector) Exists(key string) bool {
 	return n.Exists(key)
 }
 
-// GetNode returns new node with index from position matrix by given depth.
-func (vec *Vector) GetNode(depth int) (node *Node, idx int) {
-	node, idx = vec.getNode(depth)
-	vec.Index.Register(depth, idx)
-	return
+// AcquireNode allocates new node on given depth and returns it with index.
+func (vec *Vector) AcquireNode(depth int) (node *Node, idx int) {
+	return vec.AcquireNodeWithType(depth, TypeUnknown)
 }
 
-// GetNodeWT returns node and set type at once.
-func (vec *Vector) GetNodeWT(depth int, typ Type) (*Node, int) {
-	node, idx := vec.GetNode(depth)
+// AcquireNodeWithType allocates new node on given depth and returns it with index.
+// Similar to AcquireNode but sets node's type at once.
+func (vec *Vector) AcquireNodeWithType(depth int, typ Type) (*Node, int) {
+	node, idx := vec.ackNode(depth)
+	vec.Index.Register(depth, idx)
 	node.typ = typ
 	return node, idx
 }
@@ -217,16 +217,16 @@ func (vec *Vector) NodeAt(idx int) *Node {
 	return &vec.nodes[idx]
 }
 
-// GetChild get node and register it as a child of root node.
+// AcquireChild allocates new node and marks it as a child of root node.
 //
-// Similar to GetNode.
-func (vec *Vector) GetChild(root *Node, depth int) (*Node, int) {
-	return vec.GetChildWT(root, depth, TypeUnknown)
+// Similar to AcquireNode.
+func (vec *Vector) AcquireChild(root *Node, depth int) (*Node, int) {
+	return vec.AcquireChildWithType(root, depth, TypeUnknown)
 }
 
-// GetChildWT get node, register it as a child of root node and set type at once.
-func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
-	node, idx := vec.getNode(depth)
+// AcquireChildWithType allocates new node, mark it as child of root and set type at once.
+func (vec *Vector) AcquireChildWithType(root *Node, depth int, typ Type) (*Node, int) {
+	node, idx := vec.ackNode(depth)
 	node.typ = typ
 	node.pptr = root.ptr()
 	root.SetLimit(vec.Index.Register(depth, idx))
@@ -236,7 +236,7 @@ func (vec *Vector) GetChildWT(root *Node, depth int, typ Type) (*Node, int) {
 // Generic node getter.
 //
 // Returns new node and its index in the nodes array.
-func (vec *Vector) getNode(depth int) (*Node, int) {
+func (vec *Vector) ackNode(depth int) (*Node, int) {
 	n := len(vec.nodes)
 	if n > 0 {
 		_ = vec.nodes[n-1]
@@ -257,8 +257,8 @@ func (vec *Vector) getNode(depth int) (*Node, int) {
 	return node, node.idx
 }
 
-// PutNode returns node back to the array.
-func (vec *Vector) PutNode(idx int, node *Node) {
+// ReleaseNode returns node back to the vector.
+func (vec *Vector) ReleaseNode(idx int, node *Node) {
 	l := unsafe.Pointer(&vec.nodes[idx])
 	r := unsafe.Pointer(node)
 	if uintptr(l) != uintptr(r) {
