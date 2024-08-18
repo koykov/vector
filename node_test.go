@@ -19,15 +19,15 @@ func TestNode(t *testing.T) {
 		_ = vec.SetSrc([]byte("N/D"), false) // emulate parsing to init vector
 		root, ri := vec.AcquireNodeWithType(0, TypeObject)
 
-		sn, si := vec.AcquireChildWithType(root, 1, TypeString)
+		sn, si := root.AcquireChildWithType(1, TypeString)
 		sn.Key().InitString("foo", 0, 3)
 		sn.Value().InitString("bar", 0, 3)
-		vec.ReleaseNode(si, sn)
+		root.ReleaseChild(si, sn)
 
-		an, ai := vec.AcquireChildWithType(root, 1, TypeAlias)
+		an, ai := root.AcquireChildWithType(1, TypeAlias)
 		an.Key().InitString("qwe", 0, 3)
 		an.AliasOf(sn)
-		vec.ReleaseNode(ai, an)
+		root.ReleaseChild(ai, an)
 
 		vec.ReleaseNode(ri, root)
 
