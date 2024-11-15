@@ -23,6 +23,8 @@ type Interface interface {
 	// DEPRECATED: use ParseCopyString instead.
 	ParseCopyStr(source string) error
 
+	ParseReader(r io.Reader) error
+
 	// Root returns first root node.
 	Root() *Node
 	// RootByIndex returns root node by given index. If index overflows count of root nodes, the NULL node will return.
