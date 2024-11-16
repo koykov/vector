@@ -23,6 +23,7 @@ type Interface interface {
 	// DEPRECATED: use ParseCopyString instead.
 	ParseCopyStr(source string) error
 
+	// ParseReader takes source from r and parse it.
 	ParseReader(r io.Reader) error
 
 	// Root returns first root node.

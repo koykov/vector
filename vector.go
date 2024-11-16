@@ -53,6 +53,11 @@ func (vec *Vector) ParseCopyString(_ string) error {
 	return ErrNotImplement
 }
 
+// ParseReader reads source from r and parse it.
+func (vec *Vector) ParseReader(r io.Reader) error {
+	return ErrNotImplement
+}
+
 // Beautify formats first root node in human-readable representation.
 //
 // Second and next roots must beautify manually by call Beautify method of each node.
