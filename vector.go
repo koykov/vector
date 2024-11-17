@@ -71,6 +71,7 @@ func (vec *Vector) ParseReader(r io.Reader) (err error) {
 			return err
 		}
 	}
+	// Each submodule must provide own implementation. So base method always return "not implement" error.
 	return ErrNotImplement
 }
 
