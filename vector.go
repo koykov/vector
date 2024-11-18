@@ -2,6 +2,7 @@ package vector
 
 import (
 	"io"
+	"os"
 	"unsafe"
 
 	"github.com/koykov/bitset"
@@ -52,6 +53,16 @@ func (vec *Vector) ParseCopy(_ []byte) error {
 // ParseCopyString copies source string and parse it.
 func (vec *Vector) ParseCopyString(_ string) error {
 	return ErrNotImplement
+}
+
+// ParseFile reads file contents and parse it.
+func (vec *Vector) ParseFile(path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = f.Close() }()
+	return vec.ParseReader(f)
 }
 
 // ParseReader reads source from r and parse it.

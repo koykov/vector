@@ -22,7 +22,8 @@ type Interface interface {
 	// ParseCopyStr is a legacy version of ParseCopyString.
 	// DEPRECATED: use ParseCopyString instead.
 	ParseCopyStr(source string) error
-
+	// ParseFile reads file contents and parse it.
+	ParseFile(path string) error
 	// ParseReader takes source from r and parse it.
 	ParseReader(r io.Reader) error
 
