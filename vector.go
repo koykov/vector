@@ -2,9 +2,11 @@ package vector
 
 import (
 	"io"
+	"os"
 	"unsafe"
 
 	"github.com/koykov/bitset"
+	"github.com/koykov/bytealg"
 	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
 	"github.com/koykov/openrt"
@@ -50,6 +52,37 @@ func (vec *Vector) ParseCopy(_ []byte) error {
 
 // ParseCopyString copies source string and parse it.
 func (vec *Vector) ParseCopyString(_ string) error {
+	return ErrNotImplement
+}
+
+// ParseFile reads file contents and parse it.
+func (vec *Vector) ParseFile(path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = f.Close() }()
+	return vec.ParseReader(f)
+}
+
+// ParseReader reads source from r and parse it.
+func (vec *Vector) ParseReader(r io.Reader) (err error) {
+	const bufsz = 512
+	for {
+		off := len(vec.buf)
+		vec.buf = bytealg.GrowDelta(vec.buf, bufsz)
+		var n int
+		n, err = r.Read(vec.buf[off:])
+		if err == io.EOF || n < bufsz {
+			vec.buf = vec.buf[:off+n]
+			err = nil
+			break
+		}
+		if err != nil {
+			return err
+		}
+	}
+	// Each submodule must provide own implementation. So base method always return "not implement" error.
 	return ErrNotImplement
 }
 
