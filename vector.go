@@ -331,6 +331,7 @@ func (vec *Vector) Reset() {
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.Index.reset()
 	vec.Bitset.Reset()
+	vec.Bitset.SetBit(FlagInit, vec.Helper != nil)
 }
 
 // ForgetFrom forgets nodes from given position to the end of the array.
