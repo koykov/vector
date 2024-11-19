@@ -73,7 +73,7 @@ func (vec *Vector) ParseReader(r io.Reader) (err error) {
 		vec.buf = bytealg.GrowDelta(vec.buf, bufsz)
 		var n int
 		n, err = r.Read(vec.buf[off:])
-		if err == io.EOF {
+		if err == io.EOF || n < bufsz {
 			vec.buf = vec.buf[:off+n]
 			err = nil
 			break
