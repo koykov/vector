@@ -3,6 +3,7 @@ package vector
 import (
 	"io"
 	"os"
+	"unicode/utf8"
 	"unsafe"
 
 	"github.com/koykov/bitset"
@@ -146,6 +147,17 @@ func (vec *Vector) Src() []byte {
 // SrcAt returns byte at position i.
 func (vec *Vector) SrcAt(i int) byte {
 	return vec.src[i]
+}
+
+// ReadRuneAt returns rune at position i.
+// Please note, it's your responsibility to specify right position `i`.
+func (vec *Vector) ReadRuneAt(i int) (r rune, w int, err error) {
+	if i < 0 || i >= len(vec.src) {
+		err = io.ErrUnexpectedEOF
+		return
+	}
+	r, w = utf8.DecodeRune(vec.src[i:])
+	return
 }
 
 // SrcAddr returns source address in virtual memory.
