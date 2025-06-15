@@ -188,7 +188,14 @@ func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
 	}
-	return bytealg.ToLower(n.val.String()) == "true"
+	lower := bytealg.ToLower(n.val.String())
+	if lower == "true" {
+		return true
+	}
+	if n.val.bits.CheckBit(FlagExtraBool) {
+		return lower == "on"
+	}
+	return false
 }
 
 // Float returns value as float number.
