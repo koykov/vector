@@ -11,4 +11,4 @@ require (
 	github.com/koykov/openrt v0.0.0-20240728195600-ccc3242946f9
 )
 
-require github.com/koykov/byteseq v1.0.1 // indirect
+require github.com/koykov/byteseq v1.0.2 // indirect

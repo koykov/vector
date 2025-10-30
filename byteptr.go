@@ -1,7 +1,6 @@
 package vector
 
 import (
-	"reflect"
 	"unsafe"
 
 	"github.com/koykov/bitset"
@@ -24,7 +23,7 @@ func (p *Byteptr) TakeAddr(s []byte) *Byteptr {
 	if s == nil {
 		return p
 	}
-	h := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	h := (*byteconv.SliceHeader)(unsafe.Pointer(&s))
 	p.addr, p.cap = h.Data, uint32(h.Cap)
 	return p
 }
@@ -33,7 +32,7 @@ func (p *Byteptr) TakeStringAddr(s string) *Byteptr {
 	if len(s) == 0 {
 		return p
 	}
-	h := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	h := (*byteconv.StringHeader)(unsafe.Pointer(&s))
 	p.addr, p.cap = h.Data, uint32(h.Len)
 	return p
 }
@@ -100,7 +99,7 @@ func (p *Byteptr) RawBytes() []byte {
 	if p.addr == 0 || p.offset < 0 || p.len < 0 {
 		return nil
 	}
-	h := reflect.SliceHeader{
+	h := byteconv.SliceHeader{
 		Data: p.addr + uintptr(p.offset),
 		Len:  int(p.len),
 		Cap:  int(p.len),
@@ -112,7 +111,7 @@ func (p *Byteptr) RawString() string {
 	if p.addr == 0 || p.offset < 0 || p.len < 0 {
 		return ""
 	}
-	h := reflect.StringHeader{
+	h := byteconv.StringHeader{
 		Data: p.addr + uintptr(p.offset),
 		Len:  int(p.len),
 	}
