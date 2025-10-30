@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"bytes"
 	"io"
 	"strconv"
 	"unsafe"
@@ -188,12 +189,12 @@ func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
 	}
-	lower := bytealg.ToLower(n.val.String())
-	if lower == "true" {
+	lower := bytealg.ToLowerBytes(n.val.Bytes())
+	if bytes.Equal(lower, bTrue) {
 		return true
 	}
 	if n.val.bits.CheckBit(FlagExtraBool) {
-		return lower == "on"
+		return bytes.Equal(lower, bOn)
 	}
 	return false
 }
@@ -522,3 +523,8 @@ func (n *Node) indirectNode() *Node {
 	}
 	return (*Node)(indirect.ToUnsafePtr(n.pptr))
 }
+
+var (
+	bTrue = []byte("true")
+	bOn   = []byte("on")
+)
