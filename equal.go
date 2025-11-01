@@ -53,9 +53,7 @@ func equal(a, b *Node) bool {
 	case TypeNull:
 		return true
 	default:
-		if !bytes.Equal(a.Value().RawBytes(), b.Value().RawBytes()) {
-			return false
-		}
+		return bytes.Equal(a.Value().RawBytes(), b.Value().RawBytes())
 	}
 	return ok
 }

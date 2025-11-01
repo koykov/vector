@@ -34,10 +34,10 @@ type Node struct {
 	typ Type
 	// Key/value byteptr objects.
 	key, val Byteptr
-	// Node index in array, depth in a index tree, offset in index row and limit of childs in index row.
+	// Node index in array, depth in an index tree, offset in index row and limit of childs in index row.
 	idx, depth, offset, limit int
 	// Raw pointers to vector and parent node.
-	// It's safe to usi uintptr here because vector guaranteed to exist while the node is alive and isn't garbage
+	// It's safe to use uintptr here because vector guaranteed to exist while the node is alive and isn't garbage
 	// collected.
 	vptr, pptr uintptr
 }
@@ -415,10 +415,6 @@ func (n *Node) AliasOf(node *Node) *Node {
 		return nullNode
 	}
 	if vec := n.indirectVector(); vec != nil {
-		var limit = n.limit
-		if limit == 0 {
-			limit = n.offset + 1
-		}
 		n.SetLimit(vec.Index.Register(n.depth+1, node.Index()))
 		return n
 	}
@@ -481,11 +477,12 @@ func (n *Node) Marshal(w io.Writer) error {
 //
 // Also check node type for keys with "@" prefix (must be TypeAttribute).
 func (n *Node) keyEqual(key string) bool {
+	skey := n.key.String()
 	if key[0] == '@' {
 		key = key[1:]
-		return n.key.String() == key && n.typ == TypeAttribute
+		return skey == key && n.typ == TypeAttribute
 	}
-	return n.typ != TypeAttribute && n.key.String() == key
+	return n.typ != TypeAttribute && skey == key
 }
 
 // Check if key of n equals to substring of s described by e.
@@ -527,4 +524,6 @@ func (n *Node) indirectNode() *Node {
 var (
 	bTrue = []byte("true")
 	bOn   = []byte("on")
+
+	_ = nullNode.indirectNode
 )
