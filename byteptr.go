@@ -96,7 +96,7 @@ func (p *Byteptr) String() string {
 }
 
 func (p *Byteptr) RawBytes() []byte {
-	if p.addr == 0 || p.offset < 0 || p.len < 0 {
+	if p.addr == 0 || p.len == 0 {
 		return nil
 	}
 	h := byteconv.SliceHeader{
@@ -108,7 +108,7 @@ func (p *Byteptr) RawBytes() []byte {
 }
 
 func (p *Byteptr) RawString() string {
-	if p.addr == 0 || p.offset < 0 || p.len < 0 {
+	if p.addr == 0 || p.len == 0 {
 		return ""
 	}
 	h := byteconv.StringHeader{

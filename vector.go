@@ -3,6 +3,7 @@ package vector
 import (
 	"io"
 	"os"
+	"runtime"
 	"unicode/utf8"
 	"unsafe"
 
@@ -76,15 +77,15 @@ func (vec *Vector) ParseReader(r io.Reader) (err error) {
 		n, err = r.Read(vec.buf[off:])
 		if err == io.EOF || n < bufsz {
 			vec.buf = vec.buf[:off+n]
-			err = nil
+			// Each submodule must provide own implementation. So base method always return "not implement" error.
+			err = ErrNotImplement
 			break
 		}
 		if err != nil {
-			return err
+			break
 		}
 	}
-	// Each submodule must provide own implementation. So base method always return "not implement" error.
-	return ErrNotImplement
+	return
 }
 
 // Beautify formats first root node in human-readable representation.
@@ -273,7 +274,6 @@ func (vec *Vector) AcquireChild(root *Node, depth int) (*Node, int) {
 func (vec *Vector) AcquireChildWithType(root *Node, depth int, typ Type) (*Node, int) {
 	node, idx := vec.ackNode(depth)
 	node.typ = typ
-	node.pptr = root.ptr()
 	root.SetLimit(vec.Index.Register(depth, idx))
 	return node, idx
 }
@@ -343,7 +343,7 @@ func (vec *Vector) Reset() {
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.Index.reset()
 	vec.Bitset.Reset()
-	vec.Bitset.SetBit(FlagInit, vec.Helper != nil)
+	vec.SetBit(FlagInit, vec.Helper != nil)
 }
 
 // ForgetFrom forgets nodes from given position to the end of the array.
@@ -366,7 +366,7 @@ func (vec *Vector) ForgetFrom(idx int) {
 // fmt.Println(node.String()) <- invalid operation due to vec already has been collected
 // vec.KeepPtr() <- just call me to avoid that trouble
 func (vec *Vector) KeepPtr() {
-	_ = vec.ptr()
+	runtime.KeepAlive(vec)
 }
 
 // Return self pointer of the vector.
