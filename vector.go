@@ -11,7 +11,7 @@ import (
 	"github.com/koykov/bytealg"
 	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
-	"github.com/koykov/openrt"
+	"github.com/koykov/simd/memclr64"
 )
 
 // Vector parser object.
@@ -334,7 +334,7 @@ func (vec *Vector) Reset() {
 		return
 	}
 	if !vec.CheckBit(FlagNoClear) {
-		openrt.MemclrUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
+		memclr64.ClearUnsafe(unsafe.Pointer(&vec.nodes[0]), vec.nodeL*nodeSize)
 	}
 	vec.nodeL = 0
 
