@@ -189,7 +189,7 @@ func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
 	}
-	lower := bytealg.ToLowerBytes(n.val.Bytes())
+	lower := bytealg.ToLowerBytes(n.val.RawBytes())
 	if bytes.Equal(lower, bTrue) {
 		return true
 	}
@@ -204,7 +204,7 @@ func (n *Node) Float() (float64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	f, err := strconv.ParseFloat(n.val.String(), 64)
+	f, err := strconv.ParseFloat(n.val.RawString(), 64)
 	if err != nil {
 		return 0, err
 	}
@@ -216,7 +216,7 @@ func (n *Node) Int() (int64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	i, err := strconv.ParseInt(n.val.String(), 10, 64)
+	i, err := strconv.ParseInt(n.val.RawString(), 10, 64)
 	if err != nil {
 		return 0, err
 	}
@@ -228,7 +228,7 @@ func (n *Node) Uint() (uint64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	u, err := strconv.ParseUint(n.val.String(), 10, 64)
+	u, err := strconv.ParseUint(n.val.RawString(), 10, 64)
 	if err != nil {
 		return 0, err
 	}
