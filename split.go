@@ -68,6 +68,7 @@ exit:
 }
 
 func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
+	_, _ = s, sep
 	// todo implement SIMD approach
 	return dst
 }
