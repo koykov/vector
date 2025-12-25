@@ -7,16 +7,22 @@ import (
 	"github.com/koykov/entry"
 )
 
+const splitPathThreshold = 16
+
 // Split path by given separator.
 //
 // Caution! Don't use "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
+	if len(path) <= splitPathThreshold {
+		vec.bufKE = vec.appendSplitPathShort(vec.bufKE[:0], path, separator)
+		return
+	}
 	vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
 }
 
 // A wrapper around bytealg.AppendSplitEntryString with additional logic for checking square brackets and "@" separator.
-func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
+func (vec *Vector) appendSplitPathShort(dst []entry.Entry64, s, sep string) []entry.Entry64 {
 	_, _ = splitTable[math.MaxUint8], splitDelta[math.MaxUint8]
 	n, m := uint32(len(s)), len(sep)
 	if n == 0 {
@@ -58,6 +64,11 @@ func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.E
 	}
 
 exit:
+	return dst
+}
+
+func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
+	// todo implement SIMD approach
 	return dst
 }
 
