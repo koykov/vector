@@ -8,7 +8,7 @@ require (
 	github.com/koykov/byteconv v1.0.1
 	github.com/koykov/entry v1.0.2
 	github.com/koykov/indirect v1.0.1
-	github.com/koykov/simd v0.0.7
+	github.com/koykov/simd v0.0.9-0.20251230205552-a9758e402c50
 )
 
 require (

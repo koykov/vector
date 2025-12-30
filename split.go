@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/koykov/entry"
+	"github.com/koykov/simd/indextoken"
 )
 
 const splitPathThreshold = 16
@@ -14,11 +15,10 @@ const splitPathThreshold = 16
 // Caution! Don't use "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
-	if len(path) <= splitPathThreshold {
-		vec.bufKE = vec.appendSplitPathShort(vec.bufKE[:0], path, separator)
-		return
+	if separator == "." && len(path) > splitPathThreshold {
+		vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
 	}
-	vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
+	vec.bufKE = vec.appendSplitPathShort(vec.bufKE[:0], path, separator)
 }
 
 // A wrapper around bytealg.AppendSplitEntryString with additional logic for checking square brackets and "@" separator.
@@ -68,8 +68,15 @@ exit:
 }
 
 func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
-	_, _ = s, sep
-	// todo implement SIMD approach
+	var t indextoken.Tokenizer[string]
+	for {
+		lo, hi := t.NextLH(s)
+		if lo == hi {
+			break
+		}
+		e := entry.NewEntry64(uint32(lo), uint32(hi))
+		dst = append(dst, e)
+	}
 	return dst
 }
 
