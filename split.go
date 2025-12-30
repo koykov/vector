@@ -8,15 +8,16 @@ import (
 	"github.com/koykov/simd/indextoken"
 )
 
-const splitPathThreshold = 16
+const splitPathThreshold = 128
 
 // Split path by given separator.
 //
 // Caution! Don't use "@" as a separator, it will break work with attributes.
 // TODO: consider escaped at symbol "\@".
 func (vec *Vector) splitPath(path, separator string) {
-	if separator == "." && len(path) > splitPathThreshold {
+	if len(separator) == 1 && separator[0] == '.' && len(path) > splitPathThreshold {
 		vec.bufKE = vec.appendSplitPath(vec.bufKE[:0], path, separator)
+		return
 	}
 	vec.bufKE = vec.appendSplitPathShort(vec.bufKE[:0], path, separator)
 }
