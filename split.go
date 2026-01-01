@@ -70,6 +70,7 @@ exit:
 
 func (vec *Vector) appendSplitPath(dst []entry.Entry64, s, sep string) []entry.Entry64 {
 	var t indextoken.Tokenizer[string]
+	t.KeepAt()
 	for {
 		lo, hi := t.NextLH(s)
 		if lo == hi {
