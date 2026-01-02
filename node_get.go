@@ -3,7 +3,6 @@ package vector
 import (
 	"strconv"
 
-	"github.com/koykov/bytealg"
 	"github.com/koykov/entry"
 )
 
@@ -198,7 +197,7 @@ func (n *Node) GetPS(path, separator string) *Node {
 	if vec == nil {
 		return nullNode
 	}
-	vec.bufKE = bytealg.AppendSplitEntryString(vec.bufKE[:0], path, separator, -1)
+	vec.splitPath(path, separator)
 	return n.getKE(path, vec.bufKE...)
 }
 
