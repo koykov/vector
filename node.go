@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"unsafe"
 
-	"github.com/koykov/bytealg"
 	"github.com/koykov/entry"
 	"github.com/koykov/indirect"
 )
@@ -189,7 +188,7 @@ func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
 	}
-	lower := bytealg.ToLowerBytes(n.val.RawBytes())
+	lower := toLowerASCII(n.val.RawBytes())
 	if bytes.Equal(lower, bTrue) {
 		return true
 	}
