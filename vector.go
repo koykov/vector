@@ -206,7 +206,7 @@ func (vec *Vector) Each(fn func(idx int, node *Node)) {
 	}
 	c := 0
 	_ = rootRow[l-1]
-	for i := 0; i < l; i++ {
+	for _, i := range rootRow {
 		root := &vec.nodes[i]
 		fn(c, root)
 		c++
