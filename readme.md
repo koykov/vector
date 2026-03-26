@@ -287,6 +287,13 @@ vec := xmlvector.NewVector()
 // ...
 ```
 
+## Vectorisation
+
+The library's name is a metaphor - in addition to referencing flat node storage, it actively utilizes CPU vector extensions
+to accelerate performance (see the library at https://github.com/koykov/simd). It utilizes AVX-512 capabilities
+when supported by the CPU, providing a significant speed boost. Without AVX-512 extensions, lower-level versions of AVX
+are used - AVX2/AVX or older versions prior to SSE2.
+
 ## Performance
 
 There are versus-projects for each of the existing vector parsers:
