@@ -83,12 +83,10 @@ func (n *Node) SetLimit(limit int) *Node {
 
 // Limit returns limit of childs in index row.
 func (n *Node) Limit() int {
-	if n.limit != n.offset && n.limit >= n.offset {
-		return n.limit - n.offset
-	} else if n.limit == 0 && n.offset > 0 {
-		return 0
+	if r := n.limit - n.offset; r >= 0 {
+		return r
 	}
-	return 1
+	return 0
 }
 
 // Exists checks if given key exists in the node.
