@@ -112,6 +112,9 @@ type Interface interface {
 	// Marshal serializes first root node to w.
 	Marshal(w io.Writer) error
 
+	// Populate fills map "to" with top root node data.
+	Populate(to map[string]any)
+
 	// ErrorOffset returns last error offset.
 	ErrorOffset() int
 	// Prealloc prepares space for further parse.
