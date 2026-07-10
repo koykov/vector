@@ -48,3 +48,32 @@ func TestVector(t *testing.T) {
 		}
 	})
 }
+
+func BenchmarkVector(b *testing.B) {
+	b.Run("populate", func(b *testing.B) {
+		var vec Vector
+		_ = vec.SetSrc([]byte("zzz"), false)
+		r, ri := vec.AcquireNode(0)
+		r.SetType(TypeObject)
+
+		n, i := vec.AcquireChildWithType(r, 1, TypeString)
+		n.Key().InitString("foo", 0, 3)
+		n.Value().InitString("qwerty", 0, 6)
+		r.ReleaseChild(i, n)
+
+		n, i = vec.AcquireChildWithType(r, 1, TypeString)
+		n.Key().InitString("bar", 0, 3)
+		n.Value().InitString("asdfgh", 0, 6)
+		r.ReleaseChild(i, n)
+
+		vec.ReleaseNode(ri, r)
+
+		m := make(map[string]any)
+
+		b.ReportAllocs()
+		b.ResetTimer()
+		for j := 0; j < b.N; j++ {
+			vec.Populate(m)
+		}
+	})
+}
