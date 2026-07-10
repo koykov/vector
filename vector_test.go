@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 )
@@ -29,6 +30,21 @@ func TestVector(t *testing.T) {
 		m := make(map[string]any)
 		vec.Populate(m)
 
-		// assert m
+		for k, v := range m {
+			s, ok := v.(fmt.Stringer)
+			if !ok {
+				t.FailNow()
+			}
+			switch k {
+			case "foo":
+				if s.String() != "qwerty" {
+					t.FailNow()
+				}
+			case "bar":
+				if s.String() != "asdfgh" {
+					t.FailNow()
+				}
+			}
+		}
 	})
 }
