@@ -197,6 +197,13 @@ func (vec *Vector) RootTop() *Node {
 	return &vec.nodes[rootRow[len(rootRow)-1]]
 }
 
+// Populate fills map "to" with top root node data.
+func (vec *Vector) Populate(to map[string]any) {
+	if root := vec.Root(); root != nil {
+		root.Populate(to)
+	}
+}
+
 // Each applies custom function to each root node.
 func (vec *Vector) Each(fn func(idx int, node *Node)) {
 	rootRow := vec.Index.GetRow(0)

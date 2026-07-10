@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"unsafe"
 
+	"github.com/koykov/byteconv"
 	"github.com/koykov/entry"
 	"github.com/koykov/indirect"
 )
@@ -369,6 +370,33 @@ func (n *Node) LastChild() *Node {
 		}
 	}
 	return nullNode
+}
+
+// Populate fills map "to" with node data.
+func (n *Node) Populate(to map[string]any) {
+	if to == nil {
+		return
+	}
+	switch n.Type() {
+	case TypeObject:
+		n.Each(func(_ int, node *Node) {
+			to[node.KeyString()] = node
+		})
+	case TypeArray:
+		if vec := n.indirectVector(); vec != nil {
+			n.Each(func(c int, node *Node) {
+				key := byteconv.B2S(vec.BufferizeInt(int64(c)))
+				to[key] = node
+			})
+		}
+	case TypeUnknown:
+	case TypeNull:
+		return
+	default:
+		if key := n.KeyString(); len(key) > 0 {
+			to[key] = n
+		}
+	}
 }
 
 // SortKeys sorts child nodes by key in AB order.
