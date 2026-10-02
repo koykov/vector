@@ -81,15 +81,16 @@ func (p *Byteptr) Offset() int { return int(p.offset) }
 func (p *Byteptr) Len() int    { return int(p.len) }
 
 func (p *Byteptr) Bytes() []byte {
-	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
-		return vec.Helper.Indirect(p)
+	if vec := p.indirectVector(); vec != nil && vec.codec_ != nil {
+		b, _ := vec.codec_.Decode(p)
+		return b
 	}
 	return p.RawBytes()
 }
 
 func (p *Byteptr) String() string {
-	if vec := p.indirectVector(); vec != nil && vec.Helper != nil {
-		b := vec.Helper.Indirect(p)
+	if vec := p.indirectVector(); vec != nil && vec.codec_ != nil {
+		b, _ := vec.codec_.Decode(p)
 		return byteconv.B2S(b)
 	}
 	return p.RawString()
