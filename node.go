@@ -1,9 +1,7 @@
 package vector
 
 import (
-	"bytes"
 	"io"
-	"strconv"
 	"unsafe"
 
 	"github.com/koykov/byteconv"
@@ -152,12 +150,17 @@ func (n *Node) Bytes() []byte {
 	if n.typ != TypeString && n.typ != TypeNumber && n.typ != TypeBool && n.typ != TypeAttribute {
 		return nil
 	}
-	return n.val.Bytes()
+	return n.ForceBytes()
 }
 
 // ForceBytes returns value as bytes independent of the type.
 func (n *Node) ForceBytes() []byte {
-	return n.val.Bytes()
+	vec := n.indirectVector()
+	if vec == nil {
+		return nil
+	}
+	b, _ := vec.codec().Decode(&n.val)
+	return b
 }
 
 // RawBytes returns value as bytes without implement any conversion logic.
@@ -187,14 +190,12 @@ func (n *Node) Bool() bool {
 	if n.typ != TypeBool {
 		return false
 	}
-	lower := toLowerASCII(n.val.RawBytes())
-	if bytes.Equal(lower, bTrue) {
-		return true
+	vec := n.indirectVector()
+	if vec == nil {
+		return false
 	}
-	if n.val.bits.CheckBit(FlagExtraBool) {
-		return bytes.Equal(lower, bOn)
-	}
-	return false
+	v, _ := vec.codec().DecodeBool(&n.val)
+	return v
 }
 
 // Float returns value as float number.
@@ -202,11 +203,11 @@ func (n *Node) Float() (float64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	f, err := strconv.ParseFloat(n.val.RawString(), 64)
-	if err != nil {
-		return 0, err
+	vec := n.indirectVector()
+	if vec == nil {
+		return 0, ErrInternal
 	}
-	return f, nil
+	return vec.codec().DecodeFloat(&n.val)
 }
 
 // Int returns value as integer.
@@ -214,11 +215,11 @@ func (n *Node) Int() (int64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	i, err := strconv.ParseInt(n.val.RawString(), 10, 64)
-	if err != nil {
-		return 0, err
+	vec := n.indirectVector()
+	if vec == nil {
+		return 0, ErrInternal
 	}
-	return i, nil
+	return vec.codec().DecodeInt(&n.val)
 }
 
 // Uint returns value as unsigned integer.
@@ -226,11 +227,11 @@ func (n *Node) Uint() (uint64, error) {
 	if n.typ != TypeNumber {
 		return 0, ErrIncompatType
 	}
-	u, err := strconv.ParseUint(n.val.RawString(), 10, 64)
-	if err != nil {
-		return 0, err
+	vec := n.indirectVector()
+	if vec == nil {
+		return 0, ErrInternal
 	}
-	return u, nil
+	return vec.codec().DecodeUint(&n.val)
 }
 
 // Each applies custom function to each child of the node.
@@ -480,10 +481,10 @@ func (n *Node) Beautify(w io.Writer) error {
 	if vec == nil {
 		return ErrInternal
 	}
-	if vec.Helper == nil {
-		return ErrNoHelper
+	if vec.codec_ == nil {
+		return ErrNoCodec
 	}
-	return vec.Helper.Beautify(w, n)
+	return vec.codec_.Beautify(w, n)
 }
 
 // Marshal serializes node.
@@ -492,10 +493,10 @@ func (n *Node) Marshal(w io.Writer) error {
 	if vec == nil {
 		return ErrInternal
 	}
-	if vec.Helper == nil {
-		return ErrNoHelper
+	if vec.codec_ == nil {
+		return ErrNoCodec
 	}
-	return vec.Helper.Marshal(w, n)
+	return vec.codec_.Marshal(w, n)
 }
 
 // Check key equality.

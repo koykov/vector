@@ -3,8 +3,8 @@ package vector
 import "io"
 
 type Interface interface {
-	// SetHelper provides Helper to escape/unescape strings.
-	SetHelper(helper Helper)
+	// SetCodec provides Codec to encode/decode data.
+	SetCodec(codec Codec)
 
 	// Parse parses source bytes.
 	Parse(source []byte) error

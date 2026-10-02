@@ -31,10 +31,15 @@ type Vector struct {
 	nodeL int
 	// Error offset.
 	errOff int
+	// External codec object.
+	codec_ Codec
 	// Nodes index.
 	Index Index
-	// External helper object.
-	Helper Helper
+}
+
+// SetCodec sets encode/decode helper to vector object.
+func (vec *Vector) SetCodec(codec Codec) {
+	vec.codec_ = codec
 }
 
 // Parse parses source bytes.
@@ -92,22 +97,22 @@ func (vec *Vector) ParseReader(r io.Reader) (err error) {
 //
 // Second and next roots must beautify manually by call Beautify method of each node.
 func (vec *Vector) Beautify(w io.Writer) error {
-	if vec.Helper == nil {
-		return ErrNoHelper
+	if vec.codec_ == nil {
+		return ErrNoCodec
 	}
 	root := vec.Root()
-	return vec.Helper.Beautify(w, root)
+	return vec.codec_.Beautify(w, root)
 }
 
 // Marshal serializes first root node.
 //
 // Second and next roots must beautify manually by call Marshal method of each node.
 func (vec *Vector) Marshal(w io.Writer) error {
-	if vec.Helper == nil {
-		return ErrNoHelper
+	if vec.codec_ == nil {
+		return ErrNoCodec
 	}
 	root := vec.Root()
-	return vec.Helper.Marshal(w, root)
+	return vec.codec_.Marshal(w, root)
 }
 
 // SetSrc sets source bytes.
@@ -350,7 +355,7 @@ func (vec *Vector) Reset() {
 	vec.addr, vec.nodeL, vec.errOff = 0, 0, 0
 	vec.Index.reset()
 	vec.Bitset.Reset()
-	vec.SetBit(FlagInit, vec.Helper != nil)
+	vec.SetBit(FlagInit, vec.codec_ != nil)
 }
 
 // ForgetFrom forgets nodes from given position to the end of the array.
@@ -379,4 +384,11 @@ func (vec *Vector) KeepPtr() {
 // Return self pointer of the vector.
 func (vec *Vector) ptr() uintptr {
 	return uintptr(unsafe.Pointer(vec))
+}
+
+func (vec *Vector) codec() Codec {
+	if vec.codec_ == nil {
+		vec.codec_ = BaseCodec{}
+	}
+	return vec.codec_
 }
