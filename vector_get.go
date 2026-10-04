@@ -249,7 +249,7 @@ func (vec *Vector) getArr(root *Node, keys ...string) *Node {
 		return root
 	}
 	k, err := strconv.Atoi(keys[0])
-	if err != nil || k >= root.limit {
+	if err != nil || k < 0 || k >= root.limit {
 		return nullNode
 	}
 	i := vec.Index.val(root.depth+1, root.offset+k)
@@ -312,7 +312,7 @@ func (vec *Vector) getArrKE(root *Node, path string, keys ...entry.Entry64) *Nod
 		return root
 	}
 	k, err := strconv.Atoi(skey)
-	if err != nil || k >= root.limit {
+	if err != nil || k < 0 || k >= root.limit {
 		return nullNode
 	}
 	i := vec.Index.val(root.depth+1, root.offset+k)
