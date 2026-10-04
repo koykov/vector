@@ -93,7 +93,7 @@ func (n *Node) getKE(path string, keys ...entry.Entry64) *Node {
 		lo, hi := keys[0].Decode()
 		skey := path[lo:hi]
 		i, err := strconv.Atoi(skey)
-		if err != nil || i >= node.limit {
+		if err != nil || i < 0 || i >= node.limit {
 			return nullNode
 		}
 		idx := vec.Index.val(node.depth+1, node.offset+i)
